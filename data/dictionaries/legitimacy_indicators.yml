@@ -1,1 +1,13 @@
-
+legitimacy_indicators:
+  recognition_by_community:
+    weight: 0.3
+    linked_engagements: ["community", "ethics"]
+  non_discrimination:
+    weight: 0.2
+    linked_engagements: ["ethics"]
+  internal_responsibility:
+    weight: 0.2
+    linked_engagements: ["discipline", "norms"]
+  traceability:
+    weight: 0.3
+    linked_engagements: ["transparency", "documentation"]
