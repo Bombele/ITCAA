@@ -43,3 +43,39 @@ def compute_legitimacy_score(actor: models.Actor) -> float:
     final_score = min(base_score + bonus, 1.0)
 
     return round(final_score, 2)
+from pathlib import Path
+import yaml
+from db import models
+
+DICTIONARIES_PATH = Path("data/dictionaries")
+
+def load_legitimacy_indicators():
+    """
+    Charge les indicateurs de légitimité depuis le fichier YAML enrichi.
+    """
+    file_path = DICTIONARIES_PATH / "legitimacy_indicators.yml"
+    with open(file_path, "r", encoding="utf-8") as f:
+        return yaml.safe_load(f)["legitimacy_indicators"]
+
+def compute_legitimacy_score(actor: models.Actor) -> float:
+    """
+    Calcule le score de légitimité d'un acteur en fonction :
+    1. des poids définis dans legitimacy_indicators.yml
+    2. des engagements documentés de l'acteur
+    """
+
+    indicators = load_legitimacy_indicators()
+
+    # Score de base = moyenne des poids
+    base_score = sum(ind["weight"] for ind in indicators.values()) / len(indicators)
+
+    # Bonus dynamique selon les engagements
+    bonus = 0.0
+    if actor.engagements:
+        for engagement in actor.engagements:
+            for indicator_name, indicator_data in indicators.items():
+                if engagement.category in indicator_data.get("linked_engagements", []):
+                    bonus += indicator_data["weight"] * 0.1  # bonus proportionnel
+
+    final_score = min(base_score + bonus, 1.0)
+    return round(final_score, 2)
