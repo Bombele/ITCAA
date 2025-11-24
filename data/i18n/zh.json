@@ -28,3 +28,14 @@
   "errors.validation": "验证错误",
   "errors.server": "服务器内部错误"
 }
+{
+  "app.title": "ITCAA 国际研究所",
+  "actor.name": "行为者名称",
+  "actor.type": "行为者类型",
+  "actor.region": "地区",
+  "actor.status": "状态",
+  "capsule.score": "认证分数",
+  "protocol.dih.title": "国际人道法",
+  "protocol.legitimacy.title": "合法性",
+  "protocol.internal_norms.title": "内部规范"
+}
