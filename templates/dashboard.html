@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ITCAA – Tableau de bord diplomatique</title>
+</head>
+<body>
+  <h1>Alertes diplomatiques</h1>
+  <ul>
+    {% for alert in alerts %}
+      <li>{{ alert }}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
