@@ -38,3 +38,43 @@
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>ITCAA – Carte interactive</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <style>
+    #map { height: 600px; width: 100%; }
+    #controls { margin: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Carte des acteurs armés et SMP/PMC</h1>
+
+  <div id="controls">
+    <label for="region">Région :</label>
+    <select id="region">
+      <option value="">Toutes</option>
+      <option value="africa">Afrique</option>
+      <option value="mena">Moyen-Orient</option>
+      <option value="americas">Amériques</option>
+      <option value="asia">Asie</option>
+      <option value="europe">Europe</option>
+    </select>
+
+    <label for="type">Type :</label>
+    <select id="type">
+      <option value="">Tous</option>
+      <option value="gane">GANE</option>
+      <option value="pmc">PMC/SMP</option>
+      <option value="militia">Milice</option>
+      <option value="hybrid">Hybride</option>
+    </select>
+
+    <button onclick="loadActors()">Filtrer</button>
+  </div>
+
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js">
