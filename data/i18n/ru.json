@@ -28,3 +28,14 @@
   "errors.validation": "Ошибка проверки",
   "errors.server": "Внутренняя ошибка сервера"
 }
+{
+  "app.title": "ИТКAA",
+  "actor.name": "Имя актора",
+  "actor.type": "Тип актора",
+  "actor.region": "Регион",
+  "actor.status": "Статус",
+  "capsule.score": "Оценка сертификации",
+  "protocol.dih.title": "Международное гуманитарное право",
+  "protocol.legitimacy.title": "Легитимность",
+  "protocol.internal_norms.title": "Внутренние нормы"
+}
