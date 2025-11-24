@@ -38,3 +38,32 @@ def institutional_report(request: Request, db: Session = Depends(get_db)):
         },
         "lang": lang
 }
+# apps/api/routers/reports.py
+from fastapi import APIRouter, Depends, Request
+from sqlalchemy.orm import Session
+from apps.api.database import SessionLocal
+from apps.api.i18n import get_lang, load_locale
+from apps.api.actor_service import classify_portfolio, region_breakdown
+from apps.api.econ_service import annual_totals, simulate_baseline
+
+router = APIRouter(prefix="/reports", tags=["reports"])
+
+def get_db():
+    db = SessionLocal()
+    try: yield db
+    finally: db.close()
+
+@router.get("/institutional")
+def institutional_report(request: Request, db: Session = Depends(get_db)):
+    lang = get_lang(request); t = load_locale(lang)
+    portfolio = classify_portfolio(db)
+    regions = region_breakdown(db)
+    econ = annual_totals(db)
+    sim = simulate_baseline()
+    return {
+        "title": f"{t['app.title']} – Rapport institutionnel",
+        "portfolio": {"counts": portfolio, "regions": regions},
+        "economics": {"totals": econ, "projection_baseline": sim},
+        "risks_summary": "Voir /risks pour le registre détaillé",
+        "lang": lang
+    }
