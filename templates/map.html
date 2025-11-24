@@ -78,3 +78,18 @@
   <div id="map"></div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js">
+<button onclick="exportData('json')">Exporter JSON</button>
+<button onclick="exportData('csv')">Exporter CSV</button>
+
+<script>
+function exportData(format){
+  var region = document.getElementById("region").value;
+  var type = document.getElementById("type").value;
+  var url = "/export/actors/" + format;
+  var params = [];
+  if(region) params.push("region="+region);
+  if(type) params.push("type="+type);
+  if(params.length>0) url += "?" + params.join("&");
+  window.location.href = url; // déclenche le téléchargement
+}
+  </script>
