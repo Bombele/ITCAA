@@ -1,0 +1,22 @@
+# econ/config.yml
+revenue_bands:
+  certification: [10000, 25000, 50000]
+  training_per_person: [500, 1000, 2000]
+  consulting_contracts: [50000, 100000, 200000]
+  licenses_per_year: [5000, 10000, 20000]
+  grants_per_year: [100000, 300000, 500000]
+
+cost_baselines:
+  infrastructure_init: 150000
+  maintenance_annual: 100000
+  multilingual_per_language_annual: 15000
+  team_annual: 400000
+  diplomacy_annual: 100000
+  communication_annual: 50000
+
+assumptions:
+  trainings_people_per_year: 200
+  certifications_per_year: 10
+  consulting_contracts_per_year: 3
+  licenses_per_year: 10
+  languages_onu: 6
