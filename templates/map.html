@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>ITCAA – Carte des acteurs</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <style>
+    #map { height: 600px; width: 100%; }
+  </style>
+</head>
+<body>
+  <h1>Carte des acteurs armés et SMP/PMC</h1>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    var map = L.map('map').setView([20,0], 2); // vue globale
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Charger GeoJSON depuis l’API
+    fetch("/cartography/actors/1/geojson")
+      .then(res => res.json())
+      .then(data => {
+        L.geoJSON(data, {
+          style: {color: "red", weight: 2}
+        }).addTo(map).bindPopup("Al-Shabaab – zones d’influence");
+      });
+
+    fetch("/cartography/actors/2/geojson")
+      .then(res => res.json())
+      .then(data => {
+        L.geoJSON(data, {
+          style: {color: "blue", weight: 2}
+        }).addTo(map).bindPopup("Wagner Group – zones d’influence");
+      });
+  </script>
+</body>
+</html>
