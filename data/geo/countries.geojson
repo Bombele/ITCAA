@@ -1,1 +1,62 @@
-
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "RDC",
+        "iso_a3": "COD"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [28.8, -2.5],
+            [29.5, -2.5],
+            [29.5, -1.5],
+            [28.8, -1.5],
+            [28.8, -2.5]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Belgique",
+        "iso_a3": "BEL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [4.0, 50.5],
+            [5.0, 50.5],
+            [5.0, 51.5],
+            [4.0, 51.5],
+            [4.0, 50.5]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Venezuela",
+        "iso_a3": "VEN"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-67.0, 10.0],
+            [-66.0, 10.0],
+            [-66.0, 11.0],
+            [-67.0, 11.0],
+            [-67.0, 10.0]
+          ]
+        ]
+      }
+    }
+  ]
+}
