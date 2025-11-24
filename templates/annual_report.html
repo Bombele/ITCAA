@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <title>{{ title }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    h1 { color: #2c3e50; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f4f4f4; }
+  </style>
+</head>
+<body>
+  <h1>{{ title }}</h1>
+  <p><strong>Année :</strong> {{ year }}</p>
+
+  <h2>📊 Portfolio par région et type</h2>
+  <table>
+    <tr>
+      <th>Région</th>
+      <th>GANE</th>
+      <th>PMC</th>
+      <th>Milices</th>
+      <th>Hybrides</th>
+    </tr>
+    {% for region, counts in portfolio.items() %}
+    <tr>
+      <td>{{ region }}</td>
+      <td>{{ counts.gane }}</td>
+      <td>{{ counts.pmc }}</td>
+      <td>{{ counts.militia }}</td>
+      <td>{{ counts.hybrid }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <h2>💰 Économie</h2>
+  <p>Total revenus : {{ economics.total_revenue }}</p>
+  <p>Total coûts : {{ economics.total_costs }}</p>
+  <p>Résultat net : {{ economics.net }}</p>
+
+  <h2>⚠️ Risques</h2>
+  <ul>
+    {% for r in risks %}
+      <li>{{ r.risk_type }} – {{ r.level }} : {{ r.description }}</li>
+    {% endfor %}
+  </ul>
+
+  <h2>📑 Audits externes</h2>
+  <ul>
+    {% for a in audits %}
+      <li>{{ a.auditor_name }} – {{ a.scope }}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
