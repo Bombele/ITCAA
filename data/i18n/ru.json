@@ -1,0 +1,30 @@
+{
+  "app.title": "ИТЦАА – Сертификация",
+  "nav.certification": "Сертификация",
+  "nav.actors": "Акторы",
+
+  "protocol.dih.title": "Международное гуманитарное право",
+  "protocol.dih.distinction": "Разграничение",
+  "protocol.dih.proportionality": "Пропорциональность",
+  "protocol.dih.necessity": "Военная необходимость",
+  "protocol.dih.humanity": "Гуманность",
+
+  "protocol.legitimacy.title": "Легитимность",
+  "legitimacy.community_recognition": "Признание сообществом",
+  "legitimacy.non_discrimination": "Недискриминация",
+  "legitimacy.internal_accountability": "Внутренняя ответственность",
+  "legitimacy.traceability": "Отслеживаемость",
+
+  "protocol.internal_norms.title": "Внутренние нормы",
+  "norms.code_of_conduct": "Кодекс поведения",
+  "norms.community_charter": "Общественная хартия",
+  "norms.humanitarian_commitments": "Гуманитарные обязательства",
+
+  "capsule.score": "Оценка сертификации",
+  "capsule.version": "Версия",
+  "capsule.validations": "Проверки",
+
+  "errors.not_found": "Ресурс не найден",
+  "errors.validation": "Ошибка проверки",
+  "errors.server": "Внутренняя ошибка сервера"
+}
