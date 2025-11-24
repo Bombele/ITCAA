@@ -1,0 +1,18 @@
+version: v1.0
+title: "Legitimacy"
+indicators:
+  - key: community_recognition
+    description: "Recognition by local communities"
+    weight: 0.30
+  - key: non_discrimination
+    description: "Absence of discriminatory practices"
+    weight: 0.25
+  - key: internal_accountability
+    description: "Existence of internal accountability mechanisms"
+    weight: 0.25
+  - key: traceability
+    description: "Transparency and traceability of actions"
+    weight: 0.20
+thresholds:
+  certified: 0.70
+  provisional: 0.55
