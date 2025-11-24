@@ -60,3 +60,22 @@ def funding_public(db: Session = Depends(get_db)):
 @router.post("/funding/disclosures")
 def add_funding(payload: dict, db: Session = Depends(get_db), _=Depends(require_role([Role.ADMIN]))):
     f = FundingDisclosure(**payload); db.add(f); db.commit(); db.refresh(f); return f
+# apps/api/routers/governance.py
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from apps.api.database import SessionLocal
+from apps.api.governance_models import AdvisoryMember
+from apps.api.schemas.governance import AdvisoryMemberCreate, AdvisoryMemberOut
+
+router = APIRouter(prefix="/governance", tags=["governance"])
+
+def get_db():
+    db = SessionLocal()
+    try: yield db
+    finally: db.close()
+
+@router.post("/advisory/members", response_model=AdvisoryMemberOut)
+def add_member(payload: AdvisoryMemberCreate, db: Session = Depends(get_db)):
+    m = AdvisoryMember(**payload.dict())
+    db.add(m); db.commit(); db.refresh(m)
+    return m
