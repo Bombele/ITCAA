@@ -1,0 +1,24 @@
+# configs/risk_policies.yml
+risks:
+  - type: political_contest
+    default_level: high
+    mitigations:
+      - "Cadre diplomatique neutre et multilatéral"
+      - "Transparence des protocoles et audits externes"
+  - type: manipulation
+    default_level: medium
+    mitigations:
+      - "Vérification indépendante des preuves"
+      - "Révocation/ suspension si non-conformité DIH"
+  - type: data_security
+    default_level: high
+    mitigations:
+      - "Chiffrement au repos et en transit; SIEM; durcissement accès"
+  - type: neutrality
+    default_level: medium
+    mitigations:
+      - "Gouvernance confédérale, comité consultatif diversifié"
+  - type: diplomacy_fragile
+    default_level: medium
+    mitigations:
+      - "Partenariats régionaux, reconnaissance progressive (UA/UE/OEA)"
