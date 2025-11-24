@@ -1,1 +1,38 @@
-
+{
+  "services": [
+    {
+      "name": "itcaa-api",
+      "type": "web",
+      "build": {
+        "dockerfilePath": "infra/docker/Dockerfile.api"
+      },
+      "env": {
+        "DATABASE_URL": "postgresql://itcaa:itcaa_pass@railway-db:5432/itcaa_db"
+      },
+      "startCommand": "uvicorn apps.demo.app:app --host 0.0.0.0 --port $PORT",
+      "ports": [8000]
+    },
+    {
+      "name": "itcaa-demo",
+      "type": "web",
+      "build": {
+        "dockerfilePath": "infra/docker/Dockerfile.demo"
+      },
+      "env": {
+        "DATABASE_URL": "postgresql://itcaa:itcaa_pass@railway-db:5432/itcaa_db"
+      },
+      "startCommand": "uvicorn apps.demo.app:app --host 0.0.0.0 --port $PORT",
+      "ports": [8500]
+    },
+    {
+      "name": "railway-db",
+      "type": "postgres",
+      "env": {
+        "POSTGRES_USER": "itcaa",
+        "POSTGRES_PASSWORD": "itcaa_pass",
+        "POSTGRES_DB": "itcaa_db"
+      },
+      "ports": [5432]
+    }
+  ]
+}
