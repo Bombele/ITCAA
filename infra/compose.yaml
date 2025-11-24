@@ -1,1 +1,48 @@
+version: "3.9"
 
+services:
+  api:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.api
+    container_name: itcaa-api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://itcaa:itcaa_pass@db:5432/itcaa_db
+    volumes:
+      - ./apps:/app/apps
+      - ./data:/app/data
+      - ./docs:/app/docs
+
+  demo:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.demo
+    container_name: itcaa-demo
+    ports:
+      - "8500:8500"
+    depends_on:
+      - api
+    volumes:
+      - ./apps/demo:/app/apps/demo
+      - ./data:/app/data
+      - ./docs:/app/docs
+
+  db:
+    image: postgres:14
+    container_name: itcaa-db
+    restart: always
+    environment:
+      POSTGRES_USER: itcaa
+      POSTGRES_PASSWORD: itcaa_pass
+      POSTGRES_DB: itcaa_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
