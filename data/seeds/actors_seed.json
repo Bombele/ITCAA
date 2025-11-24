@@ -1,1 +1,52 @@
-
+[
+  {
+    "id": 1,
+    "name": "Forces de Résistance du Kivu",
+    "acronym": "FRK",
+    "typology": "GANE",
+    "country": "RDC",
+    "region": "Kivu",
+    "geojson": {
+      "type": "Point",
+      "coordinates": [28.8, -2.4]
+    },
+    "engagements": [
+      { "category": "community", "description": "Reconnaissance par les chefs locaux" },
+      { "category": "ethics", "description": "Code de conduite interne" },
+      { "category": "DIH", "description": "Engagement public au respect du DIH" }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Brigade de Sécurité Privée Bruxelles",
+    "acronym": "BSPB",
+    "typology": "SMP",
+    "country": "Belgique",
+    "region": "Bruxelles-Capitale",
+    "geojson": {
+      "type": "Point",
+      "coordinates": [4.35, 50.85]
+    },
+    "engagements": [
+      { "category": "ethics", "description": "Charte de non-discrimination" },
+      { "category": "discipline", "description": "Règlement interne validé par les autorités" }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Milices Communautaires de Carabobo",
+    "acronym": "MCC",
+    "typology": "HYBRID",
+    "country": "Venezuela",
+    "region": "Carabobo",
+    "geojson": {
+      "type": "Point",
+      "coordinates": [-67.5, 10.2]
+    },
+    "engagements": [
+      { "category": "community", "description": "Charte communautaire adoptée avec les habitants" },
+      { "category": "transparency", "description": "Publication régulière des actions" },
+      { "category": "norms", "description": "Création de règles internes influençant le DIH" }
+    ]
+  }
+]
