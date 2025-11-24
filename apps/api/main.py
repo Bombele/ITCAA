@@ -29,3 +29,22 @@ app.include_router(clients_partners.router)
 app.include_router(risks.router)
 app.include_router(econ.router)
 app.include_router(reports.router)
+# apps/api/main.py
+from fastapi import FastAPI
+from apps.api.middleware import AuditMiddleware
+from apps.api.routers import certification, governance
+from apps.api.routers import econ, reports, actors, clients_partners, risks
+
+app = FastAPI(title="ITCAA API")
+
+# Middleware d’audit (journalisation de chaque requête)
+app.add_middleware(AuditMiddleware)
+
+# Routes
+app.include_router(certification.router)
+app.include_router(governance.router)
+app.include_router(econ.router)
+app.include_router(reports.router)
+app.include_router(actors.router)
+app.include_router(clients_partners.router)
+app.include_router(risks.router)
