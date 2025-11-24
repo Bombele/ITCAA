@@ -179,3 +179,20 @@ def actor_report_pdf(actor_id: int, request: Request, db: Session = Depends(get_
         lang=lang
     )
     return render_pdf(html_content, filename=f"actor_{actor_id}_report.pdf")
+# apps/api/routers/reports.py
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from apps.api.database import SessionLocal
+from apps.api.models_reports import AnnualReport
+
+router = APIRouter(prefix="/reports", tags=["reports"])
+
+def get_db():
+    db = SessionLocal()
+    try: yield db
+    finally: db.close()
+
+@router.get("/annual/{year}")
+def get_annual_report(year: int, db: Session = Depends(get_db)):
+    report = db.query(AnnualReport).filter_by(year=year).first()
+    return report
