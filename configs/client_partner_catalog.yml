@@ -1,0 +1,9 @@
+# configs/client_partner_catalog.yml
+clients:
+  - name: "ONU"; category: "UN"; country: "GLOBAL"
+  - name: "Union africaine"; category: "UA"; country: "MULTI"
+  - name: "CICR"; category: "NGO"; country: "GLOBAL"
+partners:
+  - name: "Geneva Academy"; type: "UNIVERSITY"; region: "europe"
+  - name: "GRIP"; type: "THINKTANK"; region: "europe"
+  - name: "Open Society Foundations"; type: "FOUNDATION"; region: "global"
