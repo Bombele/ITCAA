@@ -1,1 +1,86 @@
-
+[
+  {
+    "id": 1,
+    "name": "Distinction",
+    "category": "DIH",
+    "description": "Principe de distinction entre civils et combattants",
+    "weight": 0.25
+  },
+  {
+    "id": 2,
+    "name": "Proportionality",
+    "category": "DIH",
+    "description": "Principe de proportionnalité dans l’usage de la force",
+    "weight": 0.25
+  },
+  {
+    "id": 3,
+    "name": "Necessity",
+    "category": "DIH",
+    "description": "Principe de nécessité militaire",
+    "weight": 0.25
+  },
+  {
+    "id": 4,
+    "name": "Humanity",
+    "category": "DIH",
+    "description": "Principe d’humanité et de protection",
+    "weight": 0.25
+  },
+  {
+    "id": 5,
+    "name": "Recognition by Community",
+    "category": "Legitimacy",
+    "description": "Reconnaissance par la communauté locale",
+    "weight": 0.3
+  },
+  {
+    "id": 6,
+    "name": "Non-discrimination",
+    "category": "Legitimacy",
+    "description": "Respect du principe de non-discrimination",
+    "weight": 0.2
+  },
+  {
+    "id": 7,
+    "name": "Internal Responsibility",
+    "category": "Legitimacy",
+    "description": "Responsabilité interne et discipline",
+    "weight": 0.2
+  },
+  {
+    "id": 8,
+    "name": "Traceability",
+    "category": "Legitimacy",
+    "description": "Transparence et traçabilité des actions",
+    "weight": 0.3
+  },
+  {
+    "id": 9,
+    "name": "Code of Conduct",
+    "category": "Internal Norms",
+    "description": "Existence d’un code de conduite écrit",
+    "weight": 0.3
+  },
+  {
+    "id": 10,
+    "name": "Disciplinary Rules",
+    "category": "Internal Norms",
+    "description": "Mécanismes internes de sanction",
+    "weight": 0.2
+  },
+  {
+    "id": 11,
+    "name": "Community Charter",
+    "category": "Internal Norms",
+    "description": "Règles adoptées avec la communauté",
+    "weight": 0.3
+  },
+  {
+    "id": 12,
+    "name": "Humanitarian Commitments",
+    "category": "Internal Norms",
+    "description": "Engagements publics en faveur du DIH",
+    "weight": 0.2
+  }
+]
