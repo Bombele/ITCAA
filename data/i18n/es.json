@@ -1,0 +1,30 @@
+{
+  "app.title": "ITCAA – Certificación",
+  "nav.certification": "Certificación",
+  "nav.actors": "Actores",
+
+  "protocol.dih.title": "Derecho Internacional Humanitario",
+  "protocol.dih.distinction": "Distinción",
+  "protocol.dih.proportionality": "Proporcionalidad",
+  "protocol.dih.necessity": "Necesidad militar",
+  "protocol.dih.humanity": "Humanidad",
+
+  "protocol.legitimacy.title": "Legitimidad",
+  "legitimacy.community_recognition": "Reconocimiento comunitario",
+  "legitimacy.non_discrimination": "No discriminación",
+  "legitimacy.internal_accountability": "Responsabilidad interna",
+  "legitimacy.traceability": "Trazabilidad",
+
+  "protocol.internal_norms.title": "Normas internas",
+  "norms.code_of_conduct": "Código de conducta",
+  "norms.community_charter": "Carta comunitaria",
+  "norms.humanitarian_commitments": "Compromisos humanitarios",
+
+  "capsule.score": "Puntuación de certificación",
+  "capsule.version": "Versión",
+  "capsule.validations": "Validaciones",
+
+  "errors.not_found": "Recurso no encontrado",
+  "errors.validation": "Error de validación",
+  "errors.server": "Error interno del servidor"
+}
