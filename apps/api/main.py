@@ -48,3 +48,12 @@ app.include_router(reports.router)
 app.include_router(actors.router)
 app.include_router(clients_partners.router)
 app.include_router(risks.router)
+# apps/api/main.py
+from fastapi import FastAPI
+from apps.api.routers import cartography, cartography_admin, observatory, reports
+
+app = FastAPI(title="ITCAA API")
+app.include_router(cartography.router)
+app.include_router(cartography_admin.router)
+app.include_router(observatory.router)
+app.include_router(reports.router)
