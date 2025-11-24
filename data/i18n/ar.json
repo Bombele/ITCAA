@@ -28,3 +28,14 @@
   "errors.validation": "خطأ في التحقق",
   "errors.server": "خطأ داخلي في الخادم"
 }
+{
+  "app.title": "المعهد الدولي ITCAA",
+  "actor.name": "اسم الفاعل",
+  "actor.type": "نوع الفاعل",
+  "actor.region": "المنطقة",
+  "actor.status": "الوضع",
+  "capsule.score": "درجة الشهادة",
+  "protocol.dih.title": "القانون الدولي الإنساني",
+  "protocol.legitimacy.title": "الشرعية",
+  "protocol.internal_norms.title": "المعايير الداخلية"
+}
