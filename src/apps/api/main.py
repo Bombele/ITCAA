@@ -69,3 +69,21 @@ app.include_router(export.router)
 app.include_router(reports.router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 from apps.api.routers import health, actors, certification, capsules, criteria, geo
+from fastapi import FastAPI
+from apps.api.routers import geo, certification, governance  # adapte selon tes modules
+
+app = FastAPI(
+    title="ITCAA API",
+    description="Interface institutionnelle pour certification DIH, cartographie et gouvernance citoyenne",
+    version="1.0.0"
+)
+
+# Inclusion des routes
+app.include_router(geo.router, prefix="/geo", tags=["Cartographie"])
+app.include_router(certification.router, prefix="/certification", tags=["Certification DIH"])
+app.include_router(governance.router, prefix="/governance", tags=["Gouvernance"])
+
+# Endpoint de test
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
