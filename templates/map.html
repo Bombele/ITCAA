@@ -93,3 +93,73 @@ function exportData(format){
   window.location.href = url; // déclenche le téléchargement
 }
   </script>
+<!-- templates/map.html -->
+{% extends "base.html" %}
+{% block content %}
+<h1>Carte interactive des acteurs</h1>
+<div id="controls">
+  <label>Région
+    <select id="region">
+      <option value="">Toutes</option>
+      <option value="africa">Afrique</option>
+      <option value="mena">Moyen-Orient</option>
+      <option value="americas">Amériques</option>
+      <option value="asia">Asie</option>
+      <option value="europe">Europe</option>
+    </select>
+  </label>
+  <label>Type
+    <select id="type">
+      <option value="">Tous</option>
+      <option value="gane">GANE</option>
+      <option value="pmc">PMC/SMP</option>
+      <option value="militia">Milice</option>
+      <option value="hybrid">Hybride</option>
+    </select>
+  </label>
+  <button id="filterBtn">Filtrer</button>
+  <a id="exportJson" href="#">Exporter JSON</a>
+  <a id="exportCsv" href="#">Exporter CSV</a>
+</div>
+<div id="map" style="height:600px;"></div>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  const map = L.map('map').setView([20,0], 2);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+  const layers = L.layerGroup().addTo(map);
+
+  function loadActors(region, type) {
+    layers.clearLayers();
+    let url = "/cartography/actors";
+    const params = [];
+    if(region) params.push("region=" + region);
+    if(type) params.push("type=" + type);
+    if(params.length) url += "?" + params.join("&");
+    fetch(url)
+      .then(r => r.json())
+      .then(actors => {
+        actors.forEach(a => {
+          fetch(`/cartography/actors/${a.id}/geojson`)
+            .then(r => r.json())
+            .then(geo => {
+              if(geo.features && geo.features.length) {
+                const color = a.type === "pmc" ? "blue" : "red";
+                L.geoJSON(geo, { style: { color, weight: 2 } })
+                  .addTo(layers)
+                  .bindPopup(`${a.name} (${a.type}) <br><a href="/ui/actors/${a.id}?lang={{ lang }}">Fiche</a>`);
+              }
+            });
+        });
+      });
+  }
+
+  const regionSel = document.getElementById('region');
+  const typeSel = document.getElementById('type');
+  document.getElementById('filterBtn').addEventListener('click', () => {
+    loadActors(regionSel.value, typeSel.value);
+    document.getElementById('exportJson').href = `/export/actors/json?region=${regionSel.value}&type=${typeSel.value}`;
+    document.getElementById('exportCsv').href = `/export/actors/csv?region=${regionSel.value}&type=${typeSel.value}`;
+  });
+  loadActors("", "");
+</script>
+{% endblock %}
