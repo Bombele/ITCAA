@@ -57,3 +57,14 @@ app.include_router(cartography.router)
 app.include_router(cartography_admin.router)
 app.include_router(observatory.router)
 app.include_router(reports.router)
+# apps/api/main.py
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from apps.api.routers import ui, cartography, export, reports
+
+app = FastAPI(title="ITCAA")
+app.include_router(ui.router)
+app.include_router(cartography.router)
+app.include_router(export.router)
+app.include_router(reports.router)
+app.mount("/static", StaticFiles(directory="static"), name="static")
