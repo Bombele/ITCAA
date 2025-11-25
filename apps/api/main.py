@@ -68,3 +68,4 @@ app.include_router(cartography.router)
 app.include_router(export.router)
 app.include_router(reports.router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
+from .routers import health, actors, certification, capsules, criteria, geo
