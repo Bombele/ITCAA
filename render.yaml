@@ -23,3 +23,13 @@ startCommand: uvicorn src.apps.api.main:app --host 0.0.0.0 --port 10000
 envVars:
   - key: PYTHONPATH
     value: src
+services:
+  - type: web
+    name: itcaa-api
+    env: python
+    plan: free
+    buildCommand: ""
+    startCommand: uvicorn src.apps.api.main:app --host 0.0.0.0 --port 10000
+    envVars:
+      - key: PYTHONPATH
+        value: src
