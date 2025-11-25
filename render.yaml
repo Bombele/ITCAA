@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: itcaa-interface
+    env: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn apps.api.main:app --host 0.0.0.0 --port 10000
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: SECRET_KEY
+        value: "change_this_to_secure_key"
+      - key: DATABASE_URL
+        value: "postgresql://user:password@host:port/dbname"
+      - key: I18N_DEFAULT_LANG
+        value: "fr"
+      - key: ENABLE_PDF
+        value: "true"
+      - key: ENABLE_AUDIT
+        value: "true"
