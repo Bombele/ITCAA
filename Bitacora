@@ -174,3 +174,10 @@
 - 🚨 Renforce la transparence et la résilience technique du projet ITCAA
 - 🧠 Compatible avec les standards CI/CD et les audits institutionnels
 - 🪶 Acte de mémoire technique et diplomatique
+## 🔧 Jalón technique – Schemas Pydantic pour validation FastAPI
+
+- ✅ Création de `schemas_actors.py` pour validation automatique des endpoints
+- 📦 Correspondance exacte avec `models_actors.py`
+- 🧠 Typage clair, auditabilité, documentation Swagger multilingue
+- 🚀 Prêt pour intégration dans les routes FastAPI
+- 🪶 Acte de mémoire technique et diplomatique
