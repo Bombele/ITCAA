@@ -1,0 +1,44 @@
+name: 🚀 Deploy ITCAA API
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  predeploy-check:
+    name: 🔍 Predeploy Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: 📦 Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: 🚨 Run predeploy check
+        run: python predeploy_check.py
+
+  deploy:
+    name: 🚀 Deploy to Render
+    needs: predeploy-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🔑 Authenticate with Render
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          echo "Authenticating with Render..."
+          curl -H "Authorization: Bearer $RENDER_API_KEY" \
+               -H "Content-Type: application/json" \
+               --request POST \
+               --data '{"serviceId":"itcaa-api","clearCache":true}' \
+               https://api.render.com/v1/services/itcaa-api/deploys
