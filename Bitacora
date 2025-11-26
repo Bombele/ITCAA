@@ -153,3 +153,10 @@
 - 🧠 Affiche des ✅ ou ❌ avec suggestions claires
 - 🚀 Utilisable avant chaque déploiement pour garantir la stabilité
 - 🪶 Acte de mémoire technique et diplomatique
+## 🔧 Jalón technique – Intégration du validateur Render dans CI/CD
+
+- ✅ Ajout du script `validate_render_config.py` au workflow `structure-check.yml`
+- 🧠 Vérification automatique de la configuration Render à chaque push ou PR
+- 📦 Renforce la stabilité du déploiement et la traçabilité institutionnelle
+- 🚀 Compatible avec LexCivic et les jalons multilingues
+- 🪶 Acte de mémoire technique et diplomatique
