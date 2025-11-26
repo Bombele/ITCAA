@@ -1,11 +1,11 @@
 services:
   - type: web
-    name: itcaa-interface
+    name: itcaa-api
     env: python
     plan: starter
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn src.apps.api.main:app --host 0.0.0.0 --port 10000
     autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: PYTHONPATH=src python -m uvicorn apps.api.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
         value: "3.11"
@@ -19,32 +19,3 @@ services:
         value: "true"
       - key: ENABLE_AUDIT
         value: "true"
-startCommand: uvicorn src.apps.api.main:app --host 0.0.0.0 --port 10000
-envVars:
-  - key: PYTHONPATH
-    value: src
-services:
-  - type: web
-    name: itcaa-api
-    env: python
-    plan: free
-    buildCommand: ""
-    startCommand: uvicorn src.apps.api.main:app --host 0.0.0.0 --port 10000
-    envVars:
-      - key: PYTHONPATH
-        value: src
-startCommand: uvicorn src.apps.api.main:app --host 0.0.0.0 --port 10000
-envVars:
-  - key: PYTHONPATH
-    value: src
-services:
-  - type: web
-    name: itcaa-api
-    env: python
-    plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn src.apps.api.main:app --host 0.0.0.0 --port 10000
-    envVars:
-      - key: PYTHONPATH
-        value: src
-PYTHONPATH=src 
