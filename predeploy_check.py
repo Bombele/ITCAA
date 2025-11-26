@@ -28,6 +28,7 @@ def check_render_yaml():
 
 def check_apps_importable():
     try:
+        os.environ["PYTHONPATH"] = "src"
         spec = importlib.util.find_spec("apps")
         if spec is not None:
             print("✅ Module 'apps' accessible via PYTHONPATH=src")
@@ -41,11 +42,14 @@ def check_apps_importable():
 
 def main():
     print("🔍 Prévalidation du déploiement ITCAA\n")
-    os.environ["PYTHONPATH"] = "src"
-
     ok_yaml = check_render_yaml()
     ok_apps = check_apps_importable()
 
     if not (ok_yaml and ok_apps):
         print("\n❌ Blocage du déploiement : configuration invalide")
         sys.exit(1)
+    else:
+        print("\n✅ Configuration valide : déploiement autorisé")
+
+if __name__ == "__main__":
+    main()
