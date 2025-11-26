@@ -14,7 +14,7 @@ class ActorType(str, enum.Enum):
     MILITIA = "militia"
     HYBRID = "hybrid"
 
-# 🌍 Régions
+# 🌍 Régions géographiques
 class Region(str, enum.Enum):
     AFRICA = "africa"
     AMERICAS = "americas"
@@ -24,7 +24,7 @@ class Region(str, enum.Enum):
     OCEANIA = "oceania"
     GLOBAL = "global"
 
-# 🧑‍💼 Acteur
+# 🧑‍💼 Modèle Acteur
 class Actor(Base):
     __tablename__ = "actors"
 
@@ -48,7 +48,7 @@ class ClientCategory(str, enum.Enum):
     ENTERPRISE = "ENTERPRISE"
     THINKTANK = "THINKTANK"
 
-# 🧑‍💼 Client
+# 🧑‍💼 Modèle Client
 class Client(Base):
     __tablename__ = "clients"
 
@@ -66,7 +66,7 @@ class PartnerType(str, enum.Enum):
     REGIONAL_ORG = "REGIONAL_ORG"
     COMMUNITY = "COMMUNITY"
 
-# 🤝 Partenaire
+# 🤝 Modèle Partenaire
 class Partner(Base):
     __tablename__ = "partners"
 
