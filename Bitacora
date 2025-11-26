@@ -132,3 +132,10 @@
 - 📦 Regroupe les variables d’environnement aux côtés des fichiers de configuration
 - 🧠 Facilite l’onboarding des partenaires et la documentation institutionnelle
 - 🪶 Acte de mémoire technique et diplomatique
+## 🔧 Jalón technique – Script de validation structurelle
+
+- ✅ Création du script `check_structure.py` à la racine
+- 📦 Vérifie les dossiers `src/`, `apps/`, `api/` et les fichiers `__init__.py`, `main.py`
+- 🧠 Affiche des ✅ ou ❌ avec suggestions claires
+- 🚀 Utilisable avant chaque déploiement ou migration
+- 🪶 Acte de mémoire technique et diplomatique
