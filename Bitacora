@@ -76,3 +76,10 @@
 - 📁 Positionnement confirmé dans `/workspaces/ITCAA`
 - 🚀 API ITCAA lancée avec succès dans Codespaces
 - 🪶 Acte de mémoire technique et diplomatique
+## 🔧 Jalón technique – Correction du module `actors.py`
+
+- ❌ Fusion incohérente de deux versions du fichier
+- ✅ Imports corrigés pour respecter l’architecture `src/`
+- 📦 Utilisation propre de `SessionLocal`, `Actor`, `ActorType`, `Region`
+- 🧪 Routes GET, POST et GET/{id} stabilisées
+- 🪶 Acte de mémoire technique et diplomatique
