@@ -160,3 +160,10 @@
 - 📦 Renforce la stabilité du déploiement et la traçabilité institutionnelle
 - 🚀 Compatible avec LexCivic et les jalons multilingues
 - 🪶 Acte de mémoire technique et diplomatique
+## 🔧 Jalón technique – Blocage préventif du déploiement
+
+- ✅ Script `predeploy_check.py` ajouté à la racine
+- 📦 Vérifie `render.yaml` et l’importabilité du module `apps`
+- 🚨 Retourne exit code 1 si erreur → bloque le déploiement Render
+- 🧠 Intégré dans `structure-check.yml` pour validation continue
+- 🪶 Acte de mémoire technique et diplomatique
