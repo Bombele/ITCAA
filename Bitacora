@@ -46,3 +46,10 @@
 - 🧠 Édition directe de `render.yaml` pour conformité Render
 - 🧹 Suppression de `deploy.yml` pour éviter confusion
 - 🚀 Déploiement relancé avec configuration stabilisée
+## 🔧 Jalón technique – Stabilisation du déploiement ITCAA
+
+- ❌ Erreur persistante : `ModuleNotFoundError: No module named 'apps'`
+- ✅ Ajout de `PYTHONPATH=src` dans `render.yaml`
+- 📦 Correction des dépendances : suppression de `spacyc`, ajout de `spacy`, `cymem`, `thinc`, `blis`
+- 🚀 Déploiement relancé avec configuration stabilisée
+- 🪶 Acte de mémoire technique et diplomatique
