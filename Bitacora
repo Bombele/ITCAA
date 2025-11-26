@@ -68,3 +68,11 @@
 - 🚀 Lancement de l’API avec Uvicorn
 - 🧪 Test local validé dans Codespaces
 - 🪶 Acte de mémoire technique et diplomatique
+## 🔧 Jalón technique – Résolution du `uvicorn: command not found`
+
+- ❌ Uvicorn installé mais non reconnu comme commande globale
+- ✅ Utilisation de `python -m uvicorn` pour contourner le problème
+- 🛠️ Correction du script `start.sh` avec lancement explicite
+- 📁 Positionnement confirmé dans `/workspaces/ITCAA`
+- 🚀 API ITCAA lancée avec succès dans Codespaces
+- 🪶 Acte de mémoire technique et diplomatique
