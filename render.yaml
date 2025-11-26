@@ -2,20 +2,22 @@ services:
   - type: web
     name: itcaa-api
     env: python
-    plan: starter
-    autoDeploy: true
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: PYTHONPATH=src python -m uvicorn apps.api.main:app --host 0.0.0.0 --port $PORT
+    autoDeploy: true
+
     envVars:
-      - key: PYTHON_VERSION
-        value: "3.11"
-      - key: SECRET_KEY
-        value: "change_this_to_secure_key"
       - key: DATABASE_URL
-        value: "postgresql://itcaa_user:securepassword@itcaa-db.render.com:5432/itcaa_db"
-      - key: I18N_DEFAULT_LANG
-        value: "fr"
-      - key: ENABLE_PDF
-        value: "true"
-      - key: ENABLE_AUDIT
-        value: "true"
+        sync: false   # à définir dans Render (PostgreSQL)
+      - key: PYTHONPATH
+        value: src
+
+    healthCheckPath: /
+    healthCheckTimeout: 300
+
+    # 🚨 Logs et monitoring
+    disk:
+      name: itcaa-disk
+      mountPath: /data
+      sizeGB: 1
