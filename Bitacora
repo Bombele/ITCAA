@@ -97,3 +97,10 @@
 - 🧠 Session SQLAlchemy prête pour FastAPI
 - 🛠️ Fonction `init_db()` pour création automatique des tables
 - 🪶 Acte de mémoire technique et diplomatique
+## 🔧 Jalón technique – Script d’initialisation ITCAA
+
+- ✅ Création du fichier `init_db.py`
+- 📦 Initialisation automatique des tables avec `Base.metadata.create_all`
+- 🧠 Insertion de données de test (acteurs, clients, partenaires)
+- 🚀 API prête pour validation institutionnelle
+- 🪶 Acte de mémoire technique et diplomatique
