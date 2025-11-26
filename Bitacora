@@ -181,3 +181,10 @@
 - 🧠 Typage clair, auditabilité, documentation Swagger multilingue
 - 🚀 Prêt pour intégration dans les routes FastAPI
 - 🪶 Acte de mémoire technique et diplomatique
+## 🔧 Jalón technique – Routes FastAPI validées
+
+- ✅ Création des routes pour `clients`, `partners`, `risk_register`
+- 📦 Intégration complète des schemas Pydantic
+- 🧠 Validation automatique, documentation Swagger enrichie
+- 🚀 Préparation à l’auditabilité et à la traçabilité institutionnelle
+- 🪶 Acte de mémoire technique et diplomatique
