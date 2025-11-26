@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "apps/api/jobs/generate_annual_report.py"
-      - "templates/annual_report.html"
-      - "data/i18n/**"
+      - apps/api/jobs/generate_annual_report.py
+      - templates/annual_report.html
+      - data/i18n/**
 
 jobs:
   generate-report:
@@ -22,9 +22,16 @@ jobs:
           python-version: "3.11"
 
       - name: 📦 Installer les dépendances
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
       - name: 🧾 Générer le rapport annuel
-        run: |
-          PYTHONPATH=src python apps/api/jobs/generate_annual_report.py
+        run: PYTHONPATH=src python apps/api/jobs/generate_annual_report.py
+
+      - name: 📁 Créer le dossier d’archivage
+        run: mkdir -p public/reports
+
+      - name: 📦 Archiver les rapports générés
+        run: mv annual_report_*.html public/reports/
+
+      - name: 📜 Lister les fichiers archivés
+        run: ls -lh public/reports/
