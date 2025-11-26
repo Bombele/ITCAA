@@ -53,3 +53,11 @@
 - 📦 Correction des dépendances : suppression de `spacyc`, ajout de `spacy`, `cymem`, `thinc`, `blis`
 - 🚀 Déploiement relancé avec configuration stabilisée
 - 🪶 Acte de mémoire technique et diplomatique
+## 🔧 Jalón technique – Nettoyage du point d’entrée API
+
+- ❌ Fichier `main.py` contenait plusieurs fragments contradictoires
+- ✅ Unification en un seul `app = FastAPI(...)`
+- 📦 Imports regroupés et cohérents
+- 🧪 Ajout d’un endpoint `/status` pour introspection
+- 🚀 Point d’entrée stabilisé pour Render et tests locaux
+- 🪶 Acte de mémoire technique et diplomatique
