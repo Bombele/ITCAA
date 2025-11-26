@@ -167,3 +167,10 @@
 - 🚨 Retourne exit code 1 si erreur → bloque le déploiement Render
 - 🧠 Intégré dans `structure-check.yml` pour validation continue
 - 🪶 Acte de mémoire technique et diplomatique
+## 🔧 Jalón technique – Badge Predeploy Check
+
+- ✅ Badge ajouté dans le README pour le test de prévalidation
+- 📦 Affiche la conformité du `startCommand` et du module `apps`
+- 🚨 Renforce la transparence et la résilience technique du projet ITCAA
+- 🧠 Compatible avec les standards CI/CD et les audits institutionnels
+- 🪶 Acte de mémoire technique et diplomatique
