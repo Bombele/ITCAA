@@ -104,3 +104,11 @@
 - 🧠 Insertion de données de test (acteurs, clients, partenaires)
 - 🚀 API prête pour validation institutionnelle
 - 🪶 Acte de mémoire technique et diplomatique
+## 🔧 Jalón technique – Correction du fichier render.yaml
+
+- ❌ Ancien fichier contenait duplications et incohérences
+- ✅ Unification en un seul service clair
+- 📦 Utilisation de `$PORT` pour compatibilité Render
+- 🧠 PYTHONPATH intégré dans `startCommand`
+- 🚀 Déploiement stabilisé et prêt pour production
+- 🪶 Acte de mémoire technique et diplomatique
