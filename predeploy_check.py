@@ -53,3 +53,10 @@ def main():
 
 if __name__ == "__main__":
     main()
+import importlib.util
+
+spec = importlib.util.find_spec("apps")
+if spec:
+    print("✅ Module apps trouvé")
+else:
+    raise SystemExit("❌ Module apps introuvable")
