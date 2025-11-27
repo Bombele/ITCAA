@@ -38,3 +38,31 @@ Garantir que l’ensemble du projet ITCAA puisse fonctionner sans dépendance ex
 - **Institutionnel** : ITCAA devient une référence mondiale en systèmes autonomes et souverains.
 
 ---
+# 📘 Bitácora – Jalons du module IA hors ligne
+
+## 🧠 Objectif
+Documenter chaque étape de la création, validation et intégration du module IA hors ligne dans ITCAA, comme acte de mémoire institutionnelle et preuve de souveraineté technique.
+
+## 📍 Jalons techniques
+- [x] Création de la branche `feature/ai-offline-module`
+- [x] Dépôt de l’ossature (`model_loader.py`, `predictor.py`, etc.)
+- [x] Validation des schémas Pydantic (`schemas.py`)
+- [x] Exposition des endpoints REST (`routes.py`)
+- [x] Documentation multilingue (`README-ai.md`)
+- [x] Pipeline CI/CD local (`offline-ai.yml`)
+- [ ] Test complet hors ligne
+- [ ] Publication du commit diplomatique
+
+## 🌍 Langues diplomatiques
+- 🇫🇷 Français
+- 🇬🇧 English
+- 🇪🇸 Español
+- 🇷🇺 Русский
+- 🇸🇦 العربية
+- 🇨🇳 中文
+
+## 🪢 Extensions citoyennes
+- Lingala, Swahili, Portugais, Kinyarwanda, etc.
+
+## 🏛️ Impact institutionnel
+Ce module transforme ITCAA en système complet, capable d’opérer sans réseau, tout en garantissant validation automatique, auditabilité et empowerment citoyen.
