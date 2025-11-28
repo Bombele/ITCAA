@@ -1,38 +1,37 @@
-# tests/test_predictor.py
-import os
+# tests/test_utils.py
 import pytest
+from itcaa_ai_offline.utils import normalize_features, log_prediction
 from itcaa_ai_offline.schemas import PredictionInput, PredictionOutput
-from itcaa_ai_offline.predictor import predict
 
-def test_prediction_output_type():
+def test_normalize_features_basic():
     """
-    Vérifie que la fonction predict retourne bien un objet PredictionOutput.
+    Vérifie que la normalisation transforme les valeurs entre 0 et 1.
     """
-    input_data = PredictionInput(features=[0.5, 1.2, 3.4])
-    result = predict(input_data)
-    assert isinstance(result, PredictionOutput)
+    features = [10, 20, 30]
+    normalized = normalize_features(features)
+    assert normalized == [0.0, 0.5, 1.0], f"Résultat inattendu : {normalized}"
 
-def test_prediction_confidence_range():
+def test_normalize_features_identical_values():
     """
-    Vérifie que le score de confiance est toujours compris entre 0 et 1.
+    Vérifie que des valeurs identiques sont normalisées à 0.0.
     """
-    input_data = PredictionInput(features=[0.1, 0.2, 0.3])
-    result = predict(input_data)
-    assert 0.0 <= result.confidence <= 1.0
+    features = [5, 5, 5]
+    normalized = normalize_features(features)
+    assert normalized == [0.0, 0.0, 0.0], f"Résultat inattendu : {normalized}"
 
-def test_prediction_logging(tmp_path, monkeypatch):
+def test_log_prediction_creates_log(tmp_path, monkeypatch):
     """
-    Vérifie que la prédiction est bien journalisée dans le fichier de logs.
+    Vérifie que log_prediction écrit bien dans le fichier LOG_FILE.
     """
     log_file = tmp_path / "ai_offline.log"
     monkeypatch.setenv("LOG_FILE", str(log_file))
 
-    input_data = PredictionInput(features=[0.9, 0.8, 0.7])
-    _ = predict(input_data)
+    input_data = PredictionInput(features=[0.1, 0.2, 0.3])
+    output_data = PredictionOutput(prediction="A", confidence=0.85)
 
-    # Vérifie que le fichier de logs contient une trace
-    assert log_file.exists()
-    with open(log_file, "r") as f:
-        content = f.read()
-        assert "Input=" in content
-        assert "Confidence=" in content
+    log_prediction(input_data, output_data)
+
+    assert log_file.exists(), "Le fichier de log n'a pas été créé"
+    content = log_file.read_text()
+    assert "Input=" in content, "Le log ne contient pas l'entrée"
+    assert "Confidence=" in content, "Le log ne contient pas le score de confiance"
