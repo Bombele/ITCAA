@@ -1,5 +1,4 @@
 # tests/test_predictor.py
-import os
 import pytest
 from itcaa_ai_offline.schemas import PredictionInput, PredictionOutput
 from itcaa_ai_offline.predictor import predict
@@ -10,7 +9,7 @@ def test_prediction_output_type():
     """
     input_data = PredictionInput(features=[0.5, 1.2, 3.4])
     result = predict(input_data)
-    assert isinstance(result, PredictionOutput)
+    assert isinstance(result, PredictionOutput), "La sortie n'est pas de type PredictionOutput"
 
 def test_prediction_confidence_range():
     """
@@ -18,7 +17,7 @@ def test_prediction_confidence_range():
     """
     input_data = PredictionInput(features=[0.1, 0.2, 0.3])
     result = predict(input_data)
-    assert 0.0 <= result.confidence <= 1.0
+    assert 0.0 <= result.confidence <= 1.0, f"Confidence hors plage : {result.confidence}"
 
 def test_prediction_logging(tmp_path, monkeypatch):
     """
@@ -30,9 +29,7 @@ def test_prediction_logging(tmp_path, monkeypatch):
     input_data = PredictionInput(features=[0.9, 0.8, 0.7])
     _ = predict(input_data)
 
-    # Vérifie que le fichier de logs contient une trace
-    assert log_file.exists()
-    with open(log_file, "r") as f:
-        content = f.read()
-        assert "Input=" in content
-        assert "Confidence=" in content
+    assert log_file.exists(), "Le fichier de log n'a pas été créé"
+    content = log_file.read_text()
+    assert "Input=" in content, "Le log ne contient pas l'entrée"
+    assert "Confidence=" in content, "Le log ne contient pas le score de confiance"
