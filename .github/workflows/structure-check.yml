@@ -60,3 +60,26 @@ jobs:
         run: |
           black --check src/ tests/
           isort --check-only src/ tests/
+          mypy   # utilise mypy.ini à la racine
+
+      - name: 🧠 Configurer le PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd):$(pwd)/src" >> $GITHUB_ENV
+
+      - name: 🧪 Lancer les tests avec couverture
+        run: |
+          pytest tests/ --cov=itcaa_ai_offline --cov-report=xml --cov-report=term-missing
+
+      - name: 📊 Vérifier le rapport de couverture
+        run: |
+          if [ ! -f coverage.xml ]; then
+            echo "❌ Rapport de couverture introuvable"
+            exit 1
+          else
+            echo "✅ Rapport de couverture généré"
+          fi
+
+      - name: 🗂️ Archiver le rapport de couverture
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
