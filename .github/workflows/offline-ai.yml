@@ -26,3 +26,5 @@ jobs:
         run: |
           python -m venv venv
           source
+- name: 🧠 Configurer le PYTHONPATH
+  run: echo "PYTHONPATH=$(pwd):$(pwd)/src" >> $GITHUB_ENV
