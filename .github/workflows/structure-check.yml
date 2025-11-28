@@ -88,3 +88,6 @@ jobs:
     black --check src/ tests/ || (echo "❌ Black a trouvé des erreurs" && exit 1)
     isort --check-only src/ tests/ || (echo "❌ Isort a trouvé des erreurs" && exit 1)
     mypy || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
+- name: 📦 Installer les dépendances IA
+  run: |
+    pip install -r src/itcaa_ai_offline/requirements-ai.txt
