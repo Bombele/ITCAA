@@ -35,3 +35,32 @@ def test_log_prediction_creates_log(tmp_path, monkeypatch):
     content = log_file.read_text()
     assert "Input=" in content, "Le log ne contient pas l'entrée"
     assert "Confidence=" in content, "Le log ne contient pas le score de confiance"
+
+import os
+from pathlib import Path
+from itcaa_ai_offline.config import PATHS
+from itcaa_ai_offline.index_builder import build_index
+from itcaa_ai_offline.predictor import OfflinePredictor
+
+def setup_module(module=None):
+    # Construit l'index avant les tests si absent
+    if (not PATHS.faiss_index.exists()) or (not PATHS.meta_json.exists()):
+        build_index()
+
+def test_answer_non_empty():
+    predictor = OfflinePredictor()
+    ans = predictor.answer("Quels sont les principes du DIH ?")
+    assert "Réponse basée sur la base locale" in ans
+    assert len(ans.splitlines()) >= 2
+
+def test_empty_query():
+    predictor = OfflinePredictor()
+    hits = predictor.search("")
+    assert hits == []
+
+def test_query_specificity():
+    predictor = OfflinePredictor()
+    hits = predictor.search("ONU mécanismes")
+    assert len(hits) >= 1
+    # score doit être entre -1 et 1 (cosinus)
+    assert all(-1.0 <= s <= 1.0 for s, _ in hits)
