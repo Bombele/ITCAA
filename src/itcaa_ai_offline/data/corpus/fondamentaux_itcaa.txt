@@ -1,70 +1,65 @@
-Corpus ITCAA – Fondamentaux du DIH, droits humains et tendances
+Corpus ITCAA – Fondamentaux du DIH, droits humains et tendances (Multilingue ONU)
 
 Section 1 : Culture afro-latine
-La culture afro-latine est le résultat de la rencontre entre les traditions africaines et latino-américaines.
-Elle se manifeste dans la musique, la danse, la gastronomie et les pratiques religieuses.
-Les rythmes comme la salsa, la rumba et le candombe portent l’héritage africain.
+[FR] La culture afro-latine est le résultat de la rencontre entre les traditions africaines et latino-américaines.
+[EN] Afro-Latin culture is the result of the encounter between African and Latin American traditions.
+[ES] La cultura afro-latina es el resultado del encuentro entre tradiciones africanas y latinoamericanas.
+[RU] Афро-латинская культура является результатом встречи африканских и латиноамериканских традиций.
+[ZH] 非裔拉丁文化是非洲与拉丁美洲传统相遇的结果。
+[AR] الثقافة الأفرو-لاتينية هي نتيجة التقاء التقاليد الأفريقية واللاتينية الأمريكية.
 
 Section 2 : Charte des Nations Unies
-Préambule
-Nous, peuples des Nations Unies, résolus à préserver les générations futures du fléau de la guerre...
-Article 1
-Les buts des Nations Unies sont : maintenir la paix et la sécurité internationales, développer des relations amicales entre les nations, réaliser la coopération internationale.
+[FR] Les buts des Nations Unies sont : maintenir la paix et la sécurité internationales, développer des relations amicales entre les nations, réaliser la coopération internationale.
+[EN] The purposes of the United Nations are: to maintain international peace and security, develop friendly relations among nations, achieve international cooperation.
+[ES] Los propósitos de las Naciones Unidas son: mantener la paz y la seguridad internacionales, desarrollar relaciones amistosas entre las naciones, lograr la cooperación internacional.
+[RU] Цели Организации Объединённых Наций: поддерживать международный мир и безопасность, развивать дружественные отношения между нациями, осуществлять международное сотрудничество.
+[ZH] 联合国的宗旨是：维护国际和平与安全，发展各国友好关系，实现国际合作。
+[AR] أهداف الأمم المتحدة هي: حفظ السلم والأمن الدوليين، تطوير العلاقات الودية بين الدول، تحقيق التعاون الدولي.
 
 Section 3 : Conventions de Genève (1949)
-Article introductif
-Les Conventions de Genève de 1949 constituent le socle du droit international humanitaire moderne.
-Protection des civils
-Elles protègent les personnes qui ne participent pas directement aux hostilités, comme les civils.
-Prisonniers de guerre
-Elles imposent des obligations aux parties au conflit concernant le traitement des prisonniers de guerre.
+[FR] Les Conventions de Genève protègent les civils et imposent des obligations concernant le traitement des prisonniers de guerre.
+[EN] The Geneva Conventions protect civilians and impose obligations regarding the treatment of prisoners of war.
+[ES] Los Convenios de Ginebra protegen a los civiles e imponen obligaciones sobre el trato de los prisioneros de guerra.
+[RU] Женевские конвенции защищают гражданских лиц и накладывают обязательства по обращению с военнопленными.
+[ZH] 日内瓦公约保护平民，并规定了对战俘的待遇义务。
+[AR] اتفاقيات جنيف تحمي المدنيين وتفرض التزامات بشأن معاملة أسرى الحرب.
 
 Section 4 : Principes du DIH
-Introduction
-Le droit international humanitaire régit la conduite des hostilités et vise à protéger les civils.
-Principe de distinction
-Les parties au conflit doivent toujours distinguer entre combattants et civils.
-Principe de proportionnalité
-Les attaques ne doivent pas causer de dommages excessifs aux civils par rapport à l’avantage militaire attendu.
-Principe de précaution
-Toutes les précautions possibles doivent être prises pour éviter ou réduire au minimum les pertes civiles.
+[FR] Distinction, proportionnalité et précaution sont les principes clés du droit international humanitaire.
+[EN] Distinction, proportionality, and precaution are the key principles of international humanitarian law.
+[ES] Distinción, proporcionalidad y precaución son los principios clave del derecho internacional humanitario.
+[RU] Различие, пропорциональность и предосторожность — ключевые принципы международного гуманитарного права.
+[ZH] 区分、比例和预防是国际人道法的关键原则。
+[AR] التمييز والتناسب والاحتياط هي المبادئ الأساسية للقانون الدولي الإنساني.
 
 Section 5 : Introduction aux droits humains
-Universalité
-Les droits humains sont universels et s’appliquent à toutes les personnes sans distinction.
-Inaliénabilité
-Les droits humains sont inaliénables et ne peuvent être retirés ou suspendus arbitrairement.
-Interdépendance
-Les droits humains sont interdépendants et indivisibles : la réalisation de certains dépend des autres.
-Obligations des États
-Les États ont l’obligation de respecter, protéger et réaliser ces droits conformément aux traités ratifiés.
+[FR] Les droits humains sont universels, inaliénables et interdépendants. Les États doivent les respecter, protéger et réaliser.
+[EN] Human rights are universal, inalienable, and interdependent. States must respect, protect, and fulfill them.
+[ES] Los derechos humanos son universales, inalienables e interdependientes. Los Estados deben respetarlos, protegerlos y cumplirlos.
+[RU] Права человека являются универсальными, неотчуждаемыми и взаимозависимыми. Государства обязаны их уважать, защищать и реализовывать.
+[ZH] 人权是普遍的、不可剥夺的、相互依存的。各国必须尊重、保护并实现它们。
+[AR] حقوق الإنسان عالمية وغير قابلة للتصرف ومترابطة. على الدول احترامها وحمايتها وتنفيذها.
 
 Section 6 : Jurisprudence de la Cour pénale internationale
-Introduction
-La Cour pénale internationale juge les crimes les plus graves : génocide, crimes contre l’humanité, crimes de guerre.
-Exemple 1
-Dans l’affaire Lubanga (2006), la CPI a condamné l’utilisation d’enfants soldats comme crime de guerre.
-Exemple 2
-Dans l’affaire Katanga (2014), la CPI a jugé la responsabilité individuelle pour des attaques contre des civils.
-Principes
-La jurisprudence de la CPI renforce l’application du droit international humanitaire et des droits humains.
+[FR] La CPI juge les crimes les plus graves : génocide, crimes contre l’humanité, crimes de guerre.
+[EN] The ICC prosecutes the most serious crimes: genocide, crimes against humanity, war crimes.
+[ES] La CPI juzga los crímenes más graves: genocidio, crímenes de lesa humanidad, crímenes de guerra.
+[RU] Международный уголовный суд рассматривает самые тяжкие преступления: геноцид, преступления против человечности, военные преступления.
+[ZH] 国际刑事法院审理最严重的罪行：种族灭绝、危害人类罪、战争罪。
+[AR] المحكمة الجنائية الدولية تنظر في أخطر الجرائم: الإبادة الجماعية، الجرائم ضد الإنسانية، جرائم الحرب.
 
 Section 7 : Mécanismes des Nations Unies
-Conseil des droits de l’homme
-Organe intergouvernemental chargé de promouvoir et protéger les droits humains.
-Examen périodique universel (EPU)
-Processus par lequel chaque État membre est évalué sur ses pratiques en matière de droits humains.
-Comités des traités
-Groupes d’experts indépendants surveillant la mise en œuvre des conventions internationales.
-Rapporteurs spéciaux
-Experts mandatés pour enquêter et rapporter sur des situations spécifiques ou thématiques.
+[FR] Le Conseil des droits de l’homme, l’EPU, les comités des traités et les rapporteurs spéciaux sont les principaux mécanismes.
+[EN] The Human Rights Council, UPR, treaty bodies, and special rapporteurs are the main mechanisms.
+[ES] El Consejo de Derechos Humanos, el EPU, los órganos de tratados y los relatores especiales son los principales mecanismos.
+[RU] Совет по правам человека, УПО, договорные органы и специальные докладчики — основные механизмы.
+[ZH] 人权理事会、普遍定期审议、条约机构和特别报告员是主要机制。
+[AR] مجلس حقوق الإنسان، الاستعراض الدوري الشامل، هيئات المعاهدات والمقررين الخاصين هي الآليات الرئيسية.
 
 Section 8 : Tendances urbaines contemporaines
-Introduction
-Les villes sont des espaces de transformation sociale, culturelle et économique.
-Migration et diversité
-Les flux migratoires enrichissent les cultures urbaines et posent des défis en matière de gouvernance.
-Culture et créativité
-Les danses urbaines, la musique afro-latine et les arts de rue reflètent les dynamiques sociales.
-Technologie et urbanisme
-Les villes intelligentes intègrent l’IA et les données pour améliorer la gestion des services publics.
+[FR] Les villes sont des espaces de transformation sociale, culturelle et économique.
+[EN] Cities are spaces of social, cultural, and economic transformation.
+[ES] Las ciudades son espacios de transformación social, cultural y económica.
+[RU] Города являются пространствами социального, культурного и экономического преобразования.
+[ZH] 城市是社会、文化和经济转型的空间。
+[AR] المدن هي فضاءات للتحول الاجتماعي والثقافي والاقتصادي.
