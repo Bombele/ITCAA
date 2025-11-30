@@ -37,3 +37,69 @@ jobs:
     - name: Run tests
       run: |
         pytest apps/api/tests --maxfail=1 --disable-warnings -q
+
+name: CI - Tests & Auto Index
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/itcaa_ai_offline/**"
+      - "tests/**"
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 📦 Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          pip install -r src/itcaa_ai_offline/requirements-ai.txt
+
+      - name: 🧠 Set PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd):$(pwd)/src" >> $GITHUB_ENV
+
+      - name: 🧪 Run pytest
+        run: pytest -v tests/
+
+  auto-index:
+    runs-on: ubuntu-latest
+    needs: tests   # ⚡ Ne lance l’index que si les tests passent
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 📦 Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -r src/itcaa_ai_offline/requirements-ai.txt
+
+      - name: 🧠 Set PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd):$(pwd)/src" >> $GITHUB_ENV
+
+      - name: 🏗️ Auto update FAISS index
+        run: ./auto_update_index.sh
+
+      - name: 📊 Upload index artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: offline-ai-index
+          path: src/itcaa_ai_offline/data/index/
