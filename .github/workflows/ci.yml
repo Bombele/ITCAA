@@ -115,3 +115,6 @@ jobs:
 env:
   ITCAA_EMBEDDING_MODEL: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
   ITCAA_TOP_K: "5"
+
+- name: Generate index report
+      run: python generate_index_report.py
