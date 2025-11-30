@@ -1,13 +1,25 @@
-# src/itcaa_ai_offline/__init__.py
+"""
+ITCAA Offline Package
+Ce module regroupe les utilitaires principaux :
+- config : chemins et paramètres
+- index_builder : construction et mise à jour de l'index FAISS
+- predictor : prédiction (si disponible)
+"""
 
-# Import explicite des sous-modules
 from . import config
-from .data.corpus import index_builder
+from .data.corpus.index_builder import build_index
+from repair_index import check_and_repair_index
+
 # Vérifie que predictor existe avant de l'importer
 try:
     from . import predictor
 except ImportError:
     predictor = None
 
-# Définition de l'API publique
-__all__ = ["config", "index_builder", "predictor"]
+# API publique
+__all__ = [
+    "config",
+    "build_index",
+    "check_and_repair_index",
+    "predictor",
+]
