@@ -18,23 +18,14 @@ def read_corpus_files(corpus_dir: Path) -> List[Tuple[str, str]]:
             docs.append((p.name, text))
     if not docs:
         raise FileNotFoundError(f"Aucun document trouvé dans {corpus_dir}")
-    logging.info(f"{len(docs)} documents chargés depuis {corpus_dir}")
     return docs
 
 def build_embeddings(texts: List[str]) -> np.ndarray:
-    try:
-        model = SentenceTransformer(EMBEDDING_MODEL)
-        vectors = model.encode(texts, convert_to_numpy=True, normalize_embeddings=True)
-        logging.info(f"{len(texts)} embeddings générés avec {EMBEDDING_MODEL}")
-        return vectors.astype("float32")
-    except Exception as e:
-        logging.error(f"Erreur lors de la génération des embeddings: {e}")
-        raise
+    model = SentenceTransformer(EMBEDDING_MODEL)
+    vectors = model.encode(texts, convert_to_numpy=True, normalize_embeddings=True)
+    return vectors.astype("float32")
 
-def save_faiss_index(vectors: np.ndarray, meta: List[dict], index_path: Path, meta_path: Path) -> None:
-    dim = vectors.shape[1]
-    index = faiss.IndexFlatIP(dim)  # Inner Product avec vecteurs normalisés = cosinus
-    index.add(vectors)
+def save_faiss_index(index, meta: List[dict], index_path: Path, meta_path: Path) -> None:
     index_path.parent.mkdir(parents=True, exist_ok=True)
     faiss.write_index(index, str(index_path))
     meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -43,14 +34,44 @@ def save_faiss_index(vectors: np.ndarray, meta: List[dict], index_path: Path, me
 
 def build_index(incremental: bool = False) -> None:
     docs = read_corpus_files(PATHS.corpus_dir)
-    texts = [t for _, t in docs]
-    vectors = build_embeddings(texts)
-    meta = [{"id": i, "filename": fname, "text": text} for i, (fname, text) in enumerate(docs)]
-    save_faiss_index(vectors, meta, PATHS.faiss_index, PATHS.meta_json)
+
+    # Charger meta existant si incrémental
+    if incremental and PATHS.meta_json.exists() and PATHS.faiss_index.exists():
+        meta = json.loads(PATHS.meta_json.read_text(encoding="utf-8"))
+        indexed_files = {m["filename"] for m in meta}
+        new_docs = [(fname, text) for fname, text in docs if fname not in indexed_files]
+
+        if not new_docs:
+            logging.info("Aucun nouveau document à indexer.")
+            return
+
+        texts = [t for _, t in new_docs]
+        vectors = build_embeddings(texts)
+
+        # Charger l'index existant
+        index = faiss.read_index(str(PATHS.faiss_index))
+
+        # Ajouter les nouveaux vecteurs
+        index.add(vectors)
+
+        # Mettre à jour meta
+        start_id = len(meta)
+        for i, (fname, text) in enumerate(new_docs, start=start_id):
+            meta.append({"id": i, "filename": fname, "text": text})
+
+        save_faiss_index(index, meta, PATHS.faiss_index, PATHS.meta_json)
+        logging.info(f"{len(new_docs)} nouveaux documents ajoutés à l'index.")
+    else:
+        # Reconstruction complète
+        texts = [t for _, t in docs]
+        vectors = build_embeddings(texts)
+        meta = [{"id": i, "filename": fname, "text": text} for i, (fname, text) in enumerate(docs)]
+        dim = vectors.shape[1]
+        index = faiss.IndexFlatIP(dim)
+        index.add(vectors)
+        save_faiss_index(index, meta, PATHS.faiss_index, PATHS.meta_json)
+        logging.info("Index reconstruit entièrement.")
 
 if __name__ == "__main__":
-    try:
-        build_index()
-        logging.info(f"✅ Index construit: {PATHS.faiss_index}")
-    except Exception as e:
-        logging.error(f"❌ Échec de la construction de l'index: {e}")
+    build_index(incremental=True)
+    logging.info(f"✅ Index mis à jour: {PATHS.faiss_index}")
