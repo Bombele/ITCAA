@@ -310,3 +310,9 @@ jobs:
   with:
     name: audit-report
     path: audit_report.md
+
+- name: Install dev dependencies
+  run: pip install -r requirements-dev.txt
+
+- name: Install runtime dependencies
+  run: pip install -r requirements-ai.txt
