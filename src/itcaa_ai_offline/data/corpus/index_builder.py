@@ -1,9 +1,16 @@
 import json
+import logging
 from pathlib import Path
+from typing import List, Dict
+
 import numpy as np
 import faiss
 from sentence_transformers import SentenceTransformer
-from .config import PATHS, EMBEDDING_MODEL
+
+# Import absolu recommandé pour éviter les erreurs d'exécution directe
+from src.itcaa_ai_offline.data.config import PATHS, EMBEDDING_MODEL
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 
 def build_index() -> None:
@@ -14,10 +21,11 @@ def build_index() -> None:
     """
 
     # Charger le modèle d'embedding
+    logging.info(f"Chargement du modèle d'embedding : {EMBEDDING_MODEL}")
     model = SentenceTransformer(EMBEDDING_MODEL)
 
-    texts: list[str] = []
-    meta: list[dict] = []
+    texts: List[str] = []
+    meta: List[Dict] = []
 
     # Lire tous les fichiers du corpus
     corpus_files = sorted(PATHS.corpus_dir.glob("*.txt"))
@@ -28,7 +36,8 @@ def build_index() -> None:
         try:
             content = file.read_text(encoding="utf-8").strip().split("\n")
         except Exception as e:
-            raise RuntimeError(f"Erreur lecture fichier {file}: {e}")
+            logging.error(f"Erreur lecture fichier {file}: {e}")
+            continue  # on ignore le fichier corrompu au lieu de bloquer tout
 
         for j, paragraph in enumerate(content):
             if paragraph.strip():
@@ -44,6 +53,7 @@ def build_index() -> None:
         raise ValueError("Corpus vide: aucun paragraphe valide trouvé.")
 
     # Générer les embeddings
+    logging.info(f"Génération des embeddings pour {len(texts)} passages...")
     vectors = model.encode(
         texts,
         convert_to_numpy=True,
@@ -63,8 +73,4 @@ def build_index() -> None:
         encoding="utf-8"
     )
 
-    print(f"✅ Index reconstruit avec {len(meta)} passages provenant de {len(corpus_files)} fichiers.")
-
-
-if __name__ == "__main__":
-    build_index()
+    logging.info(f"✅ Index reconstruit avec {len(meta)} passages provenant de {len
