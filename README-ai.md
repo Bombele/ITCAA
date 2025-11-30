@@ -13,3 +13,7 @@ Ce module implémente un système d’intelligence artificielle autonome, conçu
 ### Usage
 ```bash
 uvicorn main_ai:app --reload
+
+# ITCAA – Corpus multilingue et certification IA
+
+![CI Tests](https://github.com/<TON_ORG>/<TON_REPO>/actions/workflows/ci.yml/badge.svg)
