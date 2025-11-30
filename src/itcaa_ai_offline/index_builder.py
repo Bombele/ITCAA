@@ -40,3 +40,15 @@ def build_index() -> None:
 if __name__ == "__main__":
     build_index()
     print(f"Index construit: {PATHS.faiss_index}")
+# Construire l'index FAISS
+dim = vectors.shape[1]
+index = faiss.IndexFlatIP(dim)  # Inner Product (cosinus avec vecteurs normalisés)
+index.add(vectors)
+
+# Sauvegarder l'index et les métadonnées
+PATHS.index_dir.mkdir(parents=True, exist_ok=True)
+faiss.write_index(index, str(PATHS.faiss_index))   # ← ICI
+PATHS.meta_json.write_text(
+    json.dumps(meta, ensure_ascii=False, indent=2),
+    encoding="utf-8"
+)
