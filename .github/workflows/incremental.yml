@@ -1,0 +1,43 @@
+name: ITCAA Incremental Index Validation
+
+on:
+  push:
+    paths:
+      - "src/itcaa_ai_offline/data/corpus/*.txt"   # déclenchement si un nouveau fichier corpus est ajouté
+  workflow_dispatch:   # possibilité de lancer manuellement
+
+jobs:
+  validate-incremental-index:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest faiss-cpu sentence-transformers
+
+      - name: Repair FAISS index if needed
+        run: python repair_index.py
+
+      - name: Run incremental index update
+        run: python src/itcaa_ai_offline/data/corpus/index_builder.py --incremental
+
+      - name: Run incremental index tests
+        run: pytest -v tests/test_index_incremental.py
+
+      - name: Generate index report
+        run: python generate_index_report.py
+
+      - name: Upload index report artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: index-report-incremental
+          path: src/itcaa_ai_offline/data/index/index_report.md
