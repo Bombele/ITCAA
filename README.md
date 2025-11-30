@@ -116,3 +116,5 @@ Chaque jalon technique est documenté comme acte de mémoire et d’empowerment 
 | 📅 Court terme (0–6 mois) | - Stabilisation du backend FastAPI<br>- Validation automatique avec Pydantic<br>- CI/CD complet (Structure, Predeploy, Deploy)<br>- Documentation multilingue | Transparence technique et auditabilité immédiate |
 | 📅 Moyen terme (6–18 mois) | - Module de comptabilité institutionnelle<br>- Intégration des données démographiques<br>- Cartographie interactive GeoJSON<br>- Rapports automatiques annuels | Suivi citoyen et impact démographique |
 | 📅 Long terme (18–36 mois) | - Système de scoring DIH/légitimité/normes internes<br>- API ouverte pour ONG et chercheurs<br>- Rapports multilingues (PDF, HTML)<br>- Reconnaissance internationale | Certification citoyenne reconnue et légitimité mondiale |
+
+![🌐 Multilingual Ready](https://github.com/<TON_ORG>/<TON_REPO>/actions/workflows/multilingue.yml/badge.svg)
