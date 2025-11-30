@@ -302,3 +302,11 @@ jobs:
         with:
           name: predictor-test-report
           path: ./tests/__pycache__   # ou dossier contenant les logs pytest
+- name: Generate consolidated audit report
+  run: python generate_audit_report.py
+
+- name: Upload audit report artifact
+  uses: actions/upload-artifact@v3
+  with:
+    name: audit-report
+    path: audit_report.md
