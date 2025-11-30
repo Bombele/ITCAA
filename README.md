@@ -118,3 +118,5 @@ Chaque jalon technique est documenté comme acte de mémoire et d’empowerment 
 | 📅 Long terme (18–36 mois) | - Système de scoring DIH/légitimité/normes internes<br>- API ouverte pour ONG et chercheurs<br>- Rapports multilingues (PDF, HTML)<br>- Reconnaissance internationale | Certification citoyenne reconnue et légitimité mondiale |
 
 ![🌐 Multilingual Ready](https://github.com/<TON_ORG>/<TON_REPO>/actions/workflows/multilingue.yml/badge.svg)
+
+![🗂 Weekly Index Rebuild](https://github.com/<TON_ORG>/<TON_REPO>/actions/workflows/weekly_rebuild.yml/badge.svg)
