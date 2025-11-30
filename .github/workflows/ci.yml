@@ -118,3 +118,37 @@ env:
 
 - name: Generate index report
       run: python generate_index_report.py
+
+name: ITCAA CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest faiss-cpu sentence-transformers
+
+      - name: Check and repair FAISS index
+        run: python repair_index.py
+
+      - name: Rebuild FAISS index if needed
+        run: python src/itcaa_ai_offline/data/corpus/index_builder.py
+
+      - name: Generate
