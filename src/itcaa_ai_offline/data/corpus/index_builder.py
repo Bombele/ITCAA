@@ -76,3 +76,11 @@ def build_index(incremental: bool = False) -> None:
         else:
             dim = vectors.shape[1]
             index = faiss.IndexFlatIP(dim)
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--incremental", action="store_true", help="Mettre à jour l'index incrémentalement")
+    args = parser.parse_args()
+
+    build_index(incremental=args.incremental)
