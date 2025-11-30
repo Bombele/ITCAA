@@ -70,3 +70,41 @@ jobs:
 
       - name: Run tests
         run: pytest -v
+
+name: ITCAA CI
+
+on:
+  push:
+    paths:
+      - "src/itcaa_ai_offline/data/corpus/*.txt"
+      - "src/itcaa_ai_offline/data/corpus/index_builder.py"
+      - "auto_update_index.sh"
+  pull_request:
+    paths:
+      - "src/itcaa_ai_offline/data/corpus/*.txt"
+      - "src/itcaa_ai_offline/data/corpus/index_builder.py"
+      - "auto_update_index.sh"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest sentence-transformers faiss-cpu numpy
+
+      - name: Run index update
+        run: ./auto_update_index.sh
+
+      - name: Run tests
+        run: pytest -v
