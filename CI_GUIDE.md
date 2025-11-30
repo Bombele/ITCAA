@@ -1,0 +1,66 @@
+# 🛠 Guide CI/CD ITCAA
+
+Ce document explique le fonctionnement du pipeline CI/CD et la lecture des artefacts générés.
+
+---
+
+## 🚀 Déclencheurs du pipeline
+Le pipeline CI/CD se lance automatiquement dans les cas suivants :
+- **Push sur `main`** : ajout ou modification de corpus (`*.txt`) ou du modèle (`model.pt`).
+- **Pull request vers `main`** : validation avant fusion.
+- **Planification hebdomadaire** : chaque dimanche à 03h00 UTC.
+- **Lancement manuel** : via `workflow_dispatch`.
+
+---
+
+## 📊 Étapes principales
+1. **Validation de l’index FAISS**
+   - Vérification et réparation (`repair_index.py`).
+   - Mise à jour incrémentale si de nouveaux fichiers corpus sont ajoutés.
+   - Reconstruction complète hebdomadaire.
+   - Tests exécutés :
+     - `test_integration_index.py` : cohérence FAISS/meta.json.
+     - `test_integration_multilingue.py` : support des langues ONU.
+     - `test_index_incremental.py` : ajout incrémental validé.
+
+2. **Validation du modèle**
+   - Chargement du modèle (`model_loader.py`).
+   - Tests exécutés :
+     - `test_model_loader.py` : existence, compatibilité, mode `eval()`, détection CPU/GPU.
+
+3. **Rapport d’index**
+   - Génération automatique (`generate_index_report.py`).
+   - Contient :
+     - Date de dernière reconstruction.
+     - Nombre de passages et vecteurs FAISS.
+     - Langues détectées.
+     - Extraits des premiers passages.
+
+---
+
+## 📂 Artefacts générés
+- **`index-report.md`**
+  - Rapport sur l’état de l’index FAISS.
+  - À partager pour audit institutionnel.
+- **`model-loader-test-report`**
+  - Résultats des tests sur le modèle PyTorch.
+  - Vérifie que le modèle reste chargeable et compatible.
+
+---
+
+## 🔎 Lecture des résultats
+- **Succès (`✅`)** : l’index et le modèle sont cohérents et utilisables.
+- **Échec (`❌`)** : un test a échoué, consulter les logs pour identifier :
+  - Corpus manquant ou corrompu.
+  - Index FAISS incohérent.
+  - Modèle introuvable ou incompatible.
+
+---
+
+## 📅 Bonnes pratiques
+- Vérifier chaque semaine le rapport `index-report.md`.
+- En cas d’ajout de corpus, s’assurer que les nouveaux fichiers apparaissent dans `meta.json`.
+- En cas de mise à jour du modèle, valider que `test_model_loader.py` passe sans erreur.
+- Conserver les artefacts comme preuve d’audit et traçabilité.
+
+---
