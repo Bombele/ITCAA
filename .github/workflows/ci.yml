@@ -1,261 +1,38 @@
-name: CI
+name: ITCAA Full CI/CD
 
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - "src/itcaa_ai_offline/data/corpus/*.txt"
+      - "models/model.pt"
   pull_request:
     branches: [ "main" ]
+  schedule:
+    - cron: "0 3 * * 0"   # Tous les dimanches à 03h00 UTC
+  workflow_dispatch:
 
 jobs:
-  build:
+  validate-index:
     runs-on: ubuntu-latest
-
-    steps:
-    # 1. Checkout del repositorio
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    # 2. Configuración de Python
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.11"
-
-    # 3. Instalación de dependencias
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt || pip install fastapi uvicorn sqlalchemy pydantic pytest
-
-    # 4. Linter (opcional, para calidad de código)
-    - name: Run lint
-      run: |
-        pip install flake8
-        flake8 apps/ --max-line-length=100
-
-    # 5. Tests
-    - name: Run tests
-      run: |
-        pytest apps/api/tests --maxfail=1 --disable-warnings -q
-- name: 📦 Installer les dépendances
-  run: |
-    pip install --upgrade pip
-    pip install -r requirements.txt
-    pip install pytest pytest-cov black isort mypy
-name: ITCAA CI
-
-on:
-  push:
-    branches: [ "**" ]
-  pull_request:
-    branches: [ "**" ]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
-      - name: Install dependencies
+      - name: Install runtime dependencies
         run: |
-          python -m pip install --upgrade pip
+          pip install -r requirements-ai.txt
           pip install pytest
 
-      - name: Run tests
-        run: pytest -v
-
-name: ITCAA CI
-
-on:
-  push:
-    paths:
-      - "src/itcaa_ai_offline/data/corpus/*.txt"
-      - "src/itcaa_ai_offline/data/corpus/index_builder.py"
-      - "auto_update_index.sh"
-  pull_request:
-    paths:
-      - "src/itcaa_ai_offline/data/corpus/*.txt"
-      - "src/itcaa_ai_offline/data/corpus/index_builder.py"
-      - "auto_update_index.sh"
-
-jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Install dependencies
+      - name: Validate dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install pytest sentence-transformers faiss-cpu numpy
-
-      - name: Run index update
-        run: ./auto_update_index.sh
-
-      - name: Run tests
-        run: pytest -v
-
-- name: Check and repair FAISS index
-        run: python repair_index.py
-
-env:
-  ITCAA_EMBEDDING_MODEL: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
-  ITCAA_TOP_K: "5"
-
-- name: Generate index report
-      run: python generate_index_report.py
-
-name: ITCAA CI/CD
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install pytest faiss-cpu sentence-transformers
-
-      - name: Check and repair FAISS index
-        run: python repair_index.py
-
-      - name: Rebuild FAISS index if needed
-        run: python src/itcaa_ai_offline/data/corpus/index_builder.py
-
-      - name: Generate
-
-name: ITCAA Full CI/CD
-
-on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - "src/itcaa_ai_offline/data/corpus/*.txt"
-      - "models/model.pt"
-  pull_request:
-    branches: [ "main" ]
-  schedule:
-    - cron: "0 3 * * 0"   # Tous les dimanches à 03h00 UTC
-  workflow_dispatch:       # possibilité de lancer manuellement
-
-jobs:
-  validate-index:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install pytest faiss-cpu sentence-transformers torch
-
-      - name: Repair FAISS index if needed
-        run: python repair_index.py
-
-      - name: Rebuild FAISS index (incremental)
-        run: python src/itcaa_ai_offline/data/corpus/index_builder.py --incremental
-
-      - name: Run index tests
-        run: pytest -v tests/test_integration_index.py tests/test_integration_multilingue.py tests/test_index_incremental.py
-
-      - name: Generate index report
-        run: python generate_index_report.py
-
-      - name: Upload index report artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: index-report
-          path: src/itcaa_ai_offline/data/index/index_report.md
-
-  validate-model:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install pytest torch
-
-      - name: Run model loader tests
-        run: pytest -v tests/test_model_loader.py
-
-      - name: Upload model test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: model-loader-test-report
-          path: ./tests/__pycache__   # ou dossier contenant les logs pytest
-name: ITCAA Full CI/CD
-
-on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - "src/itcaa_ai_offline/data/corpus/*.txt"
-      - "models/model.pt"
-  pull_request:
-    branches: [ "main" ]
-  schedule:
-    - cron: "0 3 * * 0"   # Tous les dimanches à 03h00 UTC
-  workflow_dispatch:       # possibilité de lancer manuellement
-
-jobs:
-  validate-index:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install pytest faiss-cpu sentence-transformers torch
+          pip install pipdeptree
+          python validate_dependencies.py
 
       - name: Repair FAISS index if needed
         run: python repair_index.py
@@ -286,10 +63,15 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install dependencies
+      - name: Install runtime dependencies
         run: |
-          pip install -r requirements.txt
-          pip install pytest torch faiss-cpu sentence-transformers
+          pip install -r requirements-ai.txt
+          pip install pytest
+
+      - name: Validate dependencies
+        run: |
+          pip install pipdeptree
+          python validate_dependencies.py
 
       - name: Run model loader tests
         run: pytest -v tests/test_model_loader.py
@@ -301,18 +83,33 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: predictor-test-report
-          path: ./tests/__pycache__   # ou dossier contenant les logs pytest
-- name: Generate consolidated audit report
-  run: python generate_audit_report.py
+          path: ./tests/__pycache__
 
-- name: Upload audit report artifact
-  uses: actions/upload-artifact@v3
-  with:
-    name: audit-report
-    path: audit_report.md
+  generate-audit-report:
+    runs-on: ubuntu-latest
+    needs: [validate-index, validate-model-and-predictor]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-- name: Install dev dependencies
-  run: pip install -r requirements-dev.txt
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
-- name: Install runtime dependencies
-  run: pip install -r requirements-ai.txt
+      - name: Install dev dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Validate dependencies
+        run: |
+          pip install pipdeptree
+          python validate_dependencies.py
+
+      - name: Generate consolidated audit report
+        run: python generate_audit_report.py
+
+      - name: Upload audit report artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: audit-report
+          path: audit_report.md
