@@ -108,3 +108,6 @@ jobs:
 
       - name: Run tests
         run: pytest -v
+
+- name: Check and repair FAISS index
+        run: python repair_index.py
