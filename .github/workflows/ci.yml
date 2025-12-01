@@ -1,104 +1,95 @@
-name: CI
+name: 🔁 CI ITCAA – Validation complète
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    # 1. Checkout del repositorio
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    # 2. Configuración de Python
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.11"
-
-    # 3. Instalación de dependencias
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt || pip install fastapi uvicorn sqlalchemy pydantic pytest
-
-    # 4. Linter (opcional, para calidad de código)
-    - name: Run lint
-      run: |
-        pip install flake8
-        flake8 apps/ --max-line-length=100
-
-    # 5. Tests
-    - name: Run tests
-      run: |
-        pytest apps/api/tests --maxfail=1 --disable-warnings -q
-
-name: CI - Tests & Auto Index
-
-on:
-  push:
-    branches:
-      - main
+    branches: [main]
     paths:
-      - "src/itcaa_ai_offline/**"
+      - "src/**"
+      - "apps/**"
       - "tests/**"
+      - "requirements*.txt"
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  tests:
+  validate-api:
+    name: 🔎 Valider API & Backend
     runs-on: ubuntu-latest
+
     steps:
-      - name: 📥 Checkout repository
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v3
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Installer dépendances API
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || pip install fastapi uvicorn sqlalchemy pydantic pytest
+
+      - name: 🧪 Exécuter les tests API
+        run: |
+          pytest apps/api/tests --maxfail=1 --disable-warnings -q
+
+      - name: 🧹 Linter (qualité de code)
+        run: |
+          pip install flake8
+          flake8 apps/ --max-line-length=100
+
+  validate-ai:
+    name: 🧠 Valider module IA offline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout du code
         uses: actions/checkout@v4
 
       - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
-      - name: 📦 Install dependencies
+      - name: 📦 Installer dépendances IA
         run: |
           pip install -r requirements.txt
-          pip install -r requirements-dev.txt
+          pip install -r requirements-dev.txt || true
           pip install -r src/itcaa_ai_offline/requirements-ai.txt
 
-      - name: 🧠 Set PYTHONPATH
+      - name: 🧠 Définir PYTHONPATH
         run: echo "PYTHONPATH=$(pwd):$(pwd)/src" >> $GITHUB_ENV
 
-      - name: 🧪 Run pytest
+      - name: 🧪 Exécuter les tests IA
         run: pytest -v tests/
 
   auto-index:
+    name: 🏗️ Mise à jour index FAISS
     runs-on: ubuntu-latest
-    needs: tests   # ⚡ Ne lance l’index que si les tests passent
+    needs: validate-ai
+
     steps:
-      - name: 📥 Checkout repository
+      - name: 📥 Checkout du code
         uses: actions/checkout@v4
 
       - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
-      - name: 📦 Install dependencies
+      - name: 📦 Installer dépendances IA
         run: |
           pip install -r requirements.txt
           pip install -r src/itcaa_ai_offline/requirements-ai.txt
 
-      - name: 🧠 Set PYTHONPATH
+      - name: 🧠 Définir PYTHONPATH
         run: echo "PYTHONPATH=$(pwd):$(pwd)/src" >> $GITHUB_ENV
 
-      - name: 🏗️ Auto update FAISS index
+      - name: 🏗️ Générer index FAISS
         run: ./auto_update_index.sh
 
-      - name: 📊 Upload index artifact
+      - name: 📊 Upload artefact index
         uses: actions/upload-artifact@v4
         with:
           name: offline-ai-index
