@@ -6,7 +6,11 @@ from typing import List, Union
 
 # 📌 Assurer l’existence du dossier logs
 LOG_DIR = "logs"
-os.makedirs(LOG_DIR, exist_ok=True)
+try:
+    os.makedirs(LOG_DIR, exist_ok=True)
+except Exception as e:
+    print(f"⚠️ Impossible de créer le dossier logs : {e}")
+    LOG_DIR = None  # fallback vers console uniquement
 
 # 📌 Configuration du logger (éviter double config)
 logger = logging.getLogger("ITCAA_AI_Offline")
@@ -14,13 +18,18 @@ if not logger.handlers:
     logger.setLevel(logging.INFO)
     formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
 
-    file_handler = logging.FileHandler(os.path.join(LOG_DIR, "ai_offline.log"))
-    file_handler.setFormatter(formatter)
+    # Fichier log si possible
+    if LOG_DIR:
+        try:
+            file_handler = logging.FileHandler(os.path.join(LOG_DIR, "ai_offline.log"), encoding="utf-8")
+            file_handler.setFormatter(formatter)
+            logger.addHandler(file_handler)
+        except Exception as e:
+            print(f"⚠️ Impossible d’écrire dans le fichier log : {e}")
 
+    # Console log
     stream_handler = logging.StreamHandler()
     stream_handler.setFormatter(formatter)
-
-    logger.addHandler(file_handler)
     logger.addHandler(stream_handler)
 
 
