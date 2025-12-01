@@ -1,1 +1,21 @@
-
+{
+  "index_version": "1.0.0",
+  "last_updated": "2025-11-30T21:57:00Z",
+  "total_passages": 6,
+  "languages_detected": ["fr", "en", "es", "ar", "zh", "ru"],
+  "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "top_k_default": 5,
+  "corpus_files": [
+    "src/itcaa_ai_offline/data/corpus/fr.txt",
+    "src/itcaa_ai_offline/data/corpus/en.txt",
+    "src/itcaa_ai_offline/data/corpus/es.txt",
+    "src/itcaa_ai_offline/data/corpus/ar.txt",
+    "src/itcaa_ai_offline/data/corpus/zh.txt",
+    "src/itcaa_ai_offline/data/corpus/ru.txt"
+  ],
+  "audit": {
+    "generated_by": "CI/CD pipeline",
+    "report_file": "src/itcaa_ai_offline/data/index/index_report.md",
+    "status": "valid"
+  }
+}
