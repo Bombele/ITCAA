@@ -38,4 +38,4 @@ def test_log_prediction_creates_log_entry(tmp_path, monkeypatch):
     log_file = tmp_path / "ai_offline.log"
     assert log_file.exists(), "Le fichier de log n'a pas été créé"
     content = log_file.read_text(encoding="utf-8")
-    assert "Confidence=0.9500" in content, "Le contenu du log
+    assert "Confidence=0.9500" in content, "Le contenu du log doit inclure la confiance formatée"
