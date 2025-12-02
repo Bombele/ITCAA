@@ -1,8 +1,8 @@
 import json
 import faiss
-from pathlib import Path
 import shutil
 import pytest
+from pathlib import Path
 
 from src.itcaa_ai_offline import config
 from src.itcaa_ai_offline.data.corpus.index_builder import build_index
@@ -11,6 +11,7 @@ from src.itcaa_ai_offline.data.corpus.index_builder import build_index
 def clean_index_dir(tmp_path, monkeypatch):
     """
     Prépare un environnement isolé pour éviter les conflits avec l'index réel.
+    Chaque test utilise un répertoire temporaire pour corpus et index.
     """
     monkeypatch.setattr(config.PATHS, "index_dir", tmp_path / "index")
     monkeypatch.setattr(config.PATHS, "faiss_index", tmp_path / "index/faiss.index")
@@ -23,9 +24,8 @@ def clean_index_dir(tmp_path, monkeypatch):
     yield
     shutil.rmtree(tmp_path)
 
-
 def test_multilingue_index_builder():
-    # Créer un corpus multilingue avec les 6 langues ONU
+    # Créer un corpus multilingue avec les 6 langues officielles de l'ONU
     corpus_file = config.PATHS.corpus_dir / "test_multilingue.txt"
     corpus_file.write_text(
         "Bonjour ITCAA.\n"      # Français
@@ -50,8 +50,8 @@ def test_multilingue_index_builder():
     index = faiss.read_index(str(config.PATHS.faiss_index))
     meta = json.loads(config.PATHS.meta_json.read_text(encoding="utf-8"))
 
-    # Vérifier cohérence
+    # Vérifier cohérence entre index et métadonnées
     assert len(meta) == index.ntotal, (
         f"Incohérence : meta.json={len(meta)} vs FAISS={index.ntotal}"
     )
-    assert index.ntotal == 6, "L'index FAISS doit contenir 6 vecteurs (une par langue ONU)"
+    assert index.ntotal == 6, "L'index FAISS doit contenir 6 vecteurs (un par langue ONU)"
