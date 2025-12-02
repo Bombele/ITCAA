@@ -1,18 +1,23 @@
 from pathlib import Path
 
-def test_multilingue_corpus():
-    # Chemin vers ton fichier combiné multilingue
-    corpus_file = Path("src/itcaa_ai_offline/data/corpus/fondamentaux_itcaa_multilingue.txt")
-    assert corpus_file.exists(), "Le fichier combiné multilingue n'existe pas"
+CORPUS_FILE = Path("src/itcaa_ai_offline/data/corpus/fondamentaux_itcaa_multilingue.txt")
 
-    text = corpus_file.read_text(encoding="utf-8")
+def test_multilingue_corpus_exists():
+    # Vérifie que le fichier combiné multilingue existe
+    assert CORPUS_FILE.exists(), "Le fichier combiné multilingue est manquant"
 
-    # Vérifier que chaque langue ONU est présente
+def test_multilingue_corpus_languages():
+    text = CORPUS_FILE.read_text(encoding="utf-8")
+
+    # Vérifier que chaque langue officielle de l'ONU est présente
     required_langs = ["[FR]", "[EN]", "[ES]", "[RU]", "[ZH]", "[AR]"]
     for lang in required_langs:
         assert lang in text, f"Corpus incomplet : section {lang} manquante"
 
-    # Vérifier que chaque section est bien structurée
+def test_multilingue_corpus_sections():
+    text = CORPUS_FILE.read_text(encoding="utf-8")
+
+    # Vérifier que chaque section thématique est bien structurée
     sections = [
         "Section 1 : Culture afro-latine",
         "Section 2 : Charte des Nations Unies",
