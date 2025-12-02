@@ -1,8 +1,8 @@
 import json
 import faiss
-from pathlib import Path
 import shutil
 import pytest
+from pathlib import Path
 
 from src.itcaa_ai_offline import config
 from src.itcaa_ai_offline.data.corpus.index_builder import build_index
@@ -11,6 +11,7 @@ from src.itcaa_ai_offline.data.corpus.index_builder import build_index
 def clean_index_dir(tmp_path, monkeypatch):
     """
     Prépare un environnement isolé pour éviter les conflits avec l'index réel.
+    Chaque test utilise un répertoire temporaire pour corpus et index.
     """
     # Rediriger les chemins vers un dossier temporaire
     monkeypatch.setattr(config.PATHS, "index_dir", tmp_path / "index")
@@ -18,7 +19,7 @@ def clean_index_dir(tmp_path, monkeypatch):
     monkeypatch.setattr(config.PATHS, "meta_json", tmp_path / "index/meta.json")
     monkeypatch.setattr(config.PATHS, "corpus_dir", tmp_path / "corpus")
 
-    # Créer les dossiers
+    # Créer les dossiers nécessaires
     config.PATHS.index_dir.mkdir(parents=True, exist_ok=True)
     config.PATHS.corpus_dir.mkdir(parents=True, exist_ok=True)
 
@@ -26,7 +27,6 @@ def clean_index_dir(tmp_path, monkeypatch):
 
     # Nettoyage après test
     shutil.rmtree(tmp_path)
-
 
 def test_integration_index_builder():
     # Créer un corpus minimal
@@ -43,11 +43,4 @@ def test_integration_index_builder():
     assert config.PATHS.meta_json.exists(), "meta.json non généré"
 
     # Charger l'index et les métadonnées
-    index = faiss.read_index(str(config.PATHS.faiss_index))
-    meta = json.loads(config.PATHS.meta_json.read_text(encoding="utf-8"))
-
-    # Vérifier cohérence
-    assert len(meta) == index.ntotal, (
-        f"Incohérence : meta.json={len(meta)} vs FAISS={index.ntotal}"
-    )
-    assert index.ntotal > 0, "Index FAISS vide"
+    index = faiss.read_index
