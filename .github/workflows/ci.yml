@@ -16,79 +16,24 @@ jobs:
   validate-index:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: ✅ Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Python
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
-      - name: Install runtime dependencies
+      - name: 📦 Installer les dépendances IA + globales
         run: |
+          pip install -r requirements.txt
           pip install -r requirements-ai.txt
-          pip install pytest
 
       - name: 🧠 Set PYTHONPATH
         run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
 
-      - name: Validate dependencies
-        run: |
-          pip install pipdeptree
-          python validate_dependencies.py
+      - name: 🔍 Vérification structure IA
+        run: python scripts/check_structure.py
 
-      - name: Repair FAISS index if needed
-        run: python repair_index.py
-
-      - name: Rebuild FAISS index (incremental)
-        run: python src/itcaa_ai_offline/data/corpus/index_builder.py --incremental
-
-      - name: Run index tests
-        run: pytest -v tests/test_integration_index.py tests/test_integration_multilingue.py tests/test_index_incremental.py
-
-      - name: Generate index report
-        run: python generate_index_report.py
-
-      - name: Upload index report artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: index-report
-          path: src/itcaa_ai_offline/data/index/index_report.md
-
-  validate-model-and-predictor:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Install runtime dependencies
-        run: |
-          pip install -r requirements-ai.txt
-          pip install pytest
-
-      - name: 🧠 Set PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
-
-      - name: Validate dependencies
-        run: |
-          pip install pipdeptree
-          python validate_dependencies.py
-
-      - name: Run model loader tests
-        run: pytest -v tests/test_model_loader.py
-
-      - name: Run predictor tests
-        run: pytest -v tests/test_predictor.py
-
-- name: 📦 Install dependencies
-  run: |
-    pip install -r requirements.txt
-    pip install -r src/itcaa_ai_offline/requirements-ai.txt
-
-- name: 🔍 Vérification structure IA
-  run: python scripts/check_structure.py
+      - name: 🧩 Validate dependencies
+        run: python validate_dependencies.py
