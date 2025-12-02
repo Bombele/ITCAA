@@ -37,3 +37,6 @@ jobs:
 
       - name: 🧩 Validate dependencies
         run: python validate_dependencies.py
+
+- name: 🔍 Debug installation
+  run: pip list
