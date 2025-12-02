@@ -81,6 +81,7 @@ jobs:
 - name: 🔍 Vérification installation
   run: pip list
 
+
       - name: 🧠 Set PYTHONPATH
         run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
 
