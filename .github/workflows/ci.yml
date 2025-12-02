@@ -29,6 +29,9 @@ jobs:
           pip install -r requirements-ai.txt
           pip install pytest
 
+      - name: 🧠 Set PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
+
       - name: Validate dependencies
         run: |
           pip install pipdeptree
@@ -68,6 +71,9 @@ jobs:
           pip install -r requirements-ai.txt
           pip install pytest
 
+      - name: 🧠 Set PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
+
       - name: Validate dependencies
         run: |
           pip install pipdeptree
@@ -78,38 +84,3 @@ jobs:
 
       - name: Run predictor tests
         run: pytest -v tests/test_predictor.py
-
-      - name: Upload predictor test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: predictor-test-report
-          path: ./tests/__pycache__
-
-  generate-audit-report:
-    runs-on: ubuntu-latest
-    needs: [validate-index, validate-model-and-predictor]
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Install dev dependencies
-        run: pip install -r requirements-dev.txt
-
-      - name: Validate dependencies
-        run: |
-          pip install pipdeptree
-          python validate_dependencies.py
-
-      - name: Generate consolidated audit report
-        run: python generate_audit_report.py
-
-      - name: Upload audit report artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: audit-report
-          path: audit_report.md
