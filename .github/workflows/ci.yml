@@ -84,3 +84,8 @@ jobs:
 
       - name: Run predictor tests
         run: pytest -v tests/test_predictor.py
+
+- name: 📦 Install dependencies
+  run: |
+    pip install -r requirements.txt
+    pip install -r src/itcaa_ai_offline/requirements-ai.txt
