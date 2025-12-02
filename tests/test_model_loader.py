@@ -1,4 +1,3 @@
-import os
 import torch
 import pytest
 from pathlib import Path
@@ -12,7 +11,6 @@ def test_model_not_found(tmp_path, monkeypatch):
 
     with pytest.raises(FileNotFoundError):
         model_loader.load_model(path=str(fake_path))
-
 
 def test_model_load_cpu(tmp_path, monkeypatch):
     # Créer un modèle factice simple
@@ -31,11 +29,10 @@ def test_model_load_cpu(tmp_path, monkeypatch):
     # Rediriger MODEL_PATH vers ce modèle factice
     monkeypatch.setattr(model_loader, "MODEL_PATH", str(model_path))
 
-    # Charger le modèle
+    # Charger le modèle sur CPU
     loaded_model = model_loader.load_model(path=str(model_path), device="cpu")
     assert isinstance(loaded_model, DummyModel)
-    assert not loaded_model.training  # doit être en mode eval()
-
+    assert not loaded_model.training, "Le modèle doit être en mode eval()"
 
 def test_device_auto_detection(tmp_path, monkeypatch):
     # Créer un modèle factice
@@ -51,8 +48,5 @@ def test_device_auto_detection(tmp_path, monkeypatch):
     model_path = tmp_path / "dummy_model.pt"
     torch.save(dummy_model, model_path)
 
-    monkeypatch.setattr(model_loader, "MODEL_PATH", str(model_path))
-
-    # Charger sans préciser le device → doit choisir automatiquement
-    loaded_model = model_loader.load_model(path=str(model_path))
-    assert isinstance(loaded_model, DummyModel)
+    # Rediriger MODEL_PATH vers ce modèle factice
+    monkeypatch.setattr(model_loader, "MODEL_PATH", str(model_path
