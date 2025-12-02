@@ -5,4 +5,9 @@ def test_import_module():
     le PYTHONPATH est bien configuré dans le workflow CI/CD.
     """
     import itcaa_ai_offline
-    assert hasattr(itcaa_ai_offline, "__doc__")
+
+    # Vérifie que le module est bien importé
+    assert itcaa_ai_offline is not None, "Le module itcaa_ai_offline n'a pas pu être importé"
+
+    # Vérifie que la docstring existe
+    assert hasattr(itcaa_ai_offline, "__doc__"), "Le module doit avoir une docstring"
