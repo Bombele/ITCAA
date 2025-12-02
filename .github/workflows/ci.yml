@@ -89,3 +89,6 @@ jobs:
   run: |
     pip install -r requirements.txt
     pip install -r src/itcaa_ai_offline/requirements-ai.txt
+
+- name: 🔍 Vérification structure IA
+  run: python scripts/check_structure.py
