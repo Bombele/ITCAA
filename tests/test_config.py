@@ -1,4 +1,5 @@
 import os
+import importlib
 from src.itcaa_ai_offline import config
 
 def test_directories_exist():
@@ -17,7 +18,6 @@ def test_env_override(monkeypatch):
     monkeypatch.setenv("ITCAA_TOP_K", "5")
 
     # Recharger le module pour appliquer les nouvelles valeurs
-    import importlib
     import src.itcaa_ai_offline.config as cfg
     importlib.reload(cfg)
 
