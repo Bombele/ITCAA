@@ -51,3 +51,6 @@ jobs:
 
       - name: 🛠️ Repair FAISS index if needed
         run: python repair
+
+- name: 🔍 Vérification installation
+  run: pip list
