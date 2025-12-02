@@ -1,8 +1,8 @@
 import json
 import faiss
-from pathlib import Path
 import shutil
 import pytest
+from pathlib import Path
 
 from src.itcaa_ai_offline import config
 from src.itcaa_ai_offline.data.corpus.index_builder import build_index
@@ -11,6 +11,7 @@ from src.itcaa_ai_offline.data.corpus.index_builder import build_index
 def clean_index_dir(tmp_path, monkeypatch):
     """
     Prépare un environnement isolé pour éviter les conflits avec l'index réel.
+    Chaque test utilise un répertoire temporaire pour corpus et index.
     """
     monkeypatch.setattr(config.PATHS, "index_dir", tmp_path / "index")
     monkeypatch.setattr(config.PATHS, "faiss_index", tmp_path / "index/faiss.index")
@@ -23,7 +24,6 @@ def clean_index_dir(tmp_path, monkeypatch):
     yield
     shutil.rmtree(tmp_path)
 
-
 def test_incremental_index_builder():
     # Étape 1 : créer un corpus initial
     corpus_file1 = config.PATHS.corpus_dir / "doc1.txt"
@@ -35,8 +35,8 @@ def test_incremental_index_builder():
     index1 = faiss.read_index(str(config.PATHS.faiss_index))
     meta1 = json.loads(config.PATHS.meta_json.read_text(encoding="utf-8"))
 
-    assert index1.ntotal == 1
-    assert len(meta1) == 1
+    assert index1.ntotal == 1, "Index FAISS doit contenir 1 vecteur initial"
+    assert len(meta1) == 1, "meta.json doit contenir 1 entrée initiale"
 
     # Étape 2 : ajouter un nouveau fichier corpus
     corpus_file2 = config.PATHS.corpus_dir / "doc2.txt"
@@ -48,7 +48,7 @@ def test_incremental_index_builder():
     index2 = faiss.read_index(str(config.PATHS.faiss_index))
     meta2 = json.loads(config.PATHS.meta_json.read_text(encoding="utf-8"))
 
-    # Vérifier que l'index contient maintenant 2 vecteurs
+    # Vérifier cohérence après incrément
     assert index2.ntotal == 2, "Index FAISS doit contenir 2 vecteurs après ajout incrémental"
     assert len(meta2) == 2, "meta.json doit contenir 2 entrées après ajout incrémental"
 
