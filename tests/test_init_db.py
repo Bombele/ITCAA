@@ -5,12 +5,15 @@ from apps.api.models.models_actors import Actor, Client, Partner
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_database():
-    # Initialise la base avant les tests
+    """
+    Initialise la base avant les tests et assure un environnement propre.
+    """
     init_db()
     yield
     # Nettoyage éventuel après tests (rollback ou truncate si nécessaire)
 
 def test_seed_data_inserts_records():
+    # Vérifie que le seed insère bien des données
     success = init_script.seed_data()
     assert success is True
 
@@ -20,12 +23,12 @@ def test_seed_data_inserts_records():
     partners = db.query(Partner).all()
     db.close()
 
-    assert len(actors) >= 3
-    assert len(clients) >= 3
-    assert len(partners) >= 2
+    assert len(actors) >= 3, "Il doit y avoir au moins 3 acteurs"
+    assert len(clients) >= 3, "Il doit y avoir au moins 3 clients"
+    assert len(partners) >= 2, "Il doit y avoir au moins 2 partenaires"
 
 def test_seed_data_no_duplicates_on_rerun():
-    # Relancer le seed
+    # Relancer le seed pour vérifier qu'il n'y a pas de doublons
     success = init_script.seed_data()
     assert success is True
 
@@ -36,9 +39,9 @@ def test_seed_data_no_duplicates_on_rerun():
     db.close()
 
     # Vérifie qu'il n'y a qu'un seul enregistrement par entité
-    assert len(actors) == 1
-    assert len(clients) == 1
-    assert len(partners) == 1
+    assert len(actors) == 1, "Doublon détecté pour Actor Alpha PMC"
+    assert len(clients) == 1, "Doublon détecté pour Client ONU"
+    assert len(partners) == 1, "Doublon détecté pour Partner Université de Bruxelles"
 
 def test_seed_data_returns_false_on_error(monkeypatch):
     # Simule une erreur en forçant un rollback
@@ -49,4 +52,4 @@ def test_seed_data_returns_false_on_error(monkeypatch):
     monkeypatch.setattr(db, "commit", fake_commit)
 
     result = init_script.seed_data()
-    assert result is False
+    assert result is False, "Le seed doit retourner False en cas d'erreur"
