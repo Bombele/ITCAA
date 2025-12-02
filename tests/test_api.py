@@ -1,18 +1,16 @@
 import pytest
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from src.itcaa_ai_offline.routers import router
-from fastapi import FastAPI
+from src.itcaa_ai_offline import predictor
 
 # Créer une app FastAPI minimale pour tester le router
 app = FastAPI()
 app.include_router(router)
-
 client = TestClient(app)
 
 def test_predict_classifier(monkeypatch):
     # Mock du prédicteur classifier pour éviter dépendances lourdes
-    from src.itcaa_ai_offline import predictor
-
     class DummyPredictor:
         def predict(self, input_data):
             return predictor.PredictionOutput(label=1, confidence=0.95)
@@ -30,11 +28,8 @@ def test_predict_classifier(monkeypatch):
     assert data["label"] == 1
     assert 0 <= data["confidence"] <= 1
 
-
 def test_predict_semantic(monkeypatch):
     # Mock du prédicteur semantic
-    from src.itcaa_ai_offline import predictor
-
     class DummyPredictor:
         def answer(self, query, k=5):
             return "Réponse basée sur la base locale:\n- Bonjour ITCAA."
