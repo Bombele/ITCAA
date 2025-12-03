@@ -9,7 +9,9 @@ on:
     paths:
       - "src/itcaa_ai_offline/data/corpus/fondamentaux_itcaa_multilingue.txt"
       - "tests/test_multilingue_corpus.py"
-  workflow_dispatch:   # possibilité de lancer manuellement
+  schedule:
+    - cron: "0 5 * * 1"   # Tous les lundis à 05h00 UTC
+  workflow_dispatch:       # possibilité de lancer manuellement
 
 jobs:
   validate-multilingue:
@@ -50,3 +52,9 @@ jobs:
           name: multilingue-test-report-${{ github.run_number }}
           path: pytest_multilingue.xml
           if-no-files-found: ignore
+
+      - name: 🧹 Rotation des rapports (conserver 7 derniers)
+        run: |
+          mkdir -p public/multilingue_reports
+          cp pytest_multilingue.xml public/multilingue_reports/multilingue_report_${{ github.run_number }}.xml || true
+          ls -t public/multilingue_reports | tail -n +8 | xargs -I {} rm -f public/multilingue_reports/{}
