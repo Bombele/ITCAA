@@ -6,6 +6,7 @@ transformers==4.35.0
 sentence-transformers==2.2.2
 scikit-learn==1.4.2
 faiss-cpu==1.7.4
+numpy==1.26.4
 
 ########################################
 # 📦 Utilitaires et API (runtime)
@@ -14,7 +15,6 @@ pydantic==2.7.1
 fastapi==0.111.0
 uvicorn==0.29.0
 python-dotenv==1.0.1
-numpy==1.26.4
 
 ########################################
 # 🧪 Tests et couverture (dev only)
@@ -34,6 +34,4 @@ black==24.10.0
 isort==5.13.2
 
 ########################################
-# 🧩 Dépendances internes (audit, introspection)
-########################################
-pipdeptree==2.13.0
+# 🧩 Dépendances internes (audit, introspection
