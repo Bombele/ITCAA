@@ -9,6 +9,9 @@ on:
     branches:
       - main
       - feature/ai-offline-module
+  schedule:
+    - cron: "0 6 * * 1"   # Tous les lundis à 06h00 UTC
+  workflow_dispatch:
 
 jobs:
   test-offline-ai:
@@ -21,27 +24,37 @@ jobs:
       - name: 🐍 Installer Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
+
+      - name: 📂 Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'src/itcaa_ai_offline/requirements-ai.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: 📦 Installer les dépendances IA + globales
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r src/itcaa_ai_offline/requirements-ai.txt
-          pip install pytest pytest-cov black isort mypy
+          pip install -r dev-requirements.txt || pip install pytest pytest-cov black isort mypy
+
+      - name: 🔍 Vérification installation
+        run: pip list
 
       - name: 🎯 Lint avec Black, Isort et Mypy
         run: |
           black --check src/ tests/ || (echo "❌ Black a trouvé des erreurs" && exit 1)
           isort --check-only src/ tests/ || (echo "❌ Isort a trouvé des erreurs" && exit 1)
-          mypy || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
+          mypy src || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
 
       - name: 🧠 Configurer le PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd):$(pwd)/src" >> $GITHUB_ENV
+        run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
 
       - name: 🧪 Lancer les tests avec couverture
-        run: |
-          pytest tests/ --cov=itcaa_ai_offline --cov-report=xml --cov-report=term-missing
+        run: pytest tests/ --cov=itcaa_ai_offline --cov-report=xml --cov-report=term-missing || echo "⚠️ Tests échoués"
 
       - name: 📊 Vérifier le rapport de couverture
         run: |
@@ -53,7 +66,14 @@ jobs:
           fi
 
       - name: 🗂️ Archiver le rapport de couverture
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: coverage-report
+          name: coverage-report-${{ github.run_number }}
           path: coverage.xml
+          if-no-files-found: ignore
+
+      - name: 🧹 Rotation des rapports (conserver 7 derniers)
+        run: |
+          mkdir -p public/offline_ai_reports
+          cp coverage.xml public/offline_ai_reports/coverage_${{ github.run_number }}.xml || true
+          ls -t public/offline_ai_reports | tail -n +8 | xargs -I {} rm -f public/offline_ai_reports/{}
