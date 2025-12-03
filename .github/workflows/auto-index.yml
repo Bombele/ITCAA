@@ -50,12 +50,18 @@ jobs:
       - name: 📊 Upload index artifact
         uses: actions/upload-artifact@v3
         with:
-          name: offline-ai-index
+          name: offline-ai-index-${{ github.run_number }}
           path: src/itcaa_ai_offline/data/index/
 
       - name: 📁 Upload index report (si disponible)
         uses: actions/upload-artifact@v3
         with:
-          name: index-report
+          name: index-report-${{ github.run_number }}
           path: src/itcaa_ai_offline/data/index/index_report.md
           if-no-files-found: ignore
+
+      - name: 🧹 Rotation des artefacts (conserver 7 derniers)
+        run: |
+          mkdir -p public/index_reports
+          mv src/itcaa_ai_offline/data/index/index_report.md public/index_reports/index_report_${{ github.run_number }}.md || true
+          ls -t public/index_reports | tail -n +8 | xargs -I {} rm -f public/index_reports/{}
