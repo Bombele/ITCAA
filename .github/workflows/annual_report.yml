@@ -21,8 +21,19 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: 📂 Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: 📦 Installer les dépendances
         run: pip install -r requirements.txt
+
+      - name: 🔍 Vérification installation
+        run: pip list
 
       - name: 🧾 Générer le rapport annuel
         run: PYTHONPATH=src python apps/api/jobs/generate_annual_report.py
@@ -31,7 +42,14 @@ jobs:
         run: mkdir -p public/reports
 
       - name: 📦 Archiver les rapports générés
-        run: mv annual_report_*.html public/reports/
+        run: |
+          mv annual_report_*.html public/reports/ || echo "⚠️ Aucun rapport généré"
 
       - name: 📜 Lister les fichiers archivés
-        run: ls -lh public/reports/
+        run: ls -lh public/reports/ || echo "⚠️ Aucun fichier trouvé"
+
+      - name: 📁 Upload artifact (rapport annuel)
+        uses: actions/upload-artifact@v3
+        with:
+          name: annual-report
+          path: public/reports/
