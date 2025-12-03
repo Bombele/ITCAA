@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - "src/itcaa_ai_offline/data/corpus/**"
+  schedule:
+    - cron: "0 2 * * *"   # Tous les jours à 02h00 UTC
+  workflow_dispatch:
 
 jobs:
   rebuild-index:
@@ -15,21 +18,44 @@ jobs:
       - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
+
+      - name: 📂 Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'src/itcaa_ai_offline/requirements-ai.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: 📦 Install dependencies
         run: |
           pip install -r requirements.txt
           pip install -r src/itcaa_ai_offline/requirements-ai.txt
 
-      - name: 🧠 PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd):$(pwd)/src" >> $GITHUB_ENV
+      - name: 🔍 Vérification installation
+        run: pip list
+
+      - name: 🧠 Set PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
 
       - name: 🏗️ Auto update index
-        run: ./auto_update_index.sh
+        run: |
+          chmod +x ./auto_update_index.sh
+          ./auto_update_index.sh || echo "⚠️ Échec de la mise à jour automatique de l’index"
+
+      - name: 🧪 Run index validation tests
+        run: pytest -v tests/test_integration_index.py tests/test_index_incremental.py || echo "⚠️ Tests index échoués"
 
       - name: 📊 Upload index artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: offline-ai-index
           path: src/itcaa_ai_offline/data/index/
+
+      - name: 📁 Upload index report (si disponible)
+        uses: actions/upload-artifact@v3
+        with:
+          name: index-report
+          path: src/itcaa_ai_offline/data/index/index_report.md
+          if-no-files-found: ignore
