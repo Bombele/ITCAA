@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - "models/model.pt"    # déclenchement si le modèle est mis à jour
+  schedule:
+    - cron: "0 4 * * 1"      # Tous les lundis à 04h00 UTC
   workflow_dispatch:         # possibilité de lancer manuellement
 
 jobs:
@@ -42,6 +44,12 @@ jobs:
       - name: 📁 Upload test results
         uses: actions/upload-artifact@v3
         with:
-          name: model-loader-test-report
+          name: model-loader-test-report-${{ github.run_number }}
           path: pytest_model_loader.xml
           if-no-files-found: ignore
+
+      - name: 🧹 Rotation des rapports (conserver 7 derniers)
+        run: |
+          mkdir -p public/model_reports
+          cp pytest_model_loader.xml public/model_reports/model_loader_report_${{ github.run_number }}.xml || true
+          ls -t public/model_reports | tail -n +8 | xargs -I {} rm -f public/model_reports/{}
