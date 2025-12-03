@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - "src/itcaa_ai_offline/data/corpus/*.txt"   # déclenchement si un nouveau fichier corpus est ajouté
+  schedule:
+    - cron: "0 1 * * *"   # Tous les jours à 01h00 UTC
   workflow_dispatch:   # possibilité de lancer manuellement
 
 jobs:
@@ -51,13 +53,19 @@ jobs:
       - name: 📁 Upload index report artifact
         uses: actions/upload-artifact@v3
         with:
-          name: index-report-incremental
+          name: index-report-incremental-${{ github.run_number }}
           path: src/itcaa_ai_offline/data/index/index_report.md
           if-no-files-found: ignore
 
       - name: 📜 Upload pytest logs
         uses: actions/upload-artifact@v3
         with:
-          name: pytest-logs-incremental
+          name: pytest-logs-incremental-${{ github.run_number }}
           path: .pytest_cache
           if-no-files-found: ignore
+
+      - name: 🧹 Rotation des rapports (conserver 7 derniers)
+        run: |
+          mkdir -p public/index_reports
+          cp src/itcaa_ai_offline/data/index/index_report.md public/index_reports/index_report_${{ github.run_number }}.md || true
+          ls -t public/index_reports | tail -n +8 | xargs -I {} rm -f public/index_reports/{}
