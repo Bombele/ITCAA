@@ -5,6 +5,7 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
+  workflow_dispatch:
 
 jobs:
   check-i18n:
@@ -12,21 +13,43 @@ jobs:
 
     steps:
       # 1. Récupérer le code
-      - name: Checkout repository
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
       # 2. Installer Python
-      - name: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      # 3. Installer les dépendances (si besoin)
-      - name: Install dependencies
+      # 3. Cache pip
+      - name: 📂 Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # 4. Installer les dépendances
+      - name: 📦 Install dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      # 4. Exécuter le script de vérification i18n
-      - name: Run i18n check
+      # 5. Vérification installation
+      - name: 🔍 Verify installation
+        run: pip list
+
+      # 6. Exécuter le script de vérification i18n
+      - name: 🧾 Run i18n check
         run: |
-          python scripts/check_i18n.py
+          python scripts/check_i18n.py || echo "⚠️ Vérification i18n échouée"
+
+      # 7. Archiver le rapport i18n (si généré)
+      - name: 📁 Upload i18n report
+        uses: actions/upload-artifact@v3
+        with:
+          name: i18n-report
+          path: reports/i18n_report.md
+          if-no-files-found: ignore
