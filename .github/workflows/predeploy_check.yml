@@ -5,26 +5,60 @@ on:
     branches:
       - main
   pull_request:
+  schedule:
+    - cron: "0 3 * * 1"   # Tous les lundis à 03h00 UTC
+  workflow_dispatch:       # possibilité de lancer manuellement
 
 jobs:
   check-imports:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 🐍 Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+      - name: 📂 Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: 📦 Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🔍 Verify installation
+        run: pip list
 
       - name: 🚨 Verify apps module import
         run: |
           export PYTHONPATH=src
-          python -c "import importlib.util; \
-          spec = importlib.util.find_spec('apps'); \
-          print('✅ apps module found' if spec else '❌ apps module missing'); \
-          assert spec is not None, 'apps module not found, aborting CI/CD'"
+          python - << 'EOF'
+          import importlib.util, sys
+          spec = importlib.util.find_spec("apps")
+          if spec is None:
+              print("❌ apps module missing")
+              sys.exit(1)
+          else:
+              print("✅ apps module found")
+          EOF
+
+      - name: 📁 Upload import check logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: predeploy-import-check-logs-${{ github.run_number }}
+          path: ./*.log
+          if-no-files-found: ignore
+
+      - name: 🧹 Rotation des rapports (conserver 7 derniers)
+        run: |
+          mkdir -p public/predeploy_reports
+          echo "Predeploy check run ${{ github.run_number }}" > public/predeploy_reports/predeploy_${{ github.run_number }}.log
+          ls -t public/predeploy_reports | tail -n +8 | xargs -I {} rm -f public/predeploy_reports/{}
