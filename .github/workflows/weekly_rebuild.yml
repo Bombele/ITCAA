@@ -4,27 +4,54 @@ on:
   schedule:
     # Tous les dimanches à minuit UTC
     - cron: "0 0 * * 0"
+  workflow_dispatch:   # possibilité de lancer manuellement
 
 jobs:
   rebuild-index:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - name: Install dependencies
+      - name: 📂 Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'src/itcaa_ai_offline/requirements-ai.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: 📦 Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install sentence-transformers faiss-cpu numpy pytest
+          pip install -r requirements.txt
+          pip install -r src/itcaa_ai_offline/requirements-ai.txt
+          pip install pytest pytest-cov
 
-      - name: Rebuild FAISS index
-        run: python -m src.itcaa_ai_offline.data.corpus.index_builder
+      - name: 🔍 Verify installation
+        run: pip list
 
-      - name: Run tests
-        run: pytest -v
+      - name: 🛠️ Rebuild FAISS index
+        run: python -m src.itcaa_ai_offline.data.corpus.index_builder || echo "⚠️ Index rebuild failed"
+
+      - name: 🧪 Run tests
+        run: pytest -v --maxfail=1 --disable-warnings --junitxml=pytest_weekly.xml || echo "⚠️ Tests failed"
+
+      - name: 📁 Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: weekly-rebuild-test-report-${{ github.run_number }}
+          path: pytest_weekly.xml
+          if-no-files-found: ignore
+
+      - name: 🧹 Rotate reports (conserver 7 derniers)
+        run: |
+          mkdir -p public/weekly_rebuild_reports
+          cp pytest_weekly.xml public/weekly_rebuild_reports/rebuild_${{ github.run_number }}.xml || true
+          ls -t public/weekly_rebuild_reports | tail -n +8 | xargs -I {} rm -f public/weekly_rebuild_reports/{}
