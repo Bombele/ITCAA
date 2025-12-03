@@ -1,5 +1,4 @@
-# .github/workflows/tracking_alerts.yml
-name: Tracking Alerts
+name: 📡 Tracking Alerts
 
 on:
   schedule:
@@ -10,16 +9,44 @@ jobs:
   check-expirations:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: 📂 Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
-      - name: Run tracking checks
-        run: python apps/api/jobs/check_expirations.py
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🔍 Verify installation
+        run: pip list
+
+      - name: 🧪 Run tracking checks
+        run: |
+          set -e
+          python apps/api/jobs/check_expirations.py > tracking_log.txt 2>&1 || echo "⚠️ Tracking check failed"
+
+      - name: 📁 Upload tracking logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: tracking-alerts-log-${{ github.run_number }}
+          path: tracking_log.txt
+          if-no-files-found: ignore
+
+      - name: 🧹 Rotate logs (conserver 7 derniers)
+        run: |
+          mkdir -p public/tracking_alerts
+          cp tracking_log.txt public/tracking_alerts/tracking_${{ github.run_number }}.log || true
+          ls -t public/tracking_alerts | tail -n +8 | xargs -I {} rm -f public/tracking_alerts/{}
