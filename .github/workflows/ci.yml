@@ -78,3 +78,54 @@ jobs:
         with:
           name: index-report
           path: src/itcaa_ai_offline/data/index/index_report.md
+
+  validate-model-and-predictor:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ "3.9", "3.10", "3.11" ]
+    steps:
+      - name: ✅ Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🐍 Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 📂 Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'requirements-ai.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: 📦 Installer les dépendances IA + globales
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-ai.txt
+
+      - name: 🔍 Vérification installation
+        run: pip list
+
+      - name: 🧠 Set PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
+
+      - name: 🔍 Vérification structure IA
+        run: python scripts/check_structure.py
+
+      - name: 🧩 Validate dependencies
+        run: python validate_dependencies.py
+
+      - name: 🧪 Run model loader tests with coverage
+        run: pytest -v --cov=src/itcaa_ai_offline --cov-report=xml --cov-append tests/test_model_loader.py
+
+      - name: 🧠 Run predictor tests with coverage
+        run: pytest -v --cov=src/itcaa_ai_offline --cov-report=xml --cov-append tests/test_predictor.py
+
+      - name: 📁 Upload coverage report artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage.xml
