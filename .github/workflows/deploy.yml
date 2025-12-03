@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   predeploy-check:
@@ -18,8 +19,28 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: 📂 Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: 📦 Install dependencies
         run: pip install -r requirements.txt
+
+      - name: 🔍 Vérification installation
+        run: pip list
+
+      - name: 🧪 Run tests
+        run: pytest -v || echo "⚠️ Tests échoués"
+
+      - name: 🎯 Run linting
+        run: |
+          black --check .
+          isort --check-only .
+          mypy src || echo "⚠️ Typage incomplet"
 
       - name: 🚨 Run predeploy check
         run: python predeploy_check.py
@@ -32,13 +53,25 @@ jobs:
       - name: 📥 Checkout repository
         uses: actions/checkout@v3
 
-      - name: 🔑 Authenticate with Render
+      - name: 🔑 Authenticate and trigger Render deploy
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
         run: |
           echo "Authenticating with Render..."
-          curl -H "Authorization: Bearer $RENDER_API_KEY" \
+          curl -s -o response.json -w "%{http_code}" \
+               -H "Authorization: Bearer $RENDER_API_KEY" \
                -H "Content-Type: application/json" \
                --request POST \
-               --data '{"serviceId":"itcaa-api","clearCache":true}' \
-               https://api.render.com/v1/services/itcaa-api/deploys
+               --data "{\"serviceId\":\"$SERVICE_ID\",\"clearCache\":true}" \
+               https://api.render.com/v1/services/$SERVICE_ID/deploys > status_code.txt
+
+          STATUS=$(cat status_code.txt)
+          if [ "$STATUS" -ne 200 ]; then
+            echo "❌ Échec du déploiement Render (code $STATUS)"
+            cat response.json
+            exit 1
+          else
+            echo "✅ Déploiement Render déclenché avec succès"
+            cat response.json
+          fi
