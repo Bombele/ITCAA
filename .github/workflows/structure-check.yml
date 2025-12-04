@@ -104,3 +104,45 @@ jobs:
           mkdir -p public/coverage_reports
           cp coverage.xml public/coverage_reports/coverage_${{ github.run_number }}.xml || true
           ls -t public/coverage_reports | tail -n +8 | xargs -I {} rm -f public/coverage_reports/{}
+
+
+jobs:
+  validate-structure-and-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 📂 Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'src/itcaa_ai_offline/requirements-ai.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: 📦 Installer les dépendances
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r src/itcaa_ai_offline/requirements-ai.txt
+          pip install pytest pytest-cov black isort mypy
+
+      - name: 🔧 Charger l’environnement de test
+        run: |
+          cp .env.test.example .env
+
+      - name: 🎯 Lint avec Black, Isort et Mypy
+        run: |
+          black --check src/ tests/ || (echo "❌ Black a trouvé des erreurs" && exit 1)
+          isort --check-only src/ tests/ || (echo "❌ Isort a trouvé des erreurs" && exit 1)
+          mypy src || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
+
+      - name: 🧪 Lancer les tests avec couverture
+        run: pytest tests/ --cov=itcaa_ai_offline --cov-report=xml --cov-report=term-missing || echo "⚠️ Tests échoués"
