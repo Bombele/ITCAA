@@ -1,11 +1,15 @@
 #!/bin/bash
-# Script de mise à jour incrémentale de l'index ITCAA
+# Script combiné de mise à jour incrémentale de l'index ITCAA
 # Usage : ./auto_update_index.sh
+# Peut être lancé manuellement, via cron ou CI/CD
 
 set -euo pipefail  # stoppe en cas d'erreur, variables non définies, ou pipe cassé
 
-LOGFILE="logs/auto_update_index.log"
-mkdir -p logs
+LOGDIR="logs"
+LOGFILE="$LOGDIR/auto_update_index_$(date +'%Y%m%d_%H%M%S').log"
+MAX_LOGS=7
+
+mkdir -p "$LOGDIR"
 
 echo "🚀 [$(date)] Début de la mise à jour incrémentale de l'index FAISS..." | tee -a "$LOGFILE"
 
@@ -39,3 +43,8 @@ else
   echo "❌ [$(date)] Échec de la mise à jour incrémentale." | tee -a "$LOGFILE"
   exit 1
 fi
+
+# Rotation des logs : conserver uniquement les $MAX_LOGS derniers
+ls -t "$LOGDIR"/auto_update_index_*.log | tail -n +$((MAX_LOGS+1)) | xargs -r rm --
+
+echo "🧹 Rotation des logs effectuée, seuls les $MAX_LOGS derniers sont conservés." | tee -a "$LOGFILE"
