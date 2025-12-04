@@ -2,16 +2,40 @@
 # Script de mise à jour incrémentale de l'index ITCAA
 # Usage : ./auto_update_index.sh
 
-set -e  # stoppe en cas d'erreur
+set -euo pipefail  # stoppe en cas d'erreur, variables non définies, ou pipe cassé
 
-echo "🚀 Mise à jour incrémentale de l'index FAISS..."
+LOGFILE="logs/auto_update_index.log"
+mkdir -p logs
 
-# Activer l'environnement virtuel si nécessaire
+echo "🚀 [$(date)] Début de la mise à jour incrémentale de l'index FAISS..." | tee -a "$LOGFILE"
+
+# Activer l'environnement virtuel si présent
 if [ -d ".venv" ]; then
   source .venv/bin/activate
+elif [ -d "venv" ]; then
+  source venv/bin/activate
+elif [ -d "ENV" ]; then
+  source ENV/bin/activate
+else
+  echo "⚠️ Aucun environnement virtuel détecté, utilisation de Python global." | tee -a "$LOGFILE"
+fi
+
+# Vérifier que Python est disponible
+if ! command -v python &> /dev/null; then
+  echo "❌ Python introuvable. Abandon." | tee -a "$LOGFILE"
+  exit 1
+fi
+
+# Vérifier que le module index_builder existe
+if ! python -c "import importlib.util; exit(0 if importlib.util.find_spec('src.itcaa_ai_offline.data.corpus.index_builder') else 1)"; then
+  echo "❌ Module index_builder introuvable. Vérifiez votre PYTHONPATH." | tee -a "$LOGFILE"
+  exit 1
 fi
 
 # Lancer la mise à jour incrémentale
-python -m src.itcaa_ai_offline.data.corpus.index_builder --incremental
-
-echo "✅ Index FAISS mis à jour avec les nouveaux fichiers corpus."
+if python -m src.itcaa_ai_offline.data.corpus.index_builder --incremental >> "$LOGFILE" 2>&1; then
+  echo "✅ [$(date)] Index FAISS mis à jour avec les nouveaux fichiers corpus." | tee -a "$LOGFILE"
+else
+  echo "❌ [$(date)] Échec de la mise à jour incrémentale." | tee -a "$LOGFILE"
+  exit 1
+fi
