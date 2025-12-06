@@ -18,99 +18,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Cloner le dépôt
-        uses: actions/checkout@v4
-
-      - name: 🐍 Installer Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: 📂 Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'src/itcaa_ai_offline/requirements-ai.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: 📦 Vérifier requirements.txt
-        run: |
-          if [ ! -f requirements.txt ]; then
-            echo "❌ requirements.txt manquant à la racine"
-            exit 1
-          else
-            echo "✅ requirements.txt trouvé"
-          fi
-
-      - name: 📂 Vérifier module IA
-        run: |
-          if [ ! -f src/itcaa_ai_offline/__init__.py ]; then
-            echo "❌ __init__.py manquant dans src/itcaa_ai_offline/"
-            exit 1
-          else
-            echo "✅ Module itcaa_ai_offline correctement structuré"
-          fi
-
-      - name: 🧪 Vérifier dossier tests
-        run: |
-          if [ ! -d tests ]; then
-            echo "❌ Dossier tests/ manquant"
-            exit 1
-          else
-            echo "✅ Dossier tests/ trouvé"
-          fi
-
-      - name: 📦 Installer les dépendances globales + IA
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r src/itcaa_ai_offline/requirements-ai.txt
-          pip install pytest pytest-cov black isort mypy
-
-      - name: 🔍 Vérification installation
-        run: pip list
-
-      - name: 🎯 Lint avec Black, Isort et Mypy
-        run: |
-          black --check src/ tests/ || (echo "❌ Black a trouvé des erreurs" && exit 1)
-          isort --check-only src/ tests/ || (echo "❌ Isort a trouvé des erreurs" && exit 1)
-          mypy src || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
-
-      - name: 🧠 Configurer le PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
-
-      - name: 🧪 Lancer les tests avec couverture
-        run: pytest tests/ --cov=itcaa_ai_offline --cov-report=xml --cov-report=term-missing || echo "⚠️ Tests échoués"
-
-      - name: 📊 Vérifier le rapport de couverture
-        run: |
-          if [ ! -f coverage.xml ]; then
-            echo "❌ Rapport de couverture introuvable"
-            exit 1
-          else
-            echo "✅ Rapport de couverture généré"
-          fi
-
-      - name: 🗂️ Archiver le rapport de couverture
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report-${{ github.run_number }}
-          path: coverage.xml
-          if-no-files-found: ignore
-
-      - name: 🧹 Rotation des rapports (conserver 7 derniers)
-        run: |
-          mkdir -p public/coverage_reports
-          cp coverage.xml public/coverage_reports/coverage_${{ github.run_number }}.xml || true
-          ls -t public/coverage_reports | tail -n +8 | xargs -I {} rm -f public/coverage_reports/{}
-
-
-jobs:
-  validate-structure-and-tests:
-    runs-on: ubuntu-latest
-
-    steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
@@ -135,14 +42,42 @@ jobs:
           pip install pytest pytest-cov black isort mypy
 
       - name: 🔧 Charger l’environnement de test
-        run: |
-          cp .env.test.example .env
+        run: cp .env.test.example .env
 
       - name: 🎯 Lint avec Black, Isort et Mypy
         run: |
-          black --check src/ tests/ || (echo "❌ Black a trouvé des erreurs" && exit 1)
-          isort --check-only src/ tests/ || (echo "❌ Isort a trouvé des erreurs" && exit 1)
-          mypy src || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
+          black --check src/ tests/
+          isort --check-only src/ tests/
+          mypy --config-file=mypy.ini src tests
 
       - name: 🧪 Lancer les tests avec couverture
-        run: pytest tests/ --cov=itcaa_ai_offline --cov-report=xml --cov-report=term-missing || echo "⚠️ Tests échoués"
+        run: pytest tests/ --cov=itcaa_ai_offline --cov-report=xml --cov-report=term-missing
+
+      - name: 📊 Vérifier le rapport de couverture
+        run: |
+          if [ ! -f coverage.xml ]; then
+            echo "❌ Rapport de couverture introuvable"
+            exit 1
+          else
+            echo "✅ Rapport de couverture généré"
+          fi
+
+      - name: 🗂️ Archiver le rapport de couverture
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-${{ github.run_number }}
+          path: coverage.xml
+          if-no-files-found: error
+
+      - name: 📁 Archiver les logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: lint-and-test-logs-${{ github.run_number }}
+          path: logs/
+          if-no-files-found: ignore
+
+      - name: 🧹 Rotation des rapports (conserver 7 derniers)
+        run: |
+          mkdir -p public/coverage_reports
+          cp coverage.xml public/coverage_reports/coverage_${{ github.run_number }}.xml || true
+          ls -t public/coverage_reports | tail -n +8 | xargs -r rm -f
