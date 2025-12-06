@@ -5,7 +5,7 @@ TEST_DIR=tests
 SCRIPT_DIR=scripts
 INDEX_REPORT=$(PYTHONPATH)/itcaa_ai_offline/data/index/index_report.md
 
-.PHONY: check test index audit clean lint
+.PHONY: check test index audit clean lint typecheck
 
 ## 🧠 Vérifie la structure du projet IA
 check:
@@ -33,7 +33,11 @@ lint:
 	@echo "🎯 Vérification linting et typage…"
 	black --check $(PYTHONPATH) $(TEST_DIR) || (echo "❌ Black a trouvé des erreurs" && exit 1)
 	isort --check-only $(PYTHONPATH) $(TEST_DIR) || (echo "❌ Isort a trouvé des erreurs" && exit 1)
-	mypy $(PYTHONPATH) || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
+
+## 🔎 Vérification stricte des types avec mypy
+typecheck:
+	@echo "🔎 Vérification des types avec mypy…"
+	PYTHONPATH=$(PYTHONPATH) mypy --config-file=mypy.ini $(PYTHONPATH) $(TEST_DIR) || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
 
 ## 🧹 Nettoie les artefacts temporaires
 clean:
