@@ -2,22 +2,26 @@ services:
   - type: web
     name: itcaa-api
     env: python
-    plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: PYTHONPATH=src python -m uvicorn apps.api.main:app --host 0.0.0.0 --port $PORT
+    plan: starter   # ⚡ plus robuste que free, adapté pour API
+    buildCommand: |
+      pip install poetry
+      poetry export -f requirements.txt --without-hashes -o requirements.txt
+      pip install -r requirements.txt
+      pip install -r requirements-dev.txt
+    startCommand: PYTHONPATH=src python -m uvicorn src.apps.api.main:app --host 0.0.0.0 --port $PORT
     autoDeploy: true
 
     envVars:
       - key: DATABASE_URL
-        sync: false   # à définir dans Render (PostgreSQL)
+        sync: false   # à définir dans Render Dashboard (PostgreSQL)
       - key: PYTHONPATH
         value: src
 
-    healthCheckPath: /
-    healthCheckTimeout: 300
+    healthCheckPath: /health
+    healthCheckTimeout: 60   # ⏱ plus réaliste pour FastAPI
 
     # 🚨 Logs et monitoring
     disk:
       name: itcaa-disk
       mountPath: /data
-      sizeGB: 1
+      sizeGB: 5   # ⚡ augmenté pour index FAISS + logs
