@@ -84,3 +84,8 @@ docker-health:
 	done; \
 	echo "❌ API non disponible après 25s"; \
 	exit 1
+
+requirements:
+	@echo "📦 Export des requirements depuis pyproject.toml…"
+	poetry export -f requirements.txt --without-hashes -o requirements.txt
+	poetry export -f requirements.txt --without-hashes --with dev -o requirements-dev.txt
