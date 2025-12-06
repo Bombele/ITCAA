@@ -18,22 +18,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout du repository
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
+      # 2. Installer Python
       - name: 🐍 Installer Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+      # 3. Installer Poetry
       - name: 📦 Installer Poetry
         run: pip install poetry
 
-      - name: 📦 Export requirements depuis pyproject.toml
+      # 4. Export requirements depuis pyproject.toml
+      - name: 📦 Export requirements
         run: |
           poetry export -f requirements.txt --without-hashes -o requirements.txt
           poetry export -f requirements.txt --without-hashes --with dev -o requirements-dev.txt
 
+      # 5. Cache pip
       - name: 📂 Cache pip
         uses: actions/cache@v3
         with:
@@ -42,6 +47,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
+      # 6. Installer les dépendances
       - name: 📦 Installer les dépendances
         run: |
           python -m pip install --upgrade pip
@@ -49,18 +55,26 @@ jobs:
           pip install -r requirements-dev.txt
           pip install -r src/itcaa_ai_offline/requirements-ai.txt
 
+      # 7. Charger l’environnement de test
       - name: 🔧 Charger l’environnement de test
         run: cp .env.test.example .env
 
+      # 8. Vérification et réparation de l’index FAISS
+      - name: 🛠 Repair index FAISS
+        run: make repair-index
+
+      # 9. Lint avec Black, Isort et Mypy
       - name: 🎯 Lint avec Black, Isort et Mypy
         run: |
           black --check src/ tests/ | tee logs/black.log
           isort --check-only src/ tests/ | tee logs/isort.log
           mypy --config-file=mypy.ini src tests | tee logs/mypy.log
 
+      # 10. Lancer les tests avec couverture
       - name: 🧪 Lancer les tests avec couverture
         run: pytest tests/ --cov=itcaa_ai_offline --cov-report=xml --cov-report=term-missing | tee logs/pytest.log
 
+      # 11. Vérifier le rapport de couverture
       - name: 📊 Vérifier le rapport de couverture
         run: |
           if [ ! -f coverage.xml ]; then
@@ -70,6 +84,7 @@ jobs:
             echo "✅ Rapport de couverture généré"
           fi
 
+      # 12. Archiver le rapport de couverture
       - name: 🗂️ Archiver le rapport de couverture
         uses: actions/upload-artifact@v3
         with:
@@ -77,6 +92,7 @@ jobs:
           path: coverage.xml
           if-no-files-found: error
 
+      # 13. Archiver les logs
       - name: 📁 Archiver les logs
         uses: actions/upload-artifact@v3
         with:
@@ -84,12 +100,14 @@ jobs:
           path: logs/
           if-no-files-found: ignore
 
+      # 14. Rotation des rapports (conserver 7 derniers)
       - name: 🧹 Rotation des rapports (conserver 7 derniers)
         run: |
           mkdir -p public/coverage_reports
           cp coverage.xml public/coverage_reports/coverage_${{ github.run_number }}.xml || true
           ls -t public/coverage_reports | tail -n +8 | xargs -r rm -f
 
+      # 15. Nettoyage final
       - name: 🧹 Nettoyage final
         run: |
           rm -rf .pytest_cache __pycache__ */__pycache__ *.pyc *.pyo *.pyd *.log htmlcov/ coverage.xml
