@@ -1,5 +1,13 @@
-black==24.10.0
-isort==5.13.2
-mypy==1.12.0
-pytest==8.2.0
-pytest-cov==5.0.0
+# --- Linting & Formatage ---
+black>=24.10,<25.0
+isort>=5.13,<6.0
+flake8>=7.0,<8.0
+
+# --- Typage ---
+mypy>=1.12,<2.0
+types-requests>=2.32,<3.0   # Exemple de stubs utiles
+
+# --- Tests & Couverture ---
+pytest>=8.2,<9.0
+pytest-cov>=5.0,<6.0
+coverage>=7.6,<8.0
