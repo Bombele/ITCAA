@@ -25,7 +25,7 @@ jobs:
       - name: 🚀 Run container in background
         run: docker run -d --name itcaa-ai-api -p 8000:8000 itcaa-ai-api
 
-      - name: ⏳ Wait for API startup
+      - name: ❤️ Health check API
         run: |
           for i in {1..10}; do
             if curl -s http://localhost:8000/health | grep -q "ok"; then
@@ -39,7 +39,7 @@ jobs:
           exit 1
 
       - name: 🧪 Run tests inside container
-        run: docker exec itcaa-ai-api pytest tests/ --maxfail=1 --disable-warnings --cov=src --cov-report=xml
+        run: docker exec itcaa-ai-api pytest tests/ --maxfail=1 --disable-warnings --cov=src --cov-report=xml --cov-report=term-missing
 
       - name: 📁 Upload coverage report
         uses: actions/upload-artifact@v3
@@ -47,6 +47,14 @@ jobs:
           name: docker-coverage-${{ github.run_number }}
           path: coverage.xml
           if-no-files-found: error
+
+      - name: 📁 Upload container logs
+        run: docker logs itcaa-ai-api > container_logs.txt
+      - uses: actions/upload-artifact@v3
+        with:
+          name: docker-logs-${{ github.run_number }}
+          path: container_logs.txt
+          if-no-files-found: ignore
 
       - name: 🧹 Cleanup
         run: docker rm -f itcaa-ai-api || true
