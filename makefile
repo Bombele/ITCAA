@@ -94,3 +94,9 @@ requirements:
 repair-index:
 	@echo "🛠 Vérification et réparation de l’index FAISS…"
 	PYTHONPATH=$(PYTHONPATH) python $(SCRIPT_DIR)/repair_index.py || exit 1
+
+## 📦 Installe les dépendances de développement
+dev-install:
+	@echo "📦 Installation des dépendances de développement..."
+	python -m pip install --upgrade pip
+	pip install -r requirements-dev.txt
