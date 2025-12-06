@@ -1,0 +1,52 @@
+name: 🐳 Docker CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - feature/ai-offline-module
+  pull_request:
+    branches:
+      - main
+      - feature/ai-offline-module
+  workflow_dispatch:
+
+jobs:
+  docker-build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐳 Build Docker image
+        run: docker build -t itcaa-ai-api .
+
+      - name: 🚀 Run container in background
+        run: docker run -d --name itcaa-ai-api -p 8000:8000 itcaa-ai-api
+
+      - name: ⏳ Wait for API startup
+        run: |
+          for i in {1..10}; do
+            if curl -s http://localhost:8000/health | grep -q "ok"; then
+              echo "✅ API is healthy"
+              exit 0
+            fi
+            echo "⏳ Waiting for API..."
+            sleep 5
+          done
+          echo "❌ API did not start correctly"
+          exit 1
+
+      - name: 🧪 Run tests inside container
+        run: docker exec itcaa-ai-api pytest tests/ --maxfail=1 --disable-warnings --cov=src --cov-report=xml
+
+      - name: 📁 Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-coverage-${{ github.run_number }}
+          path: coverage.xml
+          if-no-files-found: error
+
+      - name: 🧹 Cleanup
+        run: docker rm -f itcaa-ai-api || true
