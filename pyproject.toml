@@ -47,3 +47,8 @@ profile = "black"
 python_version = "3.12"
 strict = true
 files = ["src", "tests"]
+
+# 📦 Export automatique des requirements
+[tool.poetry.scripts]
+export-req = "poetry run poetry export -f requirements.txt --without-hashes -o requirements.txt"
+export-req-dev = "poetry run poetry export -f requirements.txt --without-hashes --with dev -o requirements-dev.txt"
