@@ -41,6 +41,11 @@ typecheck:
 	@echo "🔎 Vérification des types avec mypy…"
 	PYTHONPATH=$(PYTHONPATH) mypy --config-file=mypy.ini $(PYTHONPATH) $(TEST_DIR) || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
 
+## 🧹 Nettoie les artefacts temporaires
+clean:
+	@echo "🧹 Nettoyage des fichiers temporaires…"
+	rm -rf .pytest_cache __pycache__ */__pycache__ *.pyc *.pyo *.pyd *.log htmlcov/ coverage.xml
+
 ## 🐳 Construire l'image Docker
 docker-build:
 	@echo "🐳 Construction de l'image Docker…"
