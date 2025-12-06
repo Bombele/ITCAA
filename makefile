@@ -100,3 +100,7 @@ dev-install:
 	@echo "📦 Installation des dépendances de développement..."
 	python -m pip install --upgrade pip
 	pip install -r requirements-dev.txt
+
+## ⚙️ Prépare l’environnement complet de développement
+setup-dev: dev-install repair-index audit
+	@echo "✅ Environnement de développement prêt : dépendances installées, index réparé et audit effectué."
