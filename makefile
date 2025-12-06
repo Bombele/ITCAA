@@ -7,7 +7,7 @@ INDEX_REPORT=$(PYTHONPATH)/itcaa_ai_offline/data/index/index_report.md
 DOCKER_IMAGE=itcaa-ai-api
 DOCKER_CONTAINER=itcaa-ai-api
 
-.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test
+.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health
 
 ## 🧠 Vérifie la structure du projet IA
 check:
@@ -65,3 +65,17 @@ docker-logs:
 docker-test:
 	@echo "🧪 Exécution des tests dans le conteneur…"
 	docker exec $(DOCKER_CONTAINER) pytest $(TEST_DIR) --maxfail=1 --disable-warnings --cov=$(PYTHONPATH) --cov-report=term-missing
+
+## ❤️ Vérifier la santé de l’API
+docker-health:
+	@echo "❤️ Vérification de l’endpoint /health…"
+	@for i in 1 2 3 4 5; do \
+		if curl -s http://localhost:8000/health | grep -q "ok"; then \
+			echo "✅ API opérationnelle"; \
+			exit 0; \
+		fi; \
+		echo "⏳ Attente du démarrage de l’API…"; \
+		sleep 5; \
+	done; \
+	echo "❌ API non disponible après 25s"; \
+	exit 1
