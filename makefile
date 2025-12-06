@@ -89,3 +89,8 @@ requirements:
 	@echo "📦 Export des requirements depuis pyproject.toml…"
 	poetry export -f requirements.txt --without-hashes -o requirements.txt
 	poetry export -f requirements.txt --without-hashes --with dev -o requirements-dev.txt
+
+## 🛠 Vérifie et répare l’index FAISS
+repair-index:
+	@echo "🛠 Vérification et réparation de l’index FAISS…"
+	PYTHONPATH=$(PYTHONPATH) python $(SCRIPT_DIR)/repair_index.py || exit 1
