@@ -8,7 +8,7 @@ DOCKER_IMAGE=itcaa-ai-api
 DOCKER_CONTAINER=itcaa-ai-api
 LOG_DIR=logs
 
-.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests quality-check pre-commit
+.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests check-import quality-check pre-commit
 
 ## 🧠 Vérifie la structure du projet IA
 check:
@@ -135,22 +135,4 @@ stop-api:
 
 ## 🔄 Cycle complet de l’API ITCAA (arrêt + relance)
 cycle-api: stop-api start-api
-	@echo "🔄 Cycle complet exécuté : API arrêtée puis relancée en mode $(ENV)."
-
-## 🧪 Vérifie les tests avec couverture et logs
-check-tests:
-	@echo "🧪 Vérification des tests avec couverture..."
-	bash test_check.sh
-
-## 🧪 Vérification complète de la qualité (lint + typage + tests)
-quality-check: lint typecheck check-tests
-	@echo "✅ Vérification complète de la qualité terminée : linting, typage et tests avec couverture."
-
-## 🔒 Vérification pré-commit (lint + typage + tests)
-pre-commit: quality-check
-	@echo "🔒 Vérification pré-commit exécutée : code validé avant commit."
-
-## 📥 Vérifie l'import de l'API ITCAA
-check-import:
-	@echo "📥 Vérification de l'import apps.api.main..."
-	python test_import.py
+	@echo "🔄 Cycle complet
