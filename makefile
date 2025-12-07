@@ -134,3 +134,7 @@ cycle-api: stop-api start-api
 check-tests:
 	@echo "🧪 Vérification des tests avec couverture..."
 	bash test_check.sh
+
+## 🧪 Vérification complète de la qualité (lint + typage + tests)
+quality-check: lint type-check check-tests
+	@echo "✅ Vérification complète de la qualité terminée : linting, typage et tests avec couverture."
