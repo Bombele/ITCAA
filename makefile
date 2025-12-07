@@ -105,8 +105,6 @@ dev-install:
 setup-dev: dev-install repair-index audit
 	@echo "✅ Environnement de développement prêt : dépendances installées, index réparé et audit effectué."
 
-## 📦 Installe les dépendances de production
-prod-install:
-	@echo "📦 Installation des dépendances de production..."
-	python -m pip install --upgrade pip
-	pip install -r requirements.txt
+## 🚀 Prépare l’environnement complet de production
+setup-prod: prod-install repair-index
+	@echo "✅ Environnement de production prêt : dépendances installées et index réparé."
