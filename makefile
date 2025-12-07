@@ -113,3 +113,10 @@ setup-prod: prod-install repair-index
 start-api:
 	@echo "🚀 Démarrage de l’API ITCAA..."
 	ENV=$(ENV) bash start.sh
+
+## 🔄 Redémarre l’API ITCAA (arrêt + relance)
+restart-api:
+	@echo "🛑 Arrêt de l’API ITCAA..."
+	@pkill -f "uvicorn apps.api.main:app" || echo "ℹ️ Aucun processus uvicorn trouvé"
+	@echo "🚀 Relance de l’API ITCAA..."
+	ENV=$(ENV) bash start.sh
