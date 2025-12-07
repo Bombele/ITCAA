@@ -159,3 +159,8 @@ quality-check: lint typecheck check-tests check-import validate-deps
 ## 🔒 Vérification pré-commit (lint + typage + tests + import + deps)
 pre-commit: quality-check
 	@echo "🔒 Vérification pré-commit exécutée : code validé avant commit."
+
+## 🔍 Vérifie la configuration Render (render.yaml + structure src/)
+validate-render:
+	@echo "🔍 Validation de la configuration Render..."
+	python validate_render_config.py
