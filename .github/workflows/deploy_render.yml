@@ -39,12 +39,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      # 6. Installer les dépendances
-      - name: 📦 Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
+      # 6. Préparer l’environnement de production
+      - name: ⚙️ Setup production environment
+        run: make setup-prod
 
       # 7. Vérification installation
       - name: 🔍 Verify installation
