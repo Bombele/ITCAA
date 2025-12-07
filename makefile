@@ -149,3 +149,8 @@ quality-check: lint typecheck check-tests
 ## 🔒 Vérification pré-commit (lint + typage + tests)
 pre-commit: quality-check
 	@echo "🔒 Vérification pré-commit exécutée : code validé avant commit."
+
+## 📥 Vérifie l'import de l'API ITCAA
+check-import:
+	@echo "📥 Vérification de l'import apps.api.main..."
+	python test_import.py
