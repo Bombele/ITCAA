@@ -6,8 +6,9 @@ SCRIPT_DIR=scripts
 INDEX_REPORT=$(PYTHONPATH)/itcaa_ai_offline/data/index/index_report.md
 DOCKER_IMAGE=itcaa-ai-api
 DOCKER_CONTAINER=itcaa-ai-api
+LOG_DIR=logs
 
-.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health
+.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests quality-check pre-commit
 
 ## 🧠 Vérifie la structure du projet IA
 check:
@@ -33,18 +34,18 @@ audit:
 ## 🎯 Vérifie le linting
 lint:
 	@echo "🎯 Vérification linting…"
-	black --check $(PYTHONPATH) $(TEST_DIR) || (echo "❌ Black a trouvé des erreurs" && exit 1)
-	isort --check-only $(PYTHONPATH) $(TEST_DIR) || (echo "❌ Isort a trouvé des erreurs" && exit 1)
+	black --check $(PYTHONPATH) $(TEST_DIR) | tee $(LOG_DIR)/black.log || (echo "❌ Black a trouvé des erreurs" && exit 1)
+	isort --check-only $(PYTHONPATH) $(TEST_DIR) | tee $(LOG_DIR)/isort.log || (echo "❌ Isort a trouvé des erreurs" && exit 1)
 
 ## 🔎 Vérification stricte des types
 typecheck:
 	@echo "🔎 Vérification des types avec mypy…"
-	PYTHONPATH=$(PYTHONPATH) mypy --config-file=mypy.ini $(PYTHONPATH) $(TEST_DIR) || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
+	PYTHONPATH=$(PYTHONPATH) mypy --config-file=mypy.ini $(PYTHONPATH) $(TEST_DIR) | tee $(LOG_DIR)/mypy.log || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
 
 ## 🧹 Nettoie les artefacts temporaires
 clean:
 	@echo "🧹 Nettoyage des fichiers temporaires…"
-	rm -rf .pytest_cache __pycache__ */__pycache__ *.pyc *.pyo *.pyd *.log htmlcov/ coverage.xml
+	rm -rf .pytest_cache __pycache__ */__pycache__ *.pyc *.pyo *.pyd *.log htmlcov/ coverage.xml $(LOG_DIR) coverage.xml
 
 ## 🐳 Construire l'image Docker
 docker-build:
@@ -101,6 +102,12 @@ dev-install:
 	python -m pip install --upgrade pip
 	pip install -r requirements-dev.txt
 
+## 📦 Installe les dépendances de production
+prod-install:
+	@echo "📦 Installation des dépendances de production..."
+	python -m pip install --upgrade pip
+	pip install -r requirements.txt
+
 ## ⚙️ Prépare l’environnement complet de développement
 setup-dev: dev-install repair-index audit
 	@echo "✅ Environnement de développement prêt : dépendances installées, index réparé et audit effectué."
@@ -134,6 +141,11 @@ cycle-api: stop-api start-api
 check-tests:
 	@echo "🧪 Vérification des tests avec couverture..."
 	bash test_check.sh
+
 ## 🧪 Vérification complète de la qualité (lint + typage + tests)
-quality-check: lint type-check check-tests
+quality-check: lint typecheck check-tests
 	@echo "✅ Vérification complète de la qualité terminée : linting, typage et tests avec couverture."
+
+## 🔒 Vérification pré-commit (lint + typage + tests)
+pre-commit: quality-check
+	@echo "🔒 Vérification pré-commit exécutée : code validé avant commit."
