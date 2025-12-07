@@ -129,3 +129,8 @@ stop-api:
 ## 🔄 Cycle complet de l’API ITCAA (arrêt + relance)
 cycle-api: stop-api start-api
 	@echo "🔄 Cycle complet exécuté : API arrêtée puis relancée en mode $(ENV)."
+
+## 🧪 Vérifie les tests avec couverture et logs
+check-tests:
+	@echo "🧪 Vérification des tests avec couverture..."
+	bash test_check.sh
