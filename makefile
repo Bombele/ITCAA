@@ -125,3 +125,7 @@ restart-api:
 stop-api:
 	@echo "🛑 Arrêt de l’API ITCAA..."
 	@pkill -f "uvicorn apps.api.main:app" || echo "ℹ️ Aucun processus uvicorn trouvé"
+
+## 🔄 Cycle complet de l’API ITCAA (arrêt + relance)
+cycle-api: stop-api start-api
+	@echo "🔄 Cycle complet exécuté : API arrêtée puis relancée en mode $(ENV)."
