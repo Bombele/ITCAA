@@ -136,3 +136,8 @@ stop-api:
 ## 🔄 Cycle complet de l’API ITCAA (arrêt + relance)
 cycle-api: stop-api start-api
 	@echo "🔄 Cycle complet
+
+## 📦 Vérifie la cohérence des dépendances Python
+validate-deps:
+	@echo "📦 Validation des dépendances Python..."
+	python validate_dependencies.py
