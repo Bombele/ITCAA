@@ -108,3 +108,8 @@ setup-dev: dev-install repair-index audit
 ## 🚀 Prépare l’environnement complet de production
 setup-prod: prod-install repair-index
 	@echo "✅ Environnement de production prêt : dépendances installées et index réparé."
+
+## 🚀 Démarre l’API ITCAA (mode dev ou prod)
+start-api:
+	@echo "🚀 Démarrage de l’API ITCAA..."
+	ENV=$(ENV) bash start.sh
