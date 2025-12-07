@@ -8,7 +8,7 @@ DOCKER_IMAGE=itcaa-ai-api
 DOCKER_CONTAINER=itcaa-ai-api
 LOG_DIR=logs
 
-.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests check-import validate-deps quality-check pre-commit
+.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests check-import validate-deps validate-render quality-check pre-commit
 
 ## 🧠 Vérifie la structure du projet IA
 check:
@@ -152,15 +152,15 @@ validate-deps:
 	@echo "📦 Validation des dépendances Python..."
 	python validate_dependencies.py
 
-## 🧪 Vérification complète de la qualité (lint + typage + tests + import + deps)
-quality-check: lint typecheck check-tests check-import validate-deps
-	@echo "✅ Vérification complète de la qualité terminée : linting, typage, tests, import et dépendances validés."
-
-## 🔒 Vérification pré-commit (lint + typage + tests + import + deps)
-pre-commit: quality-check
-	@echo "🔒 Vérification pré-commit exécutée : code validé avant commit."
-
 ## 🔍 Vérifie la configuration Render (render.yaml + structure src/)
 validate-render:
 	@echo "🔍 Validation de la configuration Render..."
 	python validate_render_config.py
+
+## 🧪 Vérification complète de la qualité (lint + typage + tests + import + deps + render)
+quality-check: lint typecheck check-tests check-import validate-deps validate-render
+	@echo "✅ Vérification complète de la qualité terminée : linting, typage, tests, import, dépendances et configuration Render validés."
+
+## 🔒 Vérification pré-commit (lint + typage + tests + import + deps + render)
+pre-commit: quality-check
+	@echo "🔒 Vérification pré-commit exécutée : code validé avant commit."
