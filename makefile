@@ -120,3 +120,8 @@ restart-api:
 	@pkill -f "uvicorn apps.api.main:app" || echo "ℹ️ Aucun processus uvicorn trouvé"
 	@echo "🚀 Relance de l’API ITCAA..."
 	ENV=$(ENV) bash start.sh
+
+## 🛑 Arrête l’API ITCAA
+stop-api:
+	@echo "🛑 Arrêt de l’API ITCAA..."
+	@pkill -f "uvicorn apps.api.main:app" || echo "ℹ️ Aucun processus uvicorn trouvé"
