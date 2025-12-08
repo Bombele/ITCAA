@@ -8,7 +8,20 @@ DOCKER_IMAGE=itcaa-ai-api
 DOCKER_CONTAINER=itcaa-ai-api
 LOG_DIR=logs
 
-.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests check-import validate-deps validate-render quality-check pre-commit docker-build-local poetry-setup
+.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests check-import validate-deps validate-render quality-check pre-commit docker-build-local poetry-setup verify-scripts
+
+## 🔍 Vérifie la présence des scripts critiques
+verify-scripts:
+	@echo "🔍 Vérification des scripts critiques..."
+	@for script in $(SCRIPT_DIR)/repair_index.py $(SCRIPT_DIR)/check_structure.py $(SCRIPT_DIR)/validate_dependencies.py $(SCRIPT_DIR)/validate_render_config.py; do \
+		if [ ! -f "$$script" ]; then \
+			echo "❌ Script manquant : $$script"; \
+			exit 1; \
+		else \
+			echo "✅ Script présent : $$script"; \
+		fi; \
+	done
+	@echo "✅ Tous les scripts critiques sont présents."
 
 ## 🧠 Vérifie la structure du projet IA
 check:
@@ -34,12 +47,14 @@ audit:
 ## 🎯 Vérifie le linting
 lint:
 	@echo "🎯 Vérification linting…"
+	@mkdir -p $(LOG_DIR)
 	black --check $(PYTHONPATH) $(TEST_DIR) | tee $(LOG_DIR)/black.log || (echo "❌ Black a trouvé des erreurs" && exit 1)
 	isort --check-only $(PYTHONPATH) $(TEST_DIR) | tee $(LOG_DIR)/isort.log || (echo "❌ Isort a trouvé des erreurs" && exit 1)
 
 ## 🔎 Vérification stricte des types
 typecheck:
 	@echo "🔎 Vérification des types avec mypy…"
+	@mkdir -p $(LOG_DIR)
 	PYTHONPATH=$(PYTHONPATH) mypy --config-file=mypy.ini $(PYTHONPATH) $(TEST_DIR) | tee $(LOG_DIR)/mypy.log || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
 
 ## 🧹 Nettoie les artefacts temporaires
@@ -86,6 +101,7 @@ docker-health:
 	echo "❌ API non disponible après 25s"; \
 	exit 1
 
+## 📦 Export des requirements depuis pyproject.toml
 requirements:
 	@echo "📦 Export des requirements depuis pyproject.toml…"
 	poetry export -f requirements.txt --without-hashes -o requirements.txt
@@ -109,12 +125,12 @@ prod-install:
 	pip install -r requirements.txt
 
 ## ⚙️ Prépare l’environnement complet de développement
-setup-dev: dev-install repair-index audit
-	@echo "✅ Environnement de développement prêt : dépendances installées, index réparé et audit effectué."
+setup-dev: verify-scripts dev-install repair-index audit
+	@echo "✅ Environnement de développement prêt : dépendances installées, scripts vérifiés, index réparé et audit effectué."
 
 ## 🚀 Prépare l’environnement complet de production
-setup-prod: prod-install repair-index
-	@echo "✅ Environnement de production prêt : dépendances installées et index réparé."
+setup-prod: verify-scripts prod-install repair-index
+	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés et index réparé."
 
 ## 🚀 Démarre l’API ITCAA (mode dev ou prod)
 start-api:
@@ -166,17 +182,14 @@ pre-commit: quality-check
 	@echo "🔒 Vérification pré-commit exécutée : code validé avant commit."
 
 ## 🐳 Teste le build Docker localement
-docker
+docker-build-local:
+	@echo "🐳 Test du build Docker local…"
+	docker build -t $(DOCKER_IMAGE) .
 
-## 🔍 Vérifie la présence des scripts critiques
-verify-scripts:
-	@echo "🔍 Vérification des scripts critiques..."
-	@for script in scripts/repair_index.py scripts/check_structure.py scripts/validate_dependencies.py scripts/validate_render_config.py; do \
-		if [ ! -f "$$script" ]; then \
-			echo "❌ Script manquant : $$script"; \
-			exit 1; \
-		else \
-			echo "✅ Script présent : $$script"; \
-		fi; \
-	done
-	@echo "✅ Tous les scripts critiques sont présents."
+## 📦 Installe Poetry et plugin export (méthode unique)
+poetry-setup:
+	@echo "📦 Installation de Poetry et du plugin export…"
+	curl -sSL https://install.python-poetry.org | python3 -
+	@echo "➕ Ajout de Poetry au PATH"
+	@echo "$$HOME/.local/bin" >> $$GITHUB_PATH || true
+	poetry self add poetry-plugin-export
