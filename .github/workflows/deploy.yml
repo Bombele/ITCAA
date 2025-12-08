@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      # Installation propre de Poetry
+      # 📦 Installation de Poetry (méthode unique)
       - name: 📦 Install Poetry
         run: curl -sSL https://install.python-poetry.org | python3 -
         shell: bash
@@ -33,12 +33,12 @@ jobs:
         run: poetry --version
         shell: bash
 
-      # Plugin requis pour `poetry export`
+      # 🔌 Plugin requis pour `poetry export`
       - name: 🔌 Install poetry export plugin
         run: poetry self add poetry-plugin-export
         shell: bash
 
-      # Export requirements
+      # 📦 Export requirements
       - name: 📦 Export requirements
         run: |
           poetry export -f requirements.txt --without-hashes -o requirements.txt
@@ -53,12 +53,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
+      # ⚙️ Setup production environment
       - name: ⚙️ Setup production environment
         run: make setup-prod
         shell: bash
 
-      - name: 📦 Setup Poetry environment
-        run: bash setup_poetry.sh
+      # 🔍 Vérification des scripts critiques
+      - name: 🔍 Verify scripts presence
+        run: |
+          for script in scripts/repair_index.py scripts/check_structure.py scripts/validate_dependencies.py scripts/validate_render_config.py; do
+            if [ ! -f "$script" ]; then
+              echo "❌ Script manquant : $script"
+              exit 1
+            else
+              echo "✅ Script présent : $script"
+            fi
+          done
         shell: bash
 
       - name: 🔍 Verify installation
@@ -115,6 +125,7 @@ jobs:
           for i in {1..20}; do
             if curl -s http://localhost:8000/health | grep -q "ok"; then
               echo "✅ API is healthy"
+              docker logs itcaa-api | tail -n 20
               docker rm -f itcaa-api
               exit 0
             fi
@@ -158,5 +169,7 @@ jobs:
         shell: bash
 
       - name: 🧹 Cleanup
-        run: rm -rf .pytest_cache __pycache__ */__pycache__ *.pyc *.pyo *.pyd *.log htmlcov/ coverage.xml logs/
+        run: |
+          docker rm -f itcaa-api || true
+          rm -rf .pytest_cache __pycache__ */__pycache__ *.pyc *.pyo *.pyd *.log htmlcov/ coverage.xml logs/
         shell: bash
