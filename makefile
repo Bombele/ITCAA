@@ -175,6 +175,6 @@ poetry-setup:
 	export PATH="$$HOME/.local/bin:$$PATH"
 	poetry self add poetry-plugin-export
 
-## 📦 Installe Poetry et plugin export
+## 📦 Installe Poetry et plugin export automatiquement
 poetry-setup:
 	bash setup_poetry.sh
