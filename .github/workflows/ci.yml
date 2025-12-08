@@ -102,3 +102,7 @@ jobs:
         with:
           name: index-report
           path: src/itcaa_ai_offline/data/index/index_report.md
+
+- name: 🔍 Verify scripts with Makefile
+        run: make verify-scripts
+        shell: bash
