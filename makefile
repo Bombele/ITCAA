@@ -87,18 +87,25 @@ docker-test:
 	@echo "🧪 Exécution des tests dans le conteneur…"
 	docker exec $(DOCKER_CONTAINER) pytest $(TEST_DIR) --maxfail=1 --disable-warnings --cov=$(PYTHONPATH) --cov-report=term-missing
 
-## ❤️ Vérifier la santé de l’API
+## ❤️ Vérifier la santé de l’API (amélioré)
 docker-health:
-	@echo "❤️ Vérification de l’endpoint /health…"
+	@echo "❤️ Vérification du statut du conteneur..."
+	@if ! docker inspect -f '{{.State.Running}}' $(DOCKER_CONTAINER) | grep -q true; then \
+		echo "❌ Conteneur non démarré"; \
+		docker logs $(DOCKER_CONTAINER); \
+		exit 1; \
+	fi
+	@echo "⏳ Vérification de l’endpoint /health…"
 	@for i in 1 2 3 4 5; do \
 		if curl -s http://localhost:8000/health | grep -q "ok"; then \
 			echo "✅ API opérationnelle"; \
 			exit 0; \
 		fi; \
-		echo "⏳ Attente du démarrage de l’API…"; \
+		echo "⏳ Attente du démarrage de l’API (tentative $$i)…"; \
 		sleep 5; \
 	done; \
 	echo "❌ API non disponible après 25s"; \
+	docker logs $(DOCKER_CONTAINER); \
 	exit 1
 
 ## 📦 Export des requirements depuis pyproject.toml
@@ -123,6 +130,11 @@ prod-install:
 	@echo "📦 Installation des dépendances de production..."
 	python -m pip install --upgrade pip
 	pip install -r requirements.txt
+
+## 📥 Vérifie l'import de l'API ITCAA (robuste)
+check-import:
+	@echo "📥 Vérification de l'import apps.api.main..."
+	@python test_import.py || (echo "❌ Import API échoué" && exit 1)
 
 ## ⚙️ Prépare l’environnement complet de développement
 setup-dev: verify-scripts dev-install repair-index check-import audit
@@ -158,11 +170,6 @@ check-tests:
 	@echo "🧪 Vérification des tests avec couverture..."
 	bash test_check.sh
 
-## 📥 Vérifie l'import de l'API ITCAA
-check-import:
-	@echo "📥 Vérification de l'import apps.api.main..."
-	@python test_import.py || (echo "❌ Import API échoué" && exit 1)
-
 ## 📦 Vérifie la cohérence des dépendances Python
 validate-deps:
 	@echo "📦 Validation des dépendances Python..."
@@ -174,4 +181,22 @@ validate-render:
 	python validate_render_config.py
 
 ## 🧪 Vérification complète de la qualité (lint + typage + tests + import + deps + render)
-quality-check: lint typecheck
+quality-check: lint typecheck check-tests check-import validate-deps validate-render
+	@echo "✅ Vérification complète de la qualité terminée : linting, typage, tests, import, dépendances et configuration Render validés."
+
+## 🔒 Vérification pré-commit (qualité complète)
+pre-commit: quality-check
+	@echo "🔒 Vérification pré-commit exécutée : code validé avant commit."
+
+## 🐳 Teste le build Docker localement
+docker-build-local:
+	@echo "🐳 Test du build Docker local…"
+	docker build -t $(DOCKER_IMAGE) .
+
+## 📦 Installe Poetry et plugin export (méthode unique)
+poetry-setup:
+	@echo "📦 Installation de Poetry et du plugin export…"
+	curl -sSL https://install.python-poetry.org | python3 -
+	@echo "➕ Ajout de Poetry au PATH"
+	@echo "$$HOME/.local/bin" >> $$GITHUB_PATH || true
+	poetry self add poetry-plugin-export
