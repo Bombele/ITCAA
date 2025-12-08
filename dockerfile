@@ -8,6 +8,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
+# 📦 Installer dépendances système nécessaires (curl, venv)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl python3-venv \
+    && rm -rf /var/lib/apt/lists/*
+
 # 📦 Installer Poetry via le script officiel
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
