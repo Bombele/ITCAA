@@ -137,3 +137,7 @@ jobs:
       - name: 🧹 Cleanup
         run: rm -rf .pytest_cache __pycache__ */__pycache__ *.pyc *.pyo *.pyd *.log htmlcov/ coverage.xml logs/
         shell: bash
+
+- name: 📦 Setup Poetry environment
+  run: bash setup_poetry.sh
+  shell: bash
