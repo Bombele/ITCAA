@@ -11,10 +11,10 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-# 📂 Définir les chemins
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CORPUS_DIR = os.path.join(BASE_DIR, "..", "src", "itcaa_ai_offline", "data", "corpus")
-INDEX_DIR = os.path.join(BASE_DIR, "..", "src", "itcaa_ai_offline", "data", "index")
+# 📂 Définir les chemins robustes
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+CORPUS_DIR = os.path.join(ROOT_DIR, "src", "itcaa_ai_offline", "data", "corpus")
+INDEX_DIR = os.path.join(ROOT_DIR, "src", "itcaa_ai_offline", "data", "index")
 INDEX_FILE = os.path.join(INDEX_DIR, "faiss.index")
 META_FILE = os.path.join(INDEX_DIR, "index_meta.txt")
 
@@ -47,20 +47,28 @@ def load_meta() -> set[str]:
 
 def save_meta(texts: list[str]):
     """Sauvegarde les textes indexés dans le fichier meta."""
+    os.makedirs(INDEX_DIR, exist_ok=True)
     with open(META_FILE, "w", encoding="utf-8") as f:
         for t in texts:
             f.write(t + "\n")
 
+def build_embeddings(texts: list[str]) -> np.ndarray:
+    """Construit les embeddings avec Sentence-Transformers."""
+    try:
+        model = SentenceTransformer(MODEL_NAME)
+        embeddings = model.encode(texts, convert_to_numpy=True, show_progress_bar=True)
+        return embeddings.astype("float32")
+    except Exception as e:
+        log(f"❌ Erreur lors de la génération des embeddings : {e}")
+        sys.exit(1)
+
 def rebuild_index(texts: list[str]):
     """Reconstruit l’index FAISS complet."""
     log("⚠️ Reconstruction complète de l’index FAISS...")
-    model = SentenceTransformer(MODEL_NAME)
-    embeddings = model.encode(texts, convert_to_numpy=True, show_progress_bar=True)
-
+    embeddings = build_embeddings(texts)
     dim = embeddings.shape[1]
     index = faiss.IndexFlatL2(dim)
-    index.add(embeddings.astype("float32"))
-
+    index.add(embeddings)
     os.makedirs(INDEX_DIR, exist_ok=True)
     faiss.write_index(index, INDEX_FILE)
     save_meta(texts)
@@ -91,9 +99,12 @@ def update_index():
 
     if new_texts:
         log(f"📚 {len(new_texts)} nouvelles entrées détectées, ajout à l’index...")
-        model = SentenceTransformer(MODEL_NAME)
-        embeddings = model.encode(new_texts, convert_to_numpy=True, show_progress_bar=True)
-        index.add(embeddings.astype("float32"))
+        embeddings = build_embeddings(new_texts)
+        if embeddings.shape[1] != index.d:
+            log("❌ Dimension des embeddings incompatible avec l’index, reconstruction complète nécessaire.")
+            rebuild_index(texts)
+            return
+        index.add(embeddings)
         faiss.write_index(index, INDEX_FILE)
         save_meta(texts)
         log(f"✅ Index mis à jour avec {index.ntotal} vecteurs.")
