@@ -68,4 +68,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential xz-utils \
     && rm -rf /var/lib/apt/lists/*
 
+# Forcer apt-get en mode non-interactif pour éviter les failles debconf
 ENV DEBIAN_FRONTEND=noninteractive
