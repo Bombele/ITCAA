@@ -20,10 +20,20 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Installation propre de Poetry
       - name: 📦 Install Poetry
-        run: pip install poetry
+        run: curl -sSL https://install.python-poetry.org | python3 -
         shell: bash
 
+      - name: 🧠 Add Poetry to PATH
+        run: echo "${HOME}/.local/bin" >> $GITHUB_PATH
+        shell: bash
+
+      - name: 🔍 Check Poetry version
+        run: poetry --version
+        shell: bash
+
+      # Export requirements
       - name: 📦 Export requirements
         run: |
           poetry export -f requirements.txt --without-hashes -o requirements.txt
