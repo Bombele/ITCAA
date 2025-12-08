@@ -174,3 +174,7 @@ poetry-setup:
 	curl -sSL https://install.python-poetry.org | python3 -
 	export PATH="$$HOME/.local/bin:$$PATH"
 	poetry self add poetry-plugin-export
+
+## 📦 Installe Poetry et plugin export
+poetry-setup:
+	bash setup_poetry.sh
