@@ -2,6 +2,7 @@
 """
 repair_index.py
 Vérifie et répare l'index FAISS utilisé par ITCAA avec embeddings Sentence-Transformers.
+Mode incrémental : ajoute uniquement les nouvelles entrées du corpus.
 """
 
 import os
@@ -15,8 +16,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CORPUS_DIR = os.path.join(BASE_DIR, "..", "src", "itcaa_ai_offline", "data", "corpus")
 INDEX_DIR = os.path.join(BASE_DIR, "..", "src", "itcaa_ai_offline", "data", "index")
 INDEX_FILE = os.path.join(INDEX_DIR, "faiss.index")
+META_FILE = os.path.join(INDEX_DIR, "index_meta.txt")
 
-# ⚙️ Choisir le modèle d’embedding
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 
 def log(msg: str):
@@ -37,17 +38,22 @@ def load_corpus() -> list[str]:
                 texts.extend([line.strip() for line in f if line.strip()])
     return texts
 
-def rebuild_index():
-    """Reconstruit un index FAISS à partir du corpus avec embeddings Sentence-Transformers."""
-    log("Reconstruction de l’index FAISS avec embeddings...")
-    if not corpus_exists():
-        log("❌ Aucun corpus trouvé, impossible de reconstruire l’index.")
-        sys.exit(1)
+def load_meta() -> set[str]:
+    """Charge les entrées déjà indexées (métadonnées)."""
+    if not os.path.isfile(META_FILE):
+        return set()
+    with open(META_FILE, "r", encoding="utf-8") as f:
+        return set(line.strip() for line in f if line.strip())
 
-    texts = load_corpus()
-    log(f"📚 Corpus chargé avec {len(texts)} entrées.")
+def save_meta(texts: list[str]):
+    """Sauvegarde les textes indexés dans le fichier meta."""
+    with open(META_FILE, "w", encoding="utf-8") as f:
+        for t in texts:
+            f.write(t + "\n")
 
-    # Charger le modèle
+def rebuild_index(texts: list[str]):
+    """Reconstruit l’index FAISS complet."""
+    log("⚠️ Reconstruction complète de l’index FAISS...")
     model = SentenceTransformer(MODEL_NAME)
     embeddings = model.encode(texts, convert_to_numpy=True, show_progress_bar=True)
 
@@ -57,26 +63,48 @@ def rebuild_index():
 
     os.makedirs(INDEX_DIR, exist_ok=True)
     faiss.write_index(index, INDEX_FILE)
-    log(f"✅ Index reconstruit et sauvegardé dans {INDEX_FILE} avec {index.ntotal} vecteurs.")
+    save_meta(texts)
+    log(f"✅ Index reconstruit avec {index.ntotal} vecteurs.")
 
-def verify_index():
-    """Vérifie si l’index FAISS est lisible, sinon le reconstruit."""
+def update_index():
+    """Met à jour l’index FAISS en ajoutant uniquement les nouvelles entrées."""
+    texts = load_corpus()
+    if not texts:
+        log("❌ Corpus vide, rien à indexer.")
+        sys.exit(1)
+
+    indexed_texts = load_meta()
+    new_texts = [t for t in texts if t not in indexed_texts]
+
     if not index_exists():
-        log("⚠️ Index FAISS absent, reconstruction nécessaire.")
-        rebuild_index()
+        log("⚠️ Index absent, reconstruction complète nécessaire.")
+        rebuild_index(texts)
         return
 
     try:
         index = faiss.read_index(INDEX_FILE)
         log(f"✅ Index FAISS chargé avec {index.ntotal} vecteurs.")
-        if index.ntotal == 0:
-            log("⚠️ Index vide, reconstruction nécessaire.")
-            rebuild_index()
     except Exception as e:
         log(f"❌ Erreur lors du chargement de l’index : {e}")
-        rebuild_index()
+        rebuild_index(texts)
+        return
+
+    if new_texts:
+        log(f"📚 {len(new_texts)} nouvelles entrées détectées, ajout à l’index...")
+        model = SentenceTransformer(MODEL_NAME)
+        embeddings = model.encode(new_texts, convert_to_numpy=True, show_progress_bar=True)
+        index.add(embeddings.astype("float32"))
+        faiss.write_index(index, INDEX_FILE)
+        save_meta(texts)
+        log(f"✅ Index mis à jour avec {index.ntotal} vecteurs.")
+    else:
+        log("ℹ️ Aucun nouveau texte à indexer. Index inchangé.")
 
 if __name__ == "__main__":
-    log("Démarrage de la vérification de l’index FAISS...")
-    verify_index()
-    log("Fin de la vérification.")
+    log("Démarrage de la vérification incrémentale de l’index FAISS...")
+    if corpus_exists():
+        update_index()
+    else:
+        log("❌ Aucun corpus trouvé.")
+        sys.exit(1)
+    log("Fin de la vérification incrémentale.")
