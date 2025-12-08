@@ -1,4 +1,3 @@
-# src/__init__.py
 """
 ITCAA Offline AI Package
 ========================
@@ -15,11 +14,11 @@ __version__ = "1.0.0"
 __author__ = "ITCAA Project Team"
 __license__ = "MIT"
 
-# Exposition des modules principaux
-from .schemas import PredictionInput, PredictionOutput
-from .predictor import OfflinePredictor
-from .utils import normalize_features, log_prediction
-from .routers import router
+# ✅ Imports explicites adaptés au PYTHONPATH (/app/src)
+from apps.schemas import PredictionInput, PredictionOutput
+from apps.predictor import OfflinePredictor
+from apps.utils import normalize_features, log_prediction
+from apps.routers import router
 
 __all__ = [
     "PredictionInput",
