@@ -168,3 +168,9 @@ pre-commit: quality-check
 ## 🐳 Teste le build Docker localement
 docker-build-local:
 	docker build -t itcaa-ai-api .
+
+## 📦 Installe Poetry et plugin export
+poetry-setup:
+	curl -sSL https://install.python-poetry.org | python3 -
+	export PATH="$$HOME/.local/bin:$$PATH"
+	poetry self add poetry-plugin-export
