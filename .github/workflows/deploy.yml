@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feature/ai-offline-module
   workflow_dispatch:
 
 jobs:
@@ -12,61 +13,102 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 🐍 Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: 📦 Install Poetry
+        run: pip install poetry
+        shell: bash
+
+      - name: 📦 Export requirements
+        run: |
+          poetry export -f requirements.txt --without-hashes -o requirements.txt
+          poetry export -f requirements.txt --without-hashes --with dev -o requirements-dev.txt
+        shell: bash
 
       - name: 📂 Cache pip
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'requirements-dev.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: 📦 Install dependencies
-        run: pip install -r requirements.txt
+      - name: ⚙️ Setup production environment
+        run: make setup-prod
+        shell: bash
 
-      - name: 🔍 Vérification installation
+      - name: 🔍 Verify installation
         run: pip list
+        shell: bash
 
-      - name: 🧪 Run tests
-        run: pytest -v || echo "⚠️ Tests échoués"
-
-      - name: 🎯 Run linting
+      - name: 🎯 Lint & type check
         run: |
-          black --check .
-          isort --check-only .
-          mypy src || echo "⚠️ Typage incomplet"
+          black --check src/ tests/ | tee logs/black.log
+          isort --check-only src/ tests/ | tee logs/isort.log
+          mypy --config-file=mypy.ini src tests | tee logs/mypy.log
+        shell: bash
 
-      - name: 🚨 Run predeploy check
-        run: python predeploy_check.py
+      - name: 🧪 Run tests with coverage
+        run: pytest tests/ --maxfail=1 --disable-warnings --cov=src --cov-report=xml --cov-report=term-missing | tee logs/pytest.log
+        shell: bash
 
-  deploy:
+      - name: 📊 Verify coverage report
+        run: |
+          if [ ! -f coverage.xml ]; then
+            echo "❌ Rapport de couverture introuvable"
+            exit 1
+          else
+            echo "✅ Rapport de couverture généré"
+          fi
+        shell: bash
+
+      - name: 📁 Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ github.run_number }}
+          path: coverage.xml
+          if-no-files-found: error
+
+      - name: 📁 Upload logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-and-test-logs-${{ github.run_number }}
+          path: logs/
+          if-no-files-found: ignore
+
+      - name: 🔍 Validate Render configuration
+        run: python validate_render_config.py
+        shell: bash
+
+      - name: 🧪 Quality check
+        run: make quality-check
+        shell: bash
+
+  deploy-render:
     name: 🚀 Deploy to Render
     needs: predeploy-check
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 🔑 Authenticate and trigger Render deploy
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
         run: |
           echo "Authenticating with Render..."
-          curl -s -o response.json -w "%{http_code}" \
-               -H "Authorization: Bearer $RENDER_API_KEY" \
-               -H "Content-Type: application/json" \
-               --request POST \
-               --data "{\"serviceId\":\"$SERVICE_ID\",\"clearCache\":true}" \
-               https://api.render.com/v1/services/$SERVICE_ID/deploys > status_code.txt
+          STATUS=$(curl -s -o response.json -w "%{http_code}" \
+            -X POST "https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys" \
+            -H "Authorization: Bearer ${RENDER_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache":true}')
 
-          STATUS=$(cat status_code.txt)
           if [ "$STATUS" -ne 200 ]; then
             echo "❌ Échec du déploiement Render (code $STATUS)"
             cat response.json
@@ -75,3 +117,8 @@ jobs:
             echo "✅ Déploiement Render déclenché avec succès"
             cat response.json
           fi
+        shell: bash
+
+      - name: 🧹 Cleanup
+        run: rm -rf .pytest_cache __pycache__ */__pycache__ *.pyc *.pyo *.pyd *.log htmlcov/ coverage.xml logs/
+        shell: bash
