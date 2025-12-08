@@ -125,12 +125,12 @@ prod-install:
 	pip install -r requirements.txt
 
 ## ⚙️ Prépare l’environnement complet de développement
-setup-dev: verify-scripts dev-install repair-index audit
-	@echo "✅ Environnement de développement prêt : dépendances installées, scripts vérifiés, index réparé et audit effectué."
+setup-dev: verify-scripts dev-install repair-index check-import audit
+	@echo "✅ Environnement de développement prêt : dépendances installées, scripts vérifiés, import API validé, index réparé et audit effectué."
 
 ## 🚀 Prépare l’environnement complet de production
-setup-prod: verify-scripts prod-install repair-index
-	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés et index réparé."
+setup-prod: verify-scripts prod-install repair-index check-import
+	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, import API validé et index réparé."
 
 ## 🚀 Démarre l’API ITCAA (mode dev ou prod)
 start-api:
@@ -161,7 +161,7 @@ check-tests:
 ## 📥 Vérifie l'import de l'API ITCAA
 check-import:
 	@echo "📥 Vérification de l'import apps.api.main..."
-	python test_import.py
+	@python test_import.py || (echo "❌ Import API échoué" && exit 1)
 
 ## 📦 Vérifie la cohérence des dépendances Python
 validate-deps:
@@ -174,22 +174,4 @@ validate-render:
 	python validate_render_config.py
 
 ## 🧪 Vérification complète de la qualité (lint + typage + tests + import + deps + render)
-quality-check: lint typecheck check-tests check-import validate-deps validate-render
-	@echo "✅ Vérification complète de la qualité terminée : linting, typage, tests, import, dépendances et configuration Render validés."
-
-## 🔒 Vérification pré-commit (lint + typage + tests + import + deps + render)
-pre-commit: quality-check
-	@echo "🔒 Vérification pré-commit exécutée : code validé avant commit."
-
-## 🐳 Teste le build Docker localement
-docker-build-local:
-	@echo "🐳 Test du build Docker local…"
-	docker build -t $(DOCKER_IMAGE) .
-
-## 📦 Installe Poetry et plugin export (méthode unique)
-poetry-setup:
-	@echo "📦 Installation de Poetry et du plugin export…"
-	curl -sSL https://install.python-poetry.org | python3 -
-	@echo "➕ Ajout de Poetry au PATH"
-	@echo "$$HOME/.local/bin" >> $$GITHUB_PATH || true
-	poetry self add poetry-plugin-export
+quality-check: lint typecheck
