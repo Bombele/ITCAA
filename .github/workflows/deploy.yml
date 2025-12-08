@@ -57,6 +57,10 @@ jobs:
         run: make setup-prod
         shell: bash
 
+      - name: 📦 Setup Poetry environment
+        run: bash setup_poetry.sh
+        shell: bash
+
       - name: 🔍 Verify installation
         run: pip list
         shell: bash
@@ -104,6 +108,25 @@ jobs:
         run: make quality-check
         shell: bash
 
+      - name: 🩺 Health check API (local build)
+        run: |
+          docker build -t itcaa-api .
+          docker run -d --name itcaa-api -p 8000:8000 itcaa-api
+          for i in {1..20}; do
+            if curl -s http://localhost:8000/health | grep -q "ok"; then
+              echo "✅ API is healthy"
+              docker rm -f itcaa-api
+              exit 0
+            fi
+            echo "⏳ Waiting for API (attempt $i)..."
+            sleep 5
+          done
+          echo "❌ API did not start correctly"
+          docker logs itcaa-api
+          docker rm -f itcaa-api
+          exit 1
+        shell: bash
+
   deploy-render:
     name: 🚀 Deploy to Render
     needs: predeploy-check
@@ -137,7 +160,3 @@ jobs:
       - name: 🧹 Cleanup
         run: rm -rf .pytest_cache __pycache__ */__pycache__ *.pyc *.pyo *.pyd *.log htmlcov/ coverage.xml logs/
         shell: bash
-
-- name: 📦 Setup Poetry environment
-  run: bash setup_poetry.sh
-  shell: bash
