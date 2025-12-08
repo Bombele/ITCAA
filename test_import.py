@@ -29,8 +29,8 @@ except Exception as e:
     sys.exit(1)
 
 try:
-    from src.apps.api.main import app
-    print("✅ Import API réussi")
+    from apps.api.main import app
+    print("✅ Import réussi : apps.api.main")
 except Exception as e:
-    print("❌ Échec d'import API :", e)
+    print("❌ Échec d'import :", e)
     exit(1)
