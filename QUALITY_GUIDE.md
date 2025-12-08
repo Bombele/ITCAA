@@ -48,3 +48,31 @@ make quality-check
 
 # Vérification pré-commit (automatique si hook configuré)
 make pre-commit
+
+## 🚀 Déploiement Render
+
+Le déploiement vers Render est institutionnalisé dans le workflow `deploy.yml`, qui contient deux jobs :
+
+1. **Predeploy Validation (`predeploy-check`)**  
+   Ce job vérifie que le code est prêt à être déployé :
+   - Installation des dépendances via Poetry.
+   - Linting (`black`, `isort`) et typage (`mypy`).
+   - Tests unitaires avec couverture (`pytest`).
+   - Validation de la configuration Render (`validate_render_config.py`).
+   - Exécution du cycle qualité complet (`make quality-check`).
+   - Archivage des artefacts : logs et rapport de couverture.
+
+2. **Déploiement Render (`deploy-render`)**  
+   Ce job est déclenché uniquement si `predeploy-check` réussit :
+   - Authentification via `RENDER_API_KEY` et `RENDER_SERVICE_ID`.
+   - Déclenchement du déploiement via l’API Render.
+   - Affichage du statut et des logs de réponse.
+   - Nettoyage des artefacts temporaires.
+
+### Exemple d’exécution manuelle
+
+```bash
+# Lancer le workflow manuellement depuis GitHub
+make quality-check
+make validate-render
+# Push vers main ou feature/ai-offline-module déclenche automatiquement le déploiement
