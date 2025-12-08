@@ -8,7 +8,7 @@ DOCKER_IMAGE=itcaa-ai-api
 DOCKER_CONTAINER=itcaa-ai-api
 LOG_DIR=logs
 
-.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests check-import validate-deps validate-render quality-check pre-commit
+.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests check-import validate-deps validate-render quality-check pre-commit docker-build-local poetry-setup
 
 ## 🧠 Vérifie la structure du projet IA
 check:
@@ -45,7 +45,7 @@ typecheck:
 ## 🧹 Nettoie les artefacts temporaires
 clean:
 	@echo "🧹 Nettoyage des fichiers temporaires…"
-	rm -rf .pytest_cache __pycache__ */__pycache__ *.pyc *.pyo *.pyd *.log htmlcov/ coverage.xml $(LOG_DIR) coverage.xml
+	rm -rf .pytest_cache __pycache__ */__pycache__ *.pyc *.pyo *.pyd *.log htmlcov/ coverage.xml $(LOG_DIR)
 
 ## 🐳 Construire l'image Docker
 docker-build:
@@ -166,19 +166,4 @@ pre-commit: quality-check
 	@echo "🔒 Vérification pré-commit exécutée : code validé avant commit."
 
 ## 🐳 Teste le build Docker localement
-docker-build-local:
-	docker build -t itcaa-ai-api .
-
-## 📦 Installe Poetry et plugin export
-poetry-setup:
-	curl -sSL https://install.python-poetry.org | python3 -
-	export PATH="$$HOME/.local/bin:$$PATH"
-	poetry self add poetry-plugin-export
-
-## 📦 Installe Poetry et plugin export automatiquement
-poetry-setup:
-	bash setup_poetry.sh
-
-## 🐳 Build image avec export requirements
-docker-build:
-	docker build -t itcaa-api .
+docker
