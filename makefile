@@ -164,3 +164,7 @@ quality-check: lint typecheck check-tests check-import validate-deps validate-re
 ## 🔒 Vérification pré-commit (lint + typage + tests + import + deps + render)
 pre-commit: quality-check
 	@echo "🔒 Vérification pré-commit exécutée : code validé avant commit."
+
+## 🐳 Teste le build Docker localement
+docker-build-local:
+	docker build -t itcaa-ai-api .
