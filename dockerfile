@@ -8,13 +8,16 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# 📦 Installer dépendances système nécessaires (curl, venv)
+# 📦 Installer dépendances système nécessaires (curl, venv, pip)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl python3-venv \
+    curl python3-venv python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 # 📦 Installer Poetry via le script officiel
 RUN curl -sSL https://install.python-poetry.org | python3 -
+
+# 🔌 Vérifier que Poetry est bien installé
+RUN poetry --version
 
 # 🔌 Installer le plugin poetry-plugin-export requis pour `poetry export`
 RUN poetry self add poetry-plugin-export
@@ -47,10 +50,10 @@ COPY --from=builder /app/requirements.txt /app/requirements.txt
 COPY src/itcaa_ai_offline/requirements-ai.txt ./requirements-ai.txt
 
 # 📦 Installer dépendances Python
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt \
-    && pip install --no-cache-dir -r requirements-ai.txt \
-    && pip install --no-cache-dir uvicorn gunicorn fastapi
+RUN pip install --no-cache-dir --upgrade pip --root-user-action=ignore \
+    && pip install --no-cache-dir -r requirements.txt --root-user-action=ignore \
+    && pip install --no-cache-dir -r requirements-ai.txt --root-user-action=ignore \
+    && pip install --no-cache-dir uvicorn gunicorn fastapi --root-user-action=ignore
 
 # 📂 Copier le code source
 COPY . .
