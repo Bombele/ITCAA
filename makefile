@@ -178,3 +178,7 @@ poetry-setup:
 ## 📦 Installe Poetry et plugin export automatiquement
 poetry-setup:
 	bash setup_poetry.sh
+
+## 🐳 Build image avec export requirements
+docker-build:
+	docker build -t itcaa-api .
