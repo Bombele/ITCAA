@@ -42,21 +42,16 @@ def check_apps_importable():
 
 def main():
     print("🔍 Prévalidation du déploiement ITCAA\n")
+
     ok_yaml = check_render_yaml()
     ok_apps = check_apps_importable()
 
-    if not (ok_yaml and ok_apps):
+    if ok_yaml and ok_apps:
+        print("\n✅ Configuration valide : déploiement autorisé")
+        sys.exit(0)
+    else:
         print("\n❌ Blocage du déploiement : configuration invalide")
         sys.exit(1)
-    else:
-        print("\n✅ Configuration valide : déploiement autorisé")
 
 if __name__ == "__main__":
     main()
-import importlib.util
-
-spec = importlib.util.find_spec("apps")
-if spec:
-    print("✅ Module apps trouvé")
-else:
-    raise SystemExit("❌ Module apps introuvable")
