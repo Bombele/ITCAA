@@ -67,3 +67,5 @@ CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "src.apps.api.main:app",
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential xz-utils \
     && rm -rf /var/lib/apt/lists/*
+
+ENV DEBIAN_FRONTEND=noninteractive
