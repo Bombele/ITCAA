@@ -70,3 +70,5 @@ EXPOSE 8000
 
 # 🚀 Lancement avec Gunicorn + Uvicorn workers
 CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "src.apps.api.main:app", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "120"]
+
+RUN python test_import.py
