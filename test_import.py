@@ -27,3 +27,10 @@ except Exception as e:
     print(f"❌ Échec de l'import : {e}")
     logging.error(f"Échec de l'import : {e}")
     sys.exit(1)
+
+try:
+    from src.apps.api.main import app
+    print("✅ Import API réussi")
+except Exception as e:
+    print("❌ Échec d'import API :", e)
+    exit(1)
