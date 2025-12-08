@@ -167,3 +167,16 @@ pre-commit: quality-check
 
 ## 🐳 Teste le build Docker localement
 docker
+
+## 🔍 Vérifie la présence des scripts critiques
+verify-scripts:
+	@echo "🔍 Vérification des scripts critiques..."
+	@for script in scripts/repair_index.py scripts/check_structure.py scripts/validate_dependencies.py scripts/validate_render_config.py; do \
+		if [ ! -f "$$script" ]; then \
+			echo "❌ Script manquant : $$script"; \
+			exit 1; \
+		else \
+			echo "✅ Script présent : $$script"; \
+		fi; \
+	done
+	@echo "✅ Tous les scripts critiques sont présents."
