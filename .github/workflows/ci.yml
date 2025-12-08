@@ -14,6 +14,7 @@ on:
 
 jobs:
   validate-index:
+    name: 🔍 Validation index FAISS
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -39,47 +40,58 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install -r requirements-ai.txt
+        shell: bash
 
       - name: 🔍 Vérification installation
         run: pip list
+        shell: bash
 
       - name: 🧠 Set PYTHONPATH
         run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
+        shell: bash
 
       - name: 🔍 Vérification structure IA
         run: python scripts/check_structure.py
+        shell: bash
 
       - name: 🧩 Validate dependencies
         run: python validate_dependencies.py
+        shell: bash
 
       - name: 🛠️ Repair FAISS index if needed
         run: python repair_index.py
+        shell: bash
 
       - name: 🧬 Rebuild FAISS index (incremental)
         run: python src/itcaa_ai_offline/data/corpus/index_builder.py --incremental
+        shell: bash
 
       - name: 🧪 Run tests with coverage
         run: pytest -v --cov=src/itcaa_ai_offline --cov-report=xml --cov-report=term-missing tests/
+        shell: bash
 
       - name: 📊 Vérifier le rapport de couverture
         run: cat coverage.xml | grep "<coverage"
+        shell: bash
 
       - name: 📁 Upload coverage report artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage.xml
 
       - name: 📊 Generate index report
         run: python generate_index_report.py
+        shell: bash
 
       - name: 📁 Upload index report artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: index-report
           path: src/itcaa_ai_offline/data/index/index_report.md
 
   validate-model-and-predictor:
+    name: 🧠 Validation modèle et prédicteur
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -105,27 +117,34 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install -r requirements-ai.txt
+        shell: bash
 
       - name: 🔍 Vérification installation
         run: pip list
+        shell: bash
 
       - name: 🧠 Set PYTHONPATH
         run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
+        shell: bash
 
       - name: 🔍 Vérification structure IA
         run: python scripts/check_structure.py
+        shell: bash
 
       - name: 🧩 Validate dependencies
         run: python validate_dependencies.py
+        shell: bash
 
       - name: 🧪 Run model loader tests with coverage
         run: pytest -v --cov=src/itcaa_ai_offline --cov-report=xml --cov-append tests/test_model_loader.py
+        shell: bash
 
       - name: 🧠 Run predictor tests with coverage
         run: pytest -v --cov=src/itcaa_ai_offline --cov-report=xml --cov-append tests/test_predictor.py
+        shell: bash
 
       - name: 📁 Upload coverage report artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage.xml
