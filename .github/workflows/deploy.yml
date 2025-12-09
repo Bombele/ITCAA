@@ -11,15 +11,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 🐍 Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+      - name: 🧹 Purge cache pip
+        run: pip cache purge
+
       - name: 📦 Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt || true
+
+      - name: ✅ Audit IA dependencies
+        run: python -c "import torch, transformers, sentence_transformers, faiss, fastapi"
 
       - name: 🚨 Run predeploy check
         run: python predeploy_check.py
@@ -30,15 +39,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: 🔑 Authenticate with Render
+      - name: 🔑 Authenticate & Deploy to Render
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
         run: |
           echo "Authenticating with Render..."
-          curl -H "Authorization: Bearer $RENDER_API_KEY" \
-               -H "Content-Type: application/json" \
-               --request POST \
-               --data '{"serviceId":"itcaa-api","clearCache":true}' \
-               https://api.render.com/v1/services/itcaa-api/deploys
+          response=$(curl -s -w "%{http_code}" -o output.json \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Content-Type: application/json" \
+            --request POST \
+            --data '{"serviceId":"itcaa-api","clearCache":true}' \
+            https://api.render.com/v1/services/itcaa-api/deploys)
+
+          if [ "$response" -ne 200 ]; then
+            echo "❌ Échec du déploiement Render"
+            cat output.json
+            exit 1
+          else
+            echo "✅ Déploiement Render déclenché avec succès"
+          fi
