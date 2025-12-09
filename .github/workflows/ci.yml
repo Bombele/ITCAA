@@ -116,3 +116,6 @@ jobs:
 
 - name: Run Makefile
   run: make setup-prod
+
+- name: Check Makefile targets
+  run: grep -q "setup-prod:" Makefile
