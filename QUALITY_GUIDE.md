@@ -1,29 +1,30 @@
 ## 🛠 Règle institutionnelle : Makefile et CI/CD
 
-### 1. Branche `integration`
-- Le **Makefile complet** est maintenu dans la branche `integration`.
-- Il contient toutes les cibles critiques :  
-  - `setup-dev` et `setup-prod` (préparation des environnements)  
-  - `verify-scripts` et `generate-scripts` (scripts critiques)  
-  - `install-faiss` et `repair-index` (robustesse IA)  
-  - `check`, `test`, `audit` (qualité et cohérence)  
-  - Cibles Docker et CI/CD (`docker-build`, `docker-up`, `docker-health`, etc.)
-- Toute modification du pipeline CI/CD doit être validée dans `integration`.
+### 1. Présence obligatoire dans toutes les branches
+- Le **Makefile est présent dans toutes les branches actives** (`integration` et `ai-offline`).
+- Cela garantit que les pipelines CI/CD peuvent toujours exécuter les cibles critiques sans erreur.
 
-### 2. Branche `ai-offline`
-- Le **Makefile est minimal** dans la branche `ai-offline`.  
-- Il conserve uniquement les cibles nécessaires au travail sur l’index et la structure IA :  
-  - `setup-dev` et `setup-prod` (compatibilité CI/CD)  
-  - `install-faiss` et `repair-index` (gestion FAISS)  
-  - `check` et `audit` (structure et rapport index)  
-- Les cibles Docker, tests API et CI/CD complet sont supprimées pour alléger la maintenance.
+### 2. Cibles obligatoires
+- Les cibles `setup-dev` et `setup-prod` sont **obligatoires dans tous les Makefile**, quelle que soit la branche.
+- Ces cibles assurent la préparation cohérente des environnements de développement et de production.
+- Les scripts critiques (`verify-scripts`, `generate-scripts`, `repair-index`, `install-faiss`) doivent également être présents dans toutes les branches.
 
-### 3. Règle de cohérence
-- **Obligatoire** : chaque branche doit contenir au minimum les cibles `setup-dev` et `setup-prod` pour éviter les failles CI/CD.  
-- **Institutionnalisé** : le Makefile officiel est celui de `integration`.  
-- **Documenté** : `ai-offline` est volontairement allégé pour éviter les dépendances inutiles.
+### 3. Différenciation par branche
+- **Branche `integration`** :  
+  - Contient le Makefile complet avec toutes les cibles CI/CD (tests, audit, Docker, linting, typecheck, etc.).  
+  - Sert de socle institutionnel pour valider la robustesse et la qualité globale.
+- **Branche `ai-offline`** :  
+  - Contient un Makefile minimal, mais conserve obligatoirement `setup-dev` et `setup-prod`.  
+  - Se concentre sur les routines IA (FAISS, index, audit, structure).  
+  - Les cibles Docker et CI/CD avancées peuvent être absentes pour alléger la maintenance.
 
-### 4. Transmission collective
-- Toute nouvelle cible doit être ajoutée dans `integration` et validée par audit.  
-- Si une cible est utile en offline, elle peut être dupliquée dans le Makefile minimal de `ai-offline`.  
-- Les contributeurs doivent se référer à cette règle pour éviter les divergences et erreurs de pipeline.
+### 4. Gouvernance et transmission
+- Toute modification du Makefile doit être synchronisée entre les branches pour éviter les divergences.  
+- Les cibles critiques (`setup-dev`, `setup-prod`) ne peuvent jamais être supprimées.  
+- Les contributeurs doivent se référer à cette règle pour garantir la robustesse et éviter les erreurs de pipeline.
+
+### 5. Audit qualité
+- Lors de chaque fusion ou mise à jour, un audit doit vérifier que :  
+  - Les deux Makefile existent.  
+  - Les cibles critiques sont présentes et fonctionnelles.  
+  - Les différences entre `integration` et `ai-offline` sont documentées et justifiées.
