@@ -165,3 +165,6 @@ setup-prod: generate-scripts verify-scripts prod-install install-faiss repair-in
 ## 🚀 Démarre l’API ITCAA (mode dev ou prod)
 start-api:
 	@echo "🚀 Démarrage de l’API ITCAA
+
+setup-prod: generate-scripts verify-scripts prod-install install-faiss repair-index check-import
+	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, FAISS installé, import API validé et index réparé."
