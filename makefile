@@ -165,4 +165,5 @@ start-api:
 ## 🔄 Redémarre l’API ITCAA (arrêt + relance)
 restart-api:
 	@echo "🛑 Arrêt de l’API ITCAA..."
-	@pkill -f "uvicorn apps.api
+	@pkill -f "uvicorn apps.api.main:app" || echo "ℹ️ Aucun processus uvicorn trouvé"
+	@echo "
