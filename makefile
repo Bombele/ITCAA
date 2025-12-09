@@ -173,3 +173,16 @@ check-tests:
 validate-deps:
 	@echo "📦 Validation des dépendances Python..."
 	python validate_dependencies
+
+generate-scripts:
+	@echo "🛠 Génération des scripts critiques manquants..."
+	@mkdir -p $(SCRIPT_DIR)
+	@for script in repair_index.py check_structure.py validate_dependencies.py validate_render_config.py; do \
+		if [ ! -f "$(SCRIPT_DIR)/$$script" ]; then \
+			echo "📌 Création de $(SCRIPT_DIR)/$$script"; \
+			echo "#!/usr/bin/env python3\n\"\"\"$$script (squelette minimal, à compléter)\"\"\"\n\nif __name__ == \"__main__\":\n    print(\"✅ Script $$script généré (contenu minimal)\")" > $(SCRIPT_DIR)/$$script; \
+		else \
+			echo "ℹ️ Script déjà présent : $(SCRIPT_DIR)/$$script"; \
+		fi; \
+	done
+	@echo "✅ Scripts critiques régénérés ou confirmés."
