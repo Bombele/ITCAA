@@ -25,4 +25,4 @@ torch>=2.2,<3.0
 # 🔍 Similarité / Vectorisation (FAISS)
 ########################################
 # Utiliser faiss-cpu pour compatibilité CI/CD (GPU non disponible sur runners GitHub)
-faiss-cpu>=1.7,<1.8
+faiss-cpu>=1.8,<1.14
