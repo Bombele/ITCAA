@@ -67,3 +67,23 @@
 - Les contributeurs doivent utiliser `make setup-dev` pour préparer leur environnement local.  
 - Les déploiements CI/CD doivent utiliser `make setup-prod`.  
 - Cette règle garantit robustesse, traçabilité et onboarding international.
+
+## Vérification des dépendances IA – Règle institutionnelle
+
+### Objectif
+Garantir que tous les scripts critiques (ex. `repair_index.py`, `index_builder.py`) disposent des dépendances IA nécessaires avant exécution.  
+Cette vérification est institutionnalisée dans le **Makefile** via la cible `check-ia-deps`.
+
+### Règle
+- **Obligatoire** : tout appel à `setup-prod` ou `setup-dev` passe par `check-ia-deps`.
+- **Interdiction** : aucun fichier séparé (`requirements-ai.txt`) ne doit être utilisé.  
+- **Centralisation** : toutes les dépendances IA et API doivent être listées dans `requirements.txt` et `requirements-dev.txt`.
+
+### Implémentation dans le Makefile
+```makefile
+check-ia-deps:
+	@python -c "import torch, transformers, sentence_transformers, faiss" || \
+	(echo '❌ Dépendances IA manquantes. Vérifiez requirements.txt et relancez l’installation.' && exit 1)
+
+setup-prod: check-ia-deps install-prod repair-index
+setup-dev: check-ia-deps install-dev
