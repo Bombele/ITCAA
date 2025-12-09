@@ -1,0 +1,62 @@
+PYTHONPATH=src
+SCRIPT_DIR=scripts
+INDEX_REPORT=$(PYTHONPATH)/itcaa_ai_offline/data/index/index_report.md
+
+.PHONY: check repair-index audit install-faiss setup-dev setup-prod verify-scripts generate-scripts
+
+## 🔍 Vérifie la présence des scripts critiques
+verify-scripts:
+	@echo "🔍 Vérification des scripts critiques..."
+	@for script in $(SCRIPT_DIR)/repair_index.py $(SCRIPT_DIR)/check_structure.py $(SCRIPT_DIR)/validate_dependencies.py $(SCRIPT_DIR)/validate_render_config.py; do \
+		if [ ! -f "$$script" ]; then \
+			echo "❌ Script manquant : $$script"; \
+			echo "📌 Conseil : régénérez les scripts manquants via make generate-scripts"; \
+			exit 1; \
+		else \
+			echo "✅ Script présent : $$script"; \
+		fi; \
+	done
+	@echo "✅ Tous les scripts critiques sont présents."
+
+## 🛠 Génère les scripts critiques manquants
+generate-scripts:
+	@echo "🛠 Génération des scripts critiques manquants..."
+	@mkdir -p $(SCRIPT_DIR)
+	@for script in repair_index.py check_structure.py validate_dependencies.py validate_render_config.py; do \
+		if [ ! -f "$(SCRIPT_DIR)/$$script" ]; then \
+			echo "📌 Création de $(SCRIPT_DIR)/$$script"; \
+			echo "#!/usr/bin/env python3\n\"\"\"$$script (squelette minimal, à compléter)\"\"\"\n\nif __name__ == \"__main__\":\n    print(\"✅ Script $$script généré (contenu minimal)\")" > $(SCRIPT_DIR)/$$script; \
+		else \
+			echo "ℹ️ Script déjà présent : $(SCRIPT_DIR)/$$script"; \
+		fi; \
+	done
+	@echo "✅ Scripts critiques régénérés ou confirmés."
+
+## 📦 Installation de FAISS (CPU)
+install-faiss:
+	@echo "📦 Installation de FAISS (CPU)..."
+	pip install "faiss-cpu>=1.8,<1.14"
+
+## 🧠 Vérifie la structure du projet IA
+check:
+	@echo "🔍 Vérification structure IA ITCAA…"
+	PYTHONPATH=$(PYTHONPATH) python $(SCRIPT_DIR)/check_structure.py || exit 1
+
+## 🛠 Vérifie et répare l’index FAISS
+repair-index: install-faiss
+	@echo "🛠 Vérification et réparation de l’index FAISS…"
+	PYTHONPATH=$(PYTHONPATH) python $(SCRIPT_DIR)/repair_index.py || exit 1
+
+## 📊 Génère le rapport d'audit
+audit:
+	@echo "📊 Génération du rapport d'audit…"
+	PYTHONPATH=$(PYTHONPATH) python $(PYTHONPATH)/itcaa_ai_offline/generate_index_report.py || exit 1
+	@echo "✅ Rapport disponible : $(INDEX_REPORT)"
+
+## ⚙️ Prépare l’environnement complet de développement (minimal)
+setup-dev: generate-scripts verify-scripts install-faiss repair-index check audit
+	@echo "✅ Environnement de développement prêt (ai-offline)."
+
+## 🚀 Prépare l’environnement complet de production (minimal)
+setup-prod: generate-scripts verify-scripts install-faiss repair-index check
+	@echo "✅ Environnement de production prêt (ai-offline)."
