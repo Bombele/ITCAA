@@ -24,8 +24,11 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: 🧹 Purge cache pip
-        run: pip cache purge
+      - name: 🧹 Purge pip cache
+        run: |
+          pip cache purge
+          rm -rf ~/.cache/pip
+          rm -rf ${{ env.pythonLocation }}/lib/python3.12/site-packages/*
 
       - name: 📦 Install dependencies
         run: |
@@ -52,16 +55,18 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: 🧹 Purge cache pip
-        run: pip cache purge
+      - name: 🧹 Purge pip cache
+        run: |
+          pip cache purge
+          rm -rf ~/.cache/pip
+          rm -rf ${{ env.pythonLocation }}/lib/python3.12/site-packages/*
 
       - name: 📦 Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-dev.txt || true
-
-      - name: 🧠 Define PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd):$(pwd)/src" >> $GITHUB_ENV
+          pip install "faiss-cpu>=1.8,<1.14"
 
       - name: ✅ Audit IA dependencies via Makefile
         run: make validate-ai
@@ -83,18 +88,18 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: 🧹 Purge cache pip
-        run: pip cache purge
+      - name: 🧹 Purge pip cache
+        run: |
+          pip cache purge
+          rm -rf ~/.cache/pip
+          rm -rf ${{ env.pythonLocation }}/lib/python3.12/site-packages/*
 
       - name: 📦 Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-dev.txt || true
-
-      - name: 🔄 Force install IA deps
-        run: |
-          pip install --upgrade --force-reinstall torch transformers sentence-transformers scikit-learn faiss-cpu
+          pip install "faiss-cpu>=1.8,<1.14"
 
       - name: ✅ Audit IA dependencies via Makefile
         run: make validate-ai
