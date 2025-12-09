@@ -28,3 +28,42 @@
   - Les deux Makefile existent.  
   - Les cibles critiques sont présentes et fonctionnelles.  
   - Les différences entre `integration` et `ai-offline` sont documentées et justifiées.
+
+## 📦 Règle institutionnelle : Gestion des dépendances Python
+
+### 1. Fichiers de référence
+- **requirements.txt**  
+  - Contient toutes les dépendances **API + IA** nécessaires au runtime et à la production.  
+  - Sert de base pour la cible `prod-install` du Makefile.  
+  - Inclut FastAPI, SQLAlchemy, Torch, Transformers, Sentence-Transformers, FAISS, etc.
+
+- **requirements-dev.txt**  
+  - Contient toutes les dépendances de **requirements.txt** + les dépendances de développement (tests, linting, typage, CI/CD).  
+  - Sert de base pour la cible `dev-install` du Makefile.  
+  - Inclut Pytest, Coverage, Mypy, Flake8, Black, Isort, Pre-commit.
+
+### 2. Cibles Makefile associées
+- `prod-install` → installe uniquement `requirements.txt` (environnement de production).  
+- `dev-install` → installe `requirements-dev.txt` (environnement de développement complet).  
+- `setup-prod` et `setup-dev` → orchestrent l’installation, la vérification des scripts critiques, FAISS et l’audit.
+
+### 3. Règle de cohérence
+- **Obligatoire** : toute dépendance utilisée dans les scripts IA (`repair_index.py`, `index_builder.py`, etc.) doit être présente dans `requirements.txt`.  
+- **Institutionnalisé** : aucun script IA ne doit dépendre d’un fichier séparé (`requirements-ai.txt`, `requirements-ml.txt`, etc.).  
+- **Documenté** : la fusion des dépendances API et IA est centralisée dans `requirements.txt`.  
+- **Audit** : toute dépendance manquante ou dispersée est considérée comme une faille institutionnelle.
+
+### 4. Audit qualité
+- Chaque mise à jour de dépendance doit être validée par un audit CI/CD :  
+  - Vérification que `requirements.txt` contient toutes les dépendances runtime (API + IA).  
+  - Vérification que `requirements-dev.txt` contient toutes les dépendances de développement.  
+  - Test automatique :  
+    ```yaml
+    - name: Check Python dependencies
+      run: python -c "import torch, transformers, sentence_transformers, faiss, fastapi"
+    ```
+
+### 5. Transmission collective
+- Les contributeurs doivent utiliser `make setup-dev` pour préparer leur environnement local.  
+- Les déploiements CI/CD doivent utiliser `make setup-prod`.  
+- Cette règle garantit robustesse, traçabilité et onboarding international.
