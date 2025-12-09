@@ -39,7 +39,7 @@ generate-scripts:
 ## 📦 Installation de FAISS (CPU)
 install-faiss:
 	@echo "📦 Installation de FAISS (CPU)..."
-	pip install faiss-cpu==1.7.4
+	pip install "faiss-cpu>=1.8,<1.14"
 
 ## 🧠 Vérifie la structure du projet IA
 check:
