@@ -6,7 +6,7 @@ DOCKER_IMAGE=itcaa-ai-api
 DOCKER_CONTAINER=itcaa-ai-api
 LOG_DIR=logs
 
-.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests check-import validate-deps validate-render quality-check pre-commit docker-build-local poetry-setup verify-scripts generate-scripts
+.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests check-import validate-deps validate-render quality-check pre-commit docker-build-local poetry-setup verify-scripts generate-scripts install-faiss
 
 ## 🔍 Vérifie la présence des scripts critiques
 verify-scripts:
@@ -35,6 +35,11 @@ generate-scripts:
 		fi; \
 	done
 	@echo "✅ Scripts critiques régénérés ou confirmés."
+
+## 📦 Installation de FAISS (CPU)
+install-faiss:
+	@echo "📦 Installation de FAISS (CPU)..."
+	pip install faiss-cpu==1.7.4
 
 ## 🧠 Vérifie la structure du projet IA
 check:
@@ -128,7 +133,7 @@ requirements:
 	poetry export -f requirements.txt --without-hashes --with dev -o requirements-dev.txt
 
 ## 🛠 Vérifie et répare l’index FAISS
-repair-index:
+repair-index: install-faiss
 	@echo "🛠 Vérification et réparation de l’index FAISS…"
 	PYTHONPATH=$(PYTHONPATH) python $(SCRIPT_DIR)/repair_index.py || exit 1
 
@@ -150,20 +155,14 @@ check-import:
 	@python test_import.py || (echo "❌ Import API échoué" && exit 1)
 
 ## ⚙️ Prépare l’environnement complet de développement
-setup-dev: generate-scripts verify-scripts dev-install repair-index check-import audit
-	@echo "✅ Environnement de développement prêt : dépendances installées, scripts vérifiés, import API validé, index réparé et audit effectué."
+setup-dev: generate-scripts verify-scripts dev-install install-faiss repair-index check-import audit
+	@echo "✅ Environnement de développement prêt : dépendances installées, scripts vérifiés, FAISS installé, import API validé, index réparé et audit effectué."
 
 ## 🚀 Prépare l’environnement complet de production
-setup-prod: generate-scripts verify-scripts prod-install repair-index check-import
-	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, import API validé et index réparé."
+setup-prod: generate-scripts verify-scripts prod-install install-faiss repair-index check-import
+	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, FAISS installé, import API validé et index réparé."
 
 ## 🚀 Démarre l’API ITCAA (mode dev ou prod)
 start-api:
 	@echo "🚀 Démarrage de l’API ITCAA..."
-	ENV=$(ENV) bash start.sh
-
-## 🔄 Redémarre l’API ITCAA (arrêt + relance)
-restart-api:
-	@echo "🛑 Arrêt de l’API ITCAA..."
-	@pkill -f "uvicorn apps.api.main:app" || echo "ℹ️ Aucun processus uvicorn trouvé"
-	@echo "
+	ENV=$(ENV
