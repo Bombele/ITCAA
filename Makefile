@@ -6,7 +6,7 @@ DOCKER_IMAGE=itcaa-ai-api
 DOCKER_CONTAINER=itcaa-ai-api
 LOG_DIR=logs
 
-.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests check-import validate-deps validate-render quality-check pre-commit docker-build-local poetry-setup verify-scripts generate-scripts install-faiss
+.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests check-import validate-ai validate-render quality-check pre-commit docker-build-local poetry-setup verify-scripts generate-scripts install-faiss index-builder
 
 ## 🔍 Vérifie la présence des scripts critiques
 verify-scripts:
@@ -41,6 +41,24 @@ install-faiss:
 	@echo "📦 Installation de FAISS (CPU)..."
 	pip install "faiss-cpu>=1.8,<1.14"
 
+## 📦 Installation production (requirements puis FAISS)
+install-prod:
+	@echo "📦 Installation des dépendances de production..."
+	python -m pip install --upgrade pip
+	pip install -r requirements.txt
+	pip install "faiss-cpu>=1.8,<1.14"
+
+## 📦 Installation développement (requirements-dev puis FAISS)
+install-dev:
+	@echo "📦 Installation des dépendances de développement..."
+	python -m pip install --upgrade pip
+	pip install -r requirements-dev.txt || true
+	pip install "faiss-cpu>=1.8,<1.14"
+
+## 🔍 Vérification des dépendances IA
+validate-ai:
+	@PYTHONPATH=scripts python scripts/validate_ai_dependencies.py
+
 ## 🧠 Vérifie la structure du projet IA
 check:
 	@echo "🔍 Vérification structure IA ITCAA…"
@@ -52,7 +70,7 @@ test:
 	PYTHONPATH=$(PYTHONPATH) pytest -v $(TEST_DIR) --maxfail=1 --disable-warnings || exit 1
 
 ## 🧬 Reconstruit l'index FAISS
-index:
+index-builder: validate-ai
 	@echo "🧬 Reconstruction de l'index FAISS…"
 	PYTHONPATH=$(PYTHONPATH) python $(PYTHONPATH)/itcaa_ai_offline/data/corpus/index_builder.py --incremental || exit 1
 
@@ -132,35 +150,29 @@ requirements:
 	poetry export -f requirements.txt --without-hashes -o requirements.txt
 	poetry export -f requirements.txt --without-hashes --with dev -o requirements-dev.txt
 
-## 🛠 Vérifie et répare l’index FAISS
-repair-index: install-faiss
+## 🔍 Vérification des dépendances IA
+validate-ai:
+	@PYTHONPATH=scripts python scripts/validate_ai_dependencies.py
+
+## 🛠 Vérifie et répare l’index FAISS (protégé par audit IA)
+repair-index: validate-ai install-faiss
 	@echo "🛠 Vérification et réparation de l’index FAISS…"
-	PYTHONPATH=$(PYTHONPATH) python $(SCRIPT_DIR)/repair_index.py || exit 1
+	PYTHONPATH=$(PYTHONPATH) python $(SCRIPT_DIR)/repair_index.py || \
+	(echo '❌ Échec réparation index FAISS' && exit 1)
 
-## 📦 Installe les dépendances de développement
-dev-install:
-	@echo "📦 Installation des dépendances de développement..."
-	python -m pip install --upgrade pip
-	pip install -r requirements-dev.txt
-
-## 📦 Installe les dépendances de production
-prod-install:
-	@echo "📦 Installation des dépendances de production..."
-	python -m pip install --upgrade pip
-	pip install -r requirements.txt
-
-## 📥 Vérifie l'import de l'API ITCAA
-check-import:
-	@echo "📥 Vérification de l'import apps.api.main..."
-	@python test_import.py || (echo "❌ Import API échoué" && exit 1)
+## 🧬 Génération de l’index FAISS (protégé par audit IA)
+index-builder: validate-ai install-faiss
+	@echo "🧬 Reconstruction de l’index FAISS…"
+	PYTHONPATH=$(PYTHONPATH) python $(PYTHONPATH)/itcaa_ai_offline/data/corpus/index_builder.py --incremental || \
+	(echo '❌ Échec génération index FAISS' && exit 1)
 
 ## ⚙️ Prépare l’environnement complet de développement
-setup-dev: generate-scripts verify-scripts dev-install install-faiss repair-index check-import audit
-	@echo "✅ Environnement de développement prêt : dépendances installées, scripts vérifiés, FAISS installé, import API validé, index réparé et audit effectué."
+setup-dev: generate-scripts verify-scripts install-dev validate-ai repair-index check-import audit
+	@echo "✅ Environnement de développement prêt : dépendances installées, scripts vérifiés, FAISS installé, audit IA validé, import API validé, index réparé et audit effectué."
 
 ## 🚀 Prépare l’environnement complet de production
-setup-prod: generate-scripts verify-scripts prod-install install-faiss repair-index check-import
-	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, FAISS installé, import API validé et index réparé."
+setup-prod: generate-scripts verify-scripts install-prod validate-ai repair-index check-import
+	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, FAISS installé, audit IA validé, import API validé et index réparé."
 
 ## 🚀 Démarre l’API ITCAA
 start-api:
