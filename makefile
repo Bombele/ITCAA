@@ -200,3 +200,5 @@ poetry-setup:
 	@echo "➕ Ajout de Poetry au PATH"
 	@echo "$$HOME/.local/bin" >> $$GITHUB_PATH || true
 	poetry self add poetry-plugin-export
+
+echo "📌 Conseil : régénérez les scripts manquants via make generate-scripts"
