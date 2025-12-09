@@ -166,3 +166,6 @@ setup-prod: generate-scripts verify-scripts prod-install install-faiss repair-in
 start-api:
         @echo "🚀 Démarrage de l’API ITCAA..."
         ENV=$(ENV
+
+setup-prod: generate-scripts verify-scripts prod-install install-faiss repair-index check
+	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, FAISS installé, index réparé."
