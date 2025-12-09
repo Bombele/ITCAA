@@ -21,8 +21,11 @@ jobs:
           python-version: "3.12"
 
       # 3. Purge du cache pip
-      - name: 🧹 Purge cache pip
-        run: pip cache purge
+- name: 🧹 Purge cache pip
+  run: |
+    pip cache purge
+    rm -rf ~/.cache/pip
+    rm -rf ${{ env.pythonLocation }}/lib/python3.12/site-packages/*
 
       # 4. Installation des dépendances
       - name: 📦 Install dependencies
