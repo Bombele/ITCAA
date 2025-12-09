@@ -6,7 +6,7 @@ DOCKER_IMAGE=itcaa-ai-api
 DOCKER_CONTAINER=itcaa-ai-api
 LOG_DIR=logs
 
-.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests check-import validate-ai validate-render quality-check pre-commit docker-build-local poetry-setup verify-scripts generate-scripts install-faiss index-builder
+.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-import validate-ai validate-render quality-check pre-commit docker-build-local poetry-setup verify-scripts generate-scripts install-faiss index-builder
 
 ## 🔍 Vérifie la présence des scripts critiques
 verify-scripts:
@@ -69,10 +69,11 @@ test:
 	@echo "🧪 Exécution des tests unitaires et d'intégration…"
 	PYTHONPATH=$(PYTHONPATH) pytest -v $(TEST_DIR) --maxfail=1 --disable-warnings || exit 1
 
-## 🧬 Reconstruit l'index FAISS
-index-builder: validate-ai
-	@echo "🧬 Reconstruction de l'index FAISS…"
-	PYTHONPATH=$(PYTHONPATH) python $(PYTHONPATH)/itcaa_ai_offline/data/corpus/index_builder.py --incremental || exit 1
+## 🧬 Génération de l’index FAISS (protégé par audit IA)
+index-builder: validate-ai install-faiss
+	@echo "🧬 Reconstruction de l’index FAISS…"
+	PYTHONPATH=$(PYTHONPATH) python $(PYTHONPATH)/itcaa_ai_offline/data/corpus/index_builder.py --incremental || \
+	(echo '❌ Échec génération index FAISS' && exit 1)
 
 ## 📊 Génère le rapport d'audit
 audit:
@@ -150,21 +151,16 @@ requirements:
 	poetry export -f requirements.txt --without-hashes -o requirements.txt
 	poetry export -f requirements.txt --without-hashes --with dev -o requirements-dev.txt
 
-## 🔍 Vérification des dépendances IA
-validate-ai:
-	@PYTHONPATH=scripts python scripts/validate_ai_dependencies.py
-
 ## 🛠 Vérifie et répare l’index FAISS (protégé par audit IA)
 repair-index: validate-ai install-faiss
 	@echo "🛠 Vérification et réparation de l’index FAISS…"
 	PYTHONPATH=$(PYTHONPATH) python $(SCRIPT_DIR)/repair_index.py || \
 	(echo '❌ Échec réparation index FAISS' && exit 1)
 
-## 🧬 Génération de l’index FAISS (protégé par audit IA)
-index-builder: validate-ai install-faiss
-	@echo "🧬 Reconstruction de l’index FAISS…"
-	PYTHONPATH=$(PYTHONPATH) python $(PYTHONPATH)/itcaa_ai_offline/data/corpus/index_builder.py --incremental || \
-	(echo '❌ Échec génération index FAISS' && exit 1)
+## 📥 Vérifie l'import de l'API ITCAA
+check-import:
+	@echo "📥 Vérification de l'import apps.api.main..."
+	@python test_import.py || (echo "❌ Import API échoué" && exit 1)
 
 ## ⚙️ Prépare l’environnement complet de développement
 setup-dev: generate-scripts verify-scripts install-dev validate-ai repair-index check-import audit
