@@ -180,10 +180,9 @@ stop-api:
 cycle-api: stop-api start-api
 	@echo "🔁 Cycle complet effectué : API arrêtée puis redémarrée."
 
-# Vérification des dépendances IA critiques
-check-ia-deps:
-	@python -c "import torch, transformers, sentence_transformers, faiss" || \
-	(echo '❌ Dépendances IA manquantes. Vérifiez requirements.txt et relancez l’installation.' && exit 1)
+# Vérification des dépendances IA via script dédié
+validate-ai:
+	@PYTHONPATH=scripts python scripts/validate_ai_dependencies.py
 
 # Installation production
 install-prod:
@@ -194,17 +193,17 @@ install-dev:
 	pip install -r requirements-dev.txt || true
 
 # Setup production avec audit IA
-setup-prod: check-ia-deps install-prod repair-index
+setup-prod: validate-ai install-prod repair-index
 
 # Setup développement avec audit IA
-setup-dev: check-ia-deps install-dev
+setup-dev: validate-ai install-dev
 
-# Réparation de l’index FAISS (protégé par check-ia-deps)
-repair-index: check-ia-deps
+# Réparation de l’index FAISS (protégé par validate-ai)
+repair-index: validate-ai
 	PYTHONPATH=src python scripts/repair_index.py || \
 	(echo '❌ Échec réparation index FAISS' && exit 1)
 
-# Génération de l’index FAISS (protégé par check-ia-deps)
-index-builder: check-ia-deps
+# Génération de l’index FAISS (protégé par validate-ai)
+index-builder: validate-ai
 	PYTHONPATH=src python scripts/index_builder.py || \
 	(echo '❌ Échec génération index FAISS' && exit 1)
