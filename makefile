@@ -167,3 +167,5 @@ restart-api:
 	@echo "🛑 Arrêt de l’API ITCAA..."
 	@pkill -f "uvicorn apps.api.main:app" || echo "ℹ️ Aucun processus uvicorn trouvé"
 	@echo "
+
+setup-prod: generate-scripts verify-scripts prod-install repair-index check-import
