@@ -168,8 +168,6 @@ restart-api:
 	@pkill -f "uvicorn apps.api.main:app" || echo "ℹ️ Aucun processus uvicorn trouvé"
 	@echo "
 
-setup-prod: generate-scripts verify-scripts prod-install repair-index check-import
-
 
 ## 🛠 Génère les scripts critiques manquants
 generate-scripts:
@@ -184,3 +182,5 @@ generate-scripts:
 		fi; \
 	done
 	@echo "✅ Scripts critiques régénérés ou confirmés."
+
+setup-prod: generate-scripts verify-scripts prod-install repair-index check-import
