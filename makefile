@@ -201,4 +201,16 @@ poetry-setup:
 	@echo "$$HOME/.local/bin" >> $$GITHUB_PATH || true
 	poetry self add poetry-plugin-export
 
-echo "📌 Conseil : régénérez les scripts manquants via make generate-scripts"
+## 🔍 Vérifie la présence des scripts critiques
+verify-scripts:
+	@echo "🔍 Vérification des scripts critiques..."
+	@for script in $(SCRIPT_DIR)/repair_index.py $(SCRIPT_DIR)/check_structure.py $(SCRIPT_DIR)/validate_dependencies.py $(SCRIPT_DIR)/validate_render_config.py; do \
+		if [ ! -f "$$script" ]; then \
+			echo "❌ Script manquant : $$script"; \
+			echo "📌 Conseil : régénérez les scripts manquants via make generate-scripts"; \
+			exit 1; \
+		else \
+			echo "✅ Script présent : $$script"; \
+		fi; \
+	done
+	@echo "✅ Tous les scripts critiques sont présents."
