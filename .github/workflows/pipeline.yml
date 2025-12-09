@@ -63,8 +63,8 @@ jobs:
       - name: 🧠 Define PYTHONPATH
         run: echo "PYTHONPATH=$(pwd):$(pwd)/src" >> $GITHUB_ENV
 
-      - name: ✅ Audit IA dependencies
-        run: python -c "import torch, transformers, sentence_transformers, faiss, scikit_learn"
+      - name: ✅ Audit IA dependencies via Makefile
+        run: make validate-ai
 
       - name: 🧪 Run IA tests
         run: pytest -v tests/
@@ -96,11 +96,8 @@ jobs:
         run: |
           pip install --upgrade --force-reinstall torch transformers sentence-transformers scikit-learn faiss-cpu
 
-      - name: ✅ Verify Makefile targets
-        run: grep -q "setup-prod:" Makefile
-
-      - name: ✅ Verify IA dependencies
-        run: python -c "import torch, transformers, sentence_transformers, faiss, fastapi"
+      - name: ✅ Audit IA dependencies via Makefile
+        run: make validate-ai
 
       - name: ▶️ Run Makefile setup-prod
         run: make setup-prod
