@@ -1,4 +1,4 @@
-name: Deploy to Render
+name: 🚀 Deploy ITCAA API to Render
 
 on:
   push:
@@ -11,35 +11,52 @@ jobs:
 
     steps:
       # 1. Checkout du repository
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
 
       # 2. Configuration de Python (validation avant déploiement)
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
-      # 3. Installation des dépendances
-      - name: Install dependencies
+      # 3. Purge du cache pip
+      - name: 🧹 Purge cache pip
+        run: pip cache purge
+
+      # 4. Installation des dépendances
+      - name: 📦 Install dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          else
-            pip install fastapi uvicorn sqlalchemy pydantic pytest
-          fi
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt || true
 
-      # 4. Exécution des tests avant déploiement
-      - name: Run tests
+      # 5. Audit des dépendances IA & API
+      - name: ✅ Audit dependencies
+        run: python -c "import fastapi, uvicorn, sqlalchemy, pydantic, torch, transformers, sentence_transformers, faiss"
+
+      # 6. Exécution des tests avant déploiement
+      - name: 🧪 Run tests
         run: pytest apps/api/tests --maxfail=1 --disable-warnings -q
 
-      # 5. Déploiement sur Render
-      - name: Deploy to Render
+      # 7. Déploiement sur Render avec validation du retour
+      - name: 🚀 Deploy to Render
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
           RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
         run: |
-          curl -X POST "https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys" \
+          echo "Authenticating with Render..."
+          response=$(curl -s -w "%{http_code}" -o output.json \
             -H "Authorization: Bearer ${RENDER_API_KEY}" \
-            -H "Content-Type: application/json"
+            -H "Content-Type: application/json" \
+            --request POST \
+            --data "{\"serviceId\":\"${RENDER_SERVICE_ID}\",\"clearCache\":true}" \
+            https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys)
+
+          if [ "$response" -ne 200 ]; then
+            echo "❌ Échec du déploiement Render"
+            cat output.json
+            exit 1
+          else
+            echo "✅ Déploiement Render déclenché avec succès"
+          fi
