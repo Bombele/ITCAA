@@ -165,4 +165,11 @@ cycle-api: stop-api start-api
 	@echo "🔄 Cycle complet exécuté : API arrêtée puis relancée en mode $(ENV)."
 
 ## 🧪 Vérifie les tests avec couverture et logs
-check
+check-tests:
+	@echo "🧪 Vérification des tests avec couverture..."
+	bash test_check.sh
+
+## 📦 Vérifie la cohérence des dépendances Python
+validate-deps:
+	@echo "📦 Validation des dépendances Python..."
+	python validate_dependencies
