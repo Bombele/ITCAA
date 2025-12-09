@@ -5,8 +5,8 @@ Vérifie la cohérence de la configuration Render (render.yaml) et la structure 
 Institutionnalisation pour CI/CD ITCAA.
 """
 
-import os
 import sys
+import os
 import yaml
 from pathlib import Path
 
@@ -27,8 +27,11 @@ def check_render_file() -> bool:
             yaml.safe_load(f)
         log("✅ Fichier render.yaml présent et valide YAML.")
         return True
+    except yaml.YAMLError as e:
+        log(f"❌ Erreur de syntaxe YAML dans render.yaml → {e}")
+        return False
     except Exception as e:
-        log(f"❌ Erreur de parsing YAML dans render.yaml → {e}")
+        log(f"❌ Erreur inattendue lors de la lecture de render.yaml → {e}")
         return False
 
 def check_src_structure() -> bool:
@@ -46,7 +49,12 @@ def check_src_structure() -> bool:
 
 def main():
     log("Démarrage de la validation Render…")
-    ok = check_render_file() and check_src_structure()
+    ok = True
+    if not check_render_file():
+        ok = False
+    if not check_src_structure():
+        ok = False
+
     if ok:
         log("🎯 Configuration Render valide. Prêt pour CI/CD.")
         sys.exit(0)
