@@ -163,4 +163,26 @@ check-import:
 
 ## ⚙️ Prépare l’environnement complet de développement
 setup-dev: generate-scripts verify-scripts install-dev validate-ai repair-index check-import audit
-	@echo "✅ Environnement
+	@echo "✅ Environnement de développement prêt : dépendances installées, scripts vérifiés, FAISS installé, audit IA validé, import API validé, index réparé et audit effectué."
+
+## 🚀 Prépare l’environnement complet de production
+setup-prod: generate-scripts verify-scripts install-prod validate-ai repair-index check-import
+	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, FAISS installé, audit IA validé, import API validé et index réparé."
+
+## 🚀 Démarre l’API ITCAA
+start-api:
+	@echo "🚀 Démarrage de l’API ITCAA..."
+	uvicorn apps.api.main:app --host 0.0.0.0 --port 8000
+
+## 🔄 Redémarre l’API ITCAA
+restart-api: stop-api start-api
+	@echo "🔄 API ITCAA redémarrée."
+
+## 🛑 Arrête l’API ITCAA
+stop-api:
+	@echo "🛑 Arrêt de l’API ITCAA..."
+	@pkill -f "uvicorn apps.api.main:app" || echo "ℹ️ Aucun processus Uvicorn trouvé"
+
+## 🔁 Cycle complet (stop + start)
+cycle-api: stop-api start-api
+	@echo "🔁 Cycle complet effectué : API arrêtée puis redémarrée."
