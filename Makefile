@@ -199,10 +199,12 @@ setup-prod: check-ia-deps install-prod repair-index
 # Setup développement avec audit IA
 setup-dev: check-ia-deps install-dev
 
-# Réparation de l’index FAISS
-repair-index:
-	PYTHONPATH=src python scripts/repair_index.py || exit 1
+# Réparation de l’index FAISS (protégé par check-ia-deps)
+repair-index: check-ia-deps
+	PYTHONPATH=src python scripts/repair_index.py || \
+	(echo '❌ Échec réparation index FAISS' && exit 1)
 
-# Génération de l’index FAISS
-index-builder:
-	PYTHONPATH=src python scripts/index_builder.py || exit 1
+# Génération de l’index FAISS (protégé par check-ia-deps)
+index-builder: check-ia-deps
+	PYTHONPATH=src python scripts/index_builder.py || \
+	(echo '❌ Échec génération index FAISS' && exit 1)
