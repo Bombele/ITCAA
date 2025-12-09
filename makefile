@@ -150,11 +150,11 @@ check-import:
 	@python test_import.py || (echo "❌ Import API échoué" && exit 1)
 
 ## ⚙️ Prépare l’environnement complet de développement
-setup-dev: verify-scripts dev-install repair-index check-import audit
+setup-dev: generate-scripts verify-scripts dev-install repair-index check-import audit
 	@echo "✅ Environnement de développement prêt : dépendances installées, scripts vérifiés, import API validé, index réparé et audit effectué."
 
 ## 🚀 Prépare l’environnement complet de production
-setup-prod: verify-scripts prod-install repair-index check-import
+setup-prod: generate-scripts verify-scripts prod-install repair-index check-import
 	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, import API validé et index réparé."
 
 ## 🚀 Démarre l’API ITCAA (mode dev ou prod)
@@ -165,22 +165,4 @@ start-api:
 ## 🔄 Redémarre l’API ITCAA (arrêt + relance)
 restart-api:
 	@echo "🛑 Arrêt de l’API ITCAA..."
-	@pkill -f "uvicorn apps.api.main:app" || echo "ℹ️ Aucun processus uvicorn trouvé"
-	@echo "
-
-
-## 🛠 Génère les scripts critiques manquants
-generate-scripts:
-	@echo "🛠 Génération des scripts critiques manquants..."
-	@mkdir -p $(SCRIPT_DIR)
-	@for script in repair_index.py check_structure.py validate_dependencies.py validate_render_config.py; do \
-		if [ ! -f "$(SCRIPT_DIR)/$$script" ]; then \
-			echo "📌 Création de $(SCRIPT_DIR)/$$script"; \
-			echo "#!/usr/bin/env python3\n\"\"\"$$script (squelette minimal, à compléter)\"\"\"\n\nif __name__ == \"__main__\":\n    print(\"✅ Script $$script généré (contenu minimal)\")" > $(SCRIPT_DIR)/$$script; \
-		else \
-			echo "ℹ️ Script déjà présent : $(SCRIPT_DIR)/$$script"; \
-		fi; \
-	done
-	@echo "✅ Scripts critiques régénérés ou confirmés."
-
-setup-prod: generate-scripts verify-scripts prod-install repair-index check-import
+	@pkill -f "uvicorn apps.api
