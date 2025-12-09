@@ -119,3 +119,6 @@ jobs:
 
 - name: Check Makefile targets
   run: grep -q "setup-prod:" Makefile
+
+- name: Check Python dependencies
+  run: python -c "import torch, transformers, sentence_transformers, faiss"
