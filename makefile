@@ -105,7 +105,7 @@ docker-test:
 	@echo "🧪 Exécution des tests dans le conteneur…"
 	docker exec $(DOCKER_CONTAINER) pytest $(TEST_DIR) --maxfail=1 --disable-warnings --cov=$(PYTHONPATH) --cov-report=term-missing
 
-## ❤️ Vérifier la santé de l’API (amélioré)
+## ❤️ Vérifier la santé de l’API
 docker-health:
 	@echo "❤️ Vérification du statut du conteneur..."
 	@if ! docker inspect -f '{{.State.Running}}' $(DOCKER_CONTAINER) | grep -q true; then \
@@ -149,7 +149,7 @@ prod-install:
 	python -m pip install --upgrade pip
 	pip install -r requirements.txt
 
-## 📥 Vérifie l'import de l'API ITCAA (robuste)
+## 📥 Vérifie l'import de l'API ITCAA
 check-import:
 	@echo "📥 Vérification de l'import apps.api.main..."
 	@python test_import.py || (echo "❌ Import API échoué" && exit 1)
@@ -162,9 +162,20 @@ setup-dev: generate-scripts verify-scripts dev-install install-faiss repair-inde
 setup-prod: generate-scripts verify-scripts prod-install install-faiss repair-index check-import
 	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, FAISS installé, import API validé et index réparé."
 
-## 🚀 Démarre l’API ITCAA (mode dev ou prod)
+## 🚀 Démarre l’API ITCAA
 start-api:
-	@echo "🚀 Démarrage de l’API ITCAA
+	@echo "🚀 Démarrage de l’API ITCAA..."
+	uvicorn apps.api.main:app --host 0.0.0.0 --port 8000
 
-setup-prod: generate-scripts verify-scripts prod-install install-faiss repair-index check-import
-	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, FAISS installé, import API validé et index réparé."
+## 🔄 Redémarre l’API ITCAA
+restart-api: stop-api start-api
+	@echo "🔄 API ITCAA redémarrée."
+
+## 🛑 Arrête l’API ITCAA
+stop-api:
+	@echo "🛑 Arrêt de l’API ITCAA..."
+	@pkill -f "uvicorn apps.api.main:app" || echo "ℹ️ Aucun processus Uvicorn trouvé"
+
+## 🔁 Cycle complet (stop + start)
+cycle-api: stop-api start-api
+	@echo "🔁 Cycle complet effectué : API arrêtée puis redémarrée."
