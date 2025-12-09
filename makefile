@@ -1,5 +1,3 @@
-# 📁 Makefile institutionnel pour ITCAA
-
 PYTHONPATH=src
 TEST_DIR=tests
 SCRIPT_DIR=scripts
@@ -8,7 +6,7 @@ DOCKER_IMAGE=itcaa-ai-api
 DOCKER_CONTAINER=itcaa-ai-api
 LOG_DIR=logs
 
-.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests check-import validate-deps validate-render quality-check pre-commit docker-build-local poetry-setup verify-scripts
+.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-tests check-import validate-deps validate-render quality-check pre-commit docker-build-local poetry-setup verify-scripts generate-scripts
 
 ## 🔍 Vérifie la présence des scripts critiques
 verify-scripts:
@@ -16,6 +14,7 @@ verify-scripts:
 	@for script in $(SCRIPT_DIR)/repair_index.py $(SCRIPT_DIR)/check_structure.py $(SCRIPT_DIR)/validate_dependencies.py $(SCRIPT_DIR)/validate_render_config.py; do \
 		if [ ! -f "$$script" ]; then \
 			echo "❌ Script manquant : $$script"; \
+			echo "📌 Conseil : régénérez les scripts manquants via make generate-scripts"; \
 			exit 1; \
 		else \
 			echo "✅ Script présent : $$script"; \
@@ -166,51 +165,4 @@ cycle-api: stop-api start-api
 	@echo "🔄 Cycle complet exécuté : API arrêtée puis relancée en mode $(ENV)."
 
 ## 🧪 Vérifie les tests avec couverture et logs
-check-tests:
-	@echo "🧪 Vérification des tests avec couverture..."
-	bash test_check.sh
-
-## 📦 Vérifie la cohérence des dépendances Python
-validate-deps:
-	@echo "📦 Validation des dépendances Python..."
-	python validate_dependencies.py
-
-## 🔍 Vérifie la configuration Render (render.yaml + structure src/)
-validate-render:
-	@echo "🔍 Validation de la configuration Render..."
-	python validate_render_config.py
-
-## 🧪 Vérification complète de la qualité (lint + typage + tests + import + deps + render)
-quality-check: lint typecheck check-tests check-import validate-deps validate-render
-	@echo "✅ Vérification complète de la qualité terminée : linting, typage, tests, import, dépendances et configuration Render validés."
-
-## 🔒 Vérification pré-commit (qualité complète)
-pre-commit: quality-check
-	@echo "🔒 Vérification pré-commit exécutée : code validé avant commit."
-
-## 🐳 Teste le build Docker localement
-docker-build-local:
-	@echo "🐳 Test du build Docker local…"
-	docker build -t $(DOCKER_IMAGE) .
-
-## 📦 Installe Poetry et plugin export (méthode unique)
-poetry-setup:
-	@echo "📦 Installation de Poetry et du plugin export…"
-	curl -sSL https://install.python-poetry.org | python3 -
-	@echo "➕ Ajout de Poetry au PATH"
-	@echo "$$HOME/.local/bin" >> $$GITHUB_PATH || true
-	poetry self add poetry-plugin-export
-
-## 🔍 Vérifie la présence des scripts critiques
-verify-scripts:
-	@echo "🔍 Vérification des scripts critiques..."
-	@for script in $(SCRIPT_DIR)/repair_index.py $(SCRIPT_DIR)/check_structure.py $(SCRIPT_DIR)/validate_dependencies.py $(SCRIPT_DIR)/validate_render_config.py; do \
-		if [ ! -f "$$script" ]; then \
-			echo "❌ Script manquant : $$script"; \
-			echo "📌 Conseil : régénérez les scripts manquants via make generate-scripts"; \
-			exit 1; \
-		else \
-			echo "✅ Script présent : $$script"; \
-		fi; \
-	done
-	@echo "✅ Tous les scripts critiques sont présents."
+check
