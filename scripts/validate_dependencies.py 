@@ -6,6 +6,7 @@ Institutionnalisation pour CI/CD ITCAA.
 """
 
 import sys
+import os
 import pkg_resources
 
 def log(msg: str):
@@ -13,25 +14,34 @@ def log(msg: str):
 
 def validate_requirements(file: str) -> bool:
     """Valide les dépendances par rapport à un fichier requirements."""
+    if not os.path.isfile(file):
+        log(f"⚠️ Fichier {file} introuvable, validation ignorée.")
+        return True  # tolérance : absence ne bloque pas
     try:
         with open(file, "r", encoding="utf-8") as f:
-            requirements = [line.strip() for line in f if line.strip() and not line.startswith("#")]
+            requirements = [
+                line.strip() for line in f
+                if line.strip() and not line.startswith("#")
+            ]
         pkg_resources.require(requirements)
         log(f"✅ Dépendances cohérentes avec {file}")
         return True
+    except pkg_resources.DistributionNotFound as e:
+        log(f"❌ Paquet manquant requis par {file} → {e}")
+        return False
+    except pkg_resources.VersionConflict as e:
+        log(f"❌ Conflit de version détecté dans {file} → {e}")
+        return False
     except Exception as e:
-        log(f"❌ Incohérence détectée dans {file} → {e}")
+        log(f"❌ Erreur inattendue lors de la validation de {file} → {e}")
         return False
 
 def main():
     log("Démarrage de la validation des dépendances Python…")
     ok = True
     for req_file in ["requirements.txt", "requirements-dev.txt"]:
-        try:
-            if not validate_requirements(req_file):
-                ok = False
-        except FileNotFoundError:
-            log(f"⚠️ Fichier {req_file} introuvable, validation ignorée.")
+        if not validate_requirements(req_file):
+            ok = False
     if ok:
         log("🎯 Toutes les dépendances sont cohérentes.")
         sys.exit(0)
