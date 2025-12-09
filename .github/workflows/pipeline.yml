@@ -88,36 +88,6 @@ jobs:
 
       - name: 📦 Install dependencies
         run: |
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt || true
-
-      - name: ✅ Verify Makefile targets
-        run: grep -q "setup-prod:" Makefile
-
-      - name: ✅ Verify IA dependencies
-        run: python -c "import torch, transformers, sentence_transformers, faiss, fastapi"
-
-      - name: ▶️ Run Makefile setup-prod
-        run: make setup-prod
-
-jobs:
-  setup-prod:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: 🧹 Purge pip cache
-        run: pip cache purge
-
-      - name: 📦 Install dependencies
-        run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-dev.txt || true
@@ -126,7 +96,10 @@ jobs:
         run: |
           pip install --upgrade --force-reinstall torch transformers sentence-transformers scikit-learn faiss-cpu
 
-      - name: ✅ Audit IA dependencies
+      - name: ✅ Verify Makefile targets
+        run: grep -q "setup-prod:" Makefile
+
+      - name: ✅ Verify IA dependencies
         run: python -c "import torch, transformers, sentence_transformers, faiss, fastapi"
 
       - name: ▶️ Run Makefile setup-prod
