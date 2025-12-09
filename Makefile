@@ -179,3 +179,30 @@ stop-api:
 ## 🔁 Cycle complet (stop + start)
 cycle-api: stop-api start-api
 	@echo "🔁 Cycle complet effectué : API arrêtée puis redémarrée."
+
+# Vérification des dépendances IA critiques
+check-ia-deps:
+	@python -c "import torch, transformers, sentence_transformers, faiss" || \
+	(echo '❌ Dépendances IA manquantes. Vérifiez requirements.txt et relancez l’installation.' && exit 1)
+
+# Installation production
+install-prod:
+	pip install -r requirements.txt
+
+# Installation développement
+install-dev:
+	pip install -r requirements-dev.txt || true
+
+# Setup production avec audit IA
+setup-prod: check-ia-deps install-prod repair-index
+
+# Setup développement avec audit IA
+setup-dev: check-ia-deps install-dev
+
+# Réparation de l’index FAISS
+repair-index:
+	PYTHONPATH=src python scripts/repair_index.py || exit 1
+
+# Génération de l’index FAISS
+index-builder:
+	PYTHONPATH=src python scripts/index_builder.py || exit 1
