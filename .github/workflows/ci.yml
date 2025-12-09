@@ -106,3 +106,10 @@ jobs:
 
       - name: Install requirements
         run: pip install -r requirements.txt
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run unit tests
+        run: pytest --maxfail=1 --disable-warnings -q
