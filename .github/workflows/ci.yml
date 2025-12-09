@@ -113,3 +113,6 @@ jobs:
     steps:
       - name: Run unit tests
         run: pytest --maxfail=1 --disable-warnings -q
+
+- name: Run Makefile
+  run: make setup-prod
