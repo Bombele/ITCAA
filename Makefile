@@ -150,16 +150,21 @@ requirements:
 	poetry export -f requirements.txt --without-hashes -o requirements.txt
 	poetry export -f requirements.txt --without-hashes --with dev -o requirements-dev.txt
 
-## 🛠 Vérifie et répare l’index FAISS
+## 🔍 Vérification des dépendances IA
+validate-ai:
+	@PYTHONPATH=scripts python scripts/validate_ai_dependencies.py
+
+## 🛠 Vérifie et répare l’index FAISS (protégé par audit IA)
 repair-index: validate-ai install-faiss
 	@echo "🛠 Vérification et réparation de l’index FAISS…"
 	PYTHONPATH=$(PYTHONPATH) python $(SCRIPT_DIR)/repair_index.py || \
 	(echo '❌ Échec réparation index FAISS' && exit 1)
 
-## 📥 Vérifie l'import de l'API ITCAA
-check-import:
-	@echo "📥 Vérification de l'import apps.api.main..."
-	@python test_import.py || (echo "❌ Import API échoué" && exit 1)
+## 🧬 Génération de l’index FAISS (protégé par audit IA)
+index-builder: validate-ai install-faiss
+	@echo "🧬 Reconstruction de l’index FAISS…"
+	PYTHONPATH=$(PYTHONPATH) python $(PYTHONPATH)/itcaa_ai_offline/data/corpus/index_builder.py --incremental || \
+	(echo '❌ Échec génération index FAISS' && exit 1)
 
 ## ⚙️ Prépare l’environnement complet de développement
 setup-dev: generate-scripts verify-scripts install-dev validate-ai repair-index check-import audit
