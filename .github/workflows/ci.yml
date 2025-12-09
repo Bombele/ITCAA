@@ -18,25 +18,27 @@ jobs:
 
     steps:
       - name: 📥 Checkout du code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 🐍 Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
+
+      - name: 🧹 Purge cache pip
+        run: pip cache purge
 
       - name: 📦 Installer dépendances API
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt || pip install fastapi uvicorn sqlalchemy pydantic pytest
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt || true
 
       - name: 🧪 Exécuter les tests API
-        run: |
-          pytest apps/api/tests --maxfail=1 --disable-warnings -q
+        run: pytest apps/api/tests --maxfail=1 --disable-warnings -q
 
       - name: 🧹 Linter (qualité de code)
         run: |
-          pip install flake8
           flake8 apps/ --max-line-length=100
 
   validate-ai:
@@ -52,14 +54,19 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: 🧹 Purge cache pip
+        run: pip cache purge
+
       - name: 📦 Installer dépendances IA
         run: |
           pip install -r requirements.txt
           pip install -r requirements-dev.txt || true
-          pip install -r src/itcaa_ai_offline/requirements-ai.txt
 
       - name: 🧠 Définir PYTHONPATH
         run: echo "PYTHONPATH=$(pwd):$(pwd)/src" >> $GITHUB_ENV
+
+      - name: ✅ Audit dépendances IA
+        run: python -c "import torch, transformers, sentence_transformers, faiss, fastapi"
 
       - name: 🧪 Exécuter les tests IA
         run: pytest -v tests/
@@ -78,16 +85,19 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: 🧹 Purge cache pip
+        run: pip cache purge
+
       - name: 📦 Installer dépendances IA
         run: |
           pip install -r requirements.txt
-          pip install -r src/itcaa_ai_offline/requirements-ai.txt
+          pip install -r requirements-dev.txt || true
 
       - name: 🧠 Définir PYTHONPATH
         run: echo "PYTHONPATH=$(pwd):$(pwd)/src" >> $GITHUB_ENV
 
       - name: 🏗️ Générer index FAISS
-        run: ./auto_update_index.sh
+        run: make repair-index
 
       - name: 📊 Upload artefact index
         uses: actions/upload-artifact@v4
@@ -95,30 +105,30 @@ jobs:
           name: offline-ai-index
           path: src/itcaa_ai_offline/data/index/
 
-jobs:
-  install-dependencies:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install requirements
-        run: pip install -r requirements.txt
-
-jobs:
   run-tests:
+    name: 🧪 Tests unitaires globaux
     runs-on: ubuntu-latest
+    needs: [validate-api, validate-ai]
+
     steps:
-      - name: Run unit tests
-        run: pytest --maxfail=1 --disable-warnings -q
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
 
-- name: Run Makefile
-  run: make setup-prod
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-- name: Check Makefile targets
-  run: grep -q "setup-prod:" Makefile
+      - name: 📦 Installer dépendances
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt || true
 
-- name: Check Python dependencies
-  run: python -c "import torch, transformers, sentence_transformers, faiss"
+      - name: ✅ Vérifier Makefile
+        run: grep -q "setup-prod:" Makefile
+
+      - name: ✅ Vérifier dépendances IA
+        run: python -c "import torch, transformers, sentence_transformers, faiss, fastapi"
+
+      - name: ▶️ Exécuter Makefile setup-prod
+        run: make setup-prod
