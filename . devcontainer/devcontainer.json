@@ -20,3 +20,5 @@
     }
   }
 }
+
+"postCreateCommand": "sudo update-alternatives --install /usr/bin/python python /usr/local/bin/python3.11 1 && sudo update-alternatives --set python /usr/local/bin/python3.11 && pip install -r requirements.txt"
