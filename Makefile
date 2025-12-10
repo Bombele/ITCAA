@@ -6,7 +6,7 @@ DOCKER_IMAGE=itcaa-ai-api
 DOCKER_CONTAINER=itcaa-ai-api
 LOG_DIR=logs
 
-.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-import validate-ai validate-render quality-check pre-commit docker-build-local poetry-setup verify-scripts generate-scripts index-builder
+.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-import validate-ai validate-render quality-check pre-commit docker-build-local poetry-setup verify-scripts generate-scripts index-builder check-python-version
 
 ## 🔍 Vérifie la présence des scripts critiques
 verify-scripts:
@@ -47,6 +47,16 @@ install-dev:
 	@echo "📦 Installation des dépendances de développement..."
 	python -m pip install --upgrade pip
 	pip install -r requirements-dev.txt || true
+
+## 🔒 Vérification version Python
+check-python-version:
+	@PY_VER=$$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')"); \
+	if [ "$$PY_VER" != "3.11" ]; then \
+		echo "❌ Version Python incorrecte : $$PY_VER détectée. Attendu : 3.11"; \
+		exit 1; \
+	else \
+		echo "✅ Version Python correcte : $$PY_VER"; \
+	fi
 
 ## 🔍 Vérification des dépendances IA
 validate-ai:
@@ -155,12 +165,8 @@ check-import:
 	@echo "📥 Vérification de l'import apps.api.main..."
 	@python test_import.py || (echo "❌ Import API échoué" && exit 1)
 
-## ⚙️ Prépare l’environnement complet de développement
-setup-dev: generate-scripts verify-scripts install-dev validate-ai repair-index check-import audit
-	@echo "✅ Environnement de développement prêt : dépendances installées, scripts vérifiés, audit IA validé, import API validé, index réparé et audit effectué."
-
 ## 🚀 Prépare l’environnement complet de production
-setup-prod: generate-scripts verify-scripts install-prod validate-ai repair-index check-import
+setup-prod: check-python-version generate-scripts verify-scripts install-prod validate-ai repair-index check-import
 	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, audit IA validé, import API validé et index réparé."
 
 ## 🚀 Démarre l’API ITCAA
