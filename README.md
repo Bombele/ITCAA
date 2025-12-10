@@ -120,3 +120,92 @@ Chaque jalon technique est documenté comme acte de mémoire et d’empowerment 
 ![🌐 Multilingual Ready](https://github.com/<TON_ORG>/<TON_REPO>/actions/workflows/multilingue.yml/badge.svg)
 
 ![🗂 Weekly Index Rebuild](https://github.com/<TON_ORG>/<TON_REPO>/actions/workflows/weekly_rebuild.yml/badge.svg)
+
+📘 README – ITCAA AI
+
+🚀 Installation
+
+Développement
+Pour préparer un environnement de développement complet :
+
+`bash
+make setup-dev
+`
+
+Cette commande installe :
+- requirements.txt (dépendances applicatives)
+- requirements-dev.txt (outils de développement : lint, tests, mypy…)
+- requirements-ai.txt (dépendances IA : torch, transformers, sentence-transformers, faiss, scikit-learn)
+
+👉 Commentaire modification 2025-12-10 : ajout explicite de requirements-ai.txt dans la séquence dev pour alignement avec prod et CI/CD.
+
+---
+
+Production
+Pour préparer un environnement de production :
+
+`bash
+make setup-prod
+`
+
+Cette commande installe :
+- requirements.txt (dépendances applicatives)
+- requirements-ai.txt (dépendances IA critiques)
+
+👉 Commentaire modification 2025-12-10 : suppression duplication install-prod, correction chemin src/itcaaaioffline/requirements-ai.txt, ordre corrigé dans setup-prod.
+
+---
+
+CI/CD
+Les workflows GitHub Actions reflètent exactement ces séquences :
+
+- CI (dev jobs : lint, tests, audit)  
+  `yaml
+  - name: 📦 Installer les dépendances (Dev)
+    run: |
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+      pip install -r requirements-dev.txt
+      pip install -r src/itcaaaioffline/requirements-ai.txt
+  `
+
+- Deploy / Offline AI / Deploy Render (prod jobs)  
+  `yaml
+  - name: 📦 Installer les dépendances (Prod)
+    run: |
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+      pip install -r src/itcaaaioffline/requirements-ai.txt
+  `
+
+👉 Commentaire modification 2025-12-10 : factorisation via _install.yml, suppression des doublons, alignement dev/prod.
+
+---
+
+🧪 Qualité et audit IA
+
+- Lint : black, isort
+- Typecheck : mypy
+- Tests : pytest
+- Audit IA : validate-ai (vérifie dépendances IA et cohérence projet)
+- Index FAISS : repair-index et index-builder
+
+👉 Commentaire modification 2025-12-10 : audit IA déplacé après installation des dépendances IA pour éviter les erreurs.
+
+---
+
+📜 Traçabilité (Bitácora)
+
+- 2025-12-10  
+  - Suppression duplication install-prod  
+  - Correction chemin requirements-ai.txt  
+  - Révision séquence setup-prod (ordre corrigé)  
+  - Alignement dev/prod/CI-CD  
+  - Factorisation workflows via _install.yml
+
+---
+
+🎯 Résultat attendu
+- Dev, Prod et CI/CD parfaitement alignés.  
+- Audit IA passe ✅ partout.  
+- Documentation et traçabilité mises à jour dans README, QUALITY_GUIDE, Bitácora, CI guide, Deploy guide, Dev guide, Readme AI.  
