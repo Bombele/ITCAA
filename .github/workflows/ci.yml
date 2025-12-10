@@ -1,97 +1,69 @@
-name: ITCAA Full CI/CD
+name: CI
 
 on:
   push:
-    branches: [ "main" ]
-    paths:
-      - "src/itcaa_ai_offline/data/corpus/*.txt"
-      - "models/model.pt"
+    branches:
+      - main
+      - develop
   pull_request:
-    branches: [ "main" ]
-  schedule:
-    - cron: "0 3 * * 0"   # Tous les dimanches à 03h00 UTC
+    branches:
+      - main
+      - develop
   workflow_dispatch:
 
 jobs:
-  build:
-    name: 🔍 Validation & Tests ITCAA
+  ci-checks:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ✅ Checkout repository
+      - name: 📥 Cloner le dépôt
         uses: actions/checkout@v4
 
-      - name: 🐍 Setup Python 3.11
+      - name: 🐍 Installer Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: 📦 Install dependencies (Dev)
-  run: |
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-    pip install -r requirements-dev.txt
-    pip install -r src/itcaa_ai_offline/requirements-ai.txt
+      - name: 📂 Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'requirements-dev.txt', 'src/itcaa_ai_offline/requirements-ai.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
-      - name: 🧠 Set PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
-        shell: bash
+      - name: 📦 Installer les dépendances (Dev)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          pip install -r src/itcaa_ai_offline/requirements-ai.txt
 
-      # 🔍 Vérification des scripts critiques
-      - name: 🔍 Verify scripts presence
-        run: make verify-scripts
-        shell: bash
+      - name: 🎯 Lint avec Black et Isort
+        run: |
+          black --check src/ tests/ || (echo "❌ Black a trouvé des erreurs" && exit 1)
+          isort --check-only src/ tests/ || (echo "❌ Isort a trouvé des erreurs" && exit 1)
 
-      # 🔍 Audit IA obligatoire
-      - name: 🔍 Validate AI dependencies
-        run: make validate-ai
-        shell: bash
+      - name: 🔎 Vérification stricte des types avec Mypy
+        run: |
+          mypy src tests || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
 
-      # 🛠 Réparer l’index FAISS
-      - name: 🛠 Repair FAISS index
-        run: make repair-index
-        shell: bash
-
-      # 🧬 Reconstruire l’index FAISS
-      - name: 🧬 Rebuild FAISS index
-        run: make index-builder
-        shell: bash
-
-      # 📊 Générer rapport d’audit
-      - name: 📊 Generate audit report
-        run: make audit
-        shell: bash
-
-      # 🧪 Tests avec couverture
-      - name: 🧪 Run tests with coverage
-        run: pytest -v --cov=src/itcaa_ai_offline --cov-report=xml --cov-report=term-missing tests/
-        shell: bash
+      - name: 🧪 Lancer les tests avec couverture
+        run: |
+          pytest tests/ --cov=src --cov-report=xml --cov-report=term-missing || (echo "⚠️ Tests échoués" && exit 1)
 
       - name: 📊 Vérifier le rapport de couverture
-        run: cat coverage.xml | grep "<coverage"
-        shell: bash
+        run: |
+          if [ ! -f coverage.xml ]; then
+            echo "❌ Rapport de couverture introuvable"
+            exit 1
+          else
+            echo "✅ Rapport de couverture généré"
+          fi
 
-      - name: 📁 Upload coverage report artifact
-        uses: actions/upload-artifact@v4
+      - name: 🗂️ Archiver le rapport de couverture
+        uses: actions/upload-artifact@v3
         with:
-          name: coverage-report-index
+          name: coverage-report-${{ github.run_number }}
           path: coverage.xml
-
-      - name: 📊 Generate index report
-        run: PYTHONPATH=src python src/itcaa_ai_offline/generate_index_report.py
-        shell: bash
-
-      - name: 📁 Upload index report artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: index-report
-          path: src/itcaa_ai_offline/data/index/index_report.md
-
-      # 🚀 Setup complet dev et prod
-      - name: ⚙️ Setup Dev environment
-        run: make setup-dev
-        shell: bash
-
-      - name: 🚀 Setup Prod environment
-        run: make setup-prod
-        shell: bash
+          if-no-files-found: ignore
