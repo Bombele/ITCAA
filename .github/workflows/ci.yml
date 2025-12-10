@@ -67,3 +67,9 @@ jobs:
           name: coverage-report-${{ github.run_number }}
           path: coverage.xml
           if-no-files-found: ignore
+
+jobs:
+  setup:
+    uses: ./.github/workflows/_install.yml
+    with:
+      environment: "dev"
