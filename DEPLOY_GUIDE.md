@@ -48,3 +48,77 @@ Après déclenchement, Render crée un nouveau déploiement visible dans le dash
 - Surveiller les logs Render pour détecter les erreurs.  
 - Mettre à jour régulièrement pyproject.toml et régénérer les requirements.  
 - Utiliser workflow_dispatch pour forcer un déploiement manuel si nécessaire.  
+
+🚀 Deploy Guide – ITCAA AI
+
+🎯 Objectif
+Décrire la procédure de déploiement en environnement Prod, alignée avec le Makefile et les workflows CI/CD.
+
+---
+
+⚙️ Séquence de déploiement
+
+Étapes principales
+1. Préparer l’environnement Prod
+   `bash
+   make setup-prod
+   `
+   - Vérifie la version Python (3.11 obligatoire)
+   - Génère et vérifie les scripts critiques
+   - Installe les dépendances Prod :
+     - requirements.txt
+     - requirements-ai.txt
+   - Vérifie l’import API
+   - Valide les dépendances IA
+   - Répare l’index FAISS
+
+👉 Commit : fix(deploy-guide): align setup-prod sequence with Makefile corrections
+
+---
+
+2. Construire l’image Docker
+   `bash
+   make docker-build
+   `
+
+👉 Commit : docs(deploy-guide): document docker build step
+
+---
+
+3. Lancer le conteneur
+   `bash
+   make docker-up
+   `
+
+👉 Commit : docs(deploy-guide): add docker-up step for prod
+
+---
+
+4. Vérifier la santé de l’API
+   `bash
+   make docker-health
+   `
+
+👉 Commit : docs(deploy-guide): add health check step
+
+---
+
+5. Arrêter / Redémarrer l’API
+   `bash
+   make stop-api
+   make restart-api
+   `
+
+👉 Commit : docs(deploy-guide): add stop/restart cycle for API
+
+---
+
+📜 Traçabilité (Bitácora)
+
+- 2025-12-10
+  - Suppression duplication install-prod
+  - Correction chemin requirements-ai.txt
+  - Révision séquence setup-prod (ordre corrigé)
+  - Alignement Dev/Prod/CI-CD
+  - Factorisation workflows via _install.yml
+
