@@ -50,7 +50,7 @@ install-dev:
 
 ## 🔍 Vérification des dépendances IA
 validate-ai:
-	@PYTHONPATH=scripts python scripts/validate_ai_dependencies.py
+        @python $(SCRIPT_DIR)/validate_ai_dependencies.py
 
 ## 🧠 Vérifie la structure du projet IA
 check:
