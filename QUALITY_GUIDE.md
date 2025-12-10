@@ -140,4 +140,3 @@ faiss-cpu>=1.8,<1.14
 - Robustesse / Robustness : toutes les dépendances sont installées en une seule commande.  
 - Traçabilité / Traceability : CI/CD échoue immédiatement si une librairie IA est absente.  
 - Transmission / Knowledge transfer : onboarding facilité pour tout contributeur, quelle que soit sa langue.  
-`
