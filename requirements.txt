@@ -1,3 +1,5 @@
+# Projet ITCAA – Python 3.11 obligatoire
+
 # --- Dépendances applicatives ---
 fastapi==0.115.14
 uvicorn==0.32.1
