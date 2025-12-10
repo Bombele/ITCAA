@@ -139,4 +139,56 @@ faiss-cpu>=1.8,<1.14
 🎯 Objectifs institutionnels / Institutional objectives
 - Robustesse / Robustness : toutes les dépendances sont installées en une seule commande.  
 - Traçabilité / Traceability : CI/CD échoue immédiatement si une librairie IA est absente.  
+- Transmission / Knowledge transfer : onboarding facilité pour tout contributeur, quelle que soit sa langue.
+
+
+📑 Section Audit IA – Appel make validate-ai
+
+`markdown
+
+🔍 Audit IA – Appel du script validate-ai / AI Audit – validate-ai call
+
+📦 Commande / Command
+
+`bash
+make validate-ai
+`
+
+Cette commande exécute le script scripts/validateaidependencies.py et vérifie la présence des librairies IA critiques.  
+This command runs the script scripts/validateaidependencies.py and checks for critical AI libraries.
+
+---
+
+✅ Exemple d’exécution réussie / Example of successful execution
+
+`bash
+$ make validate-ai
+✅ torch importé avec succès
+✅ transformers importé avec succès
+✅ sentence-transformers importé avec succès
+✅ faiss importé avec succès
+✅ scikit-learn importé avec succès
+
+✅ Audit IA réussi : toutes les dépendances sont présentes
+`
+
+---
+
+❌ Exemple d’échec / Example of failure
+
+`bash
+$ make validate-ai
+❌ torch manquant
+❌ faiss manquant
+
+❌ Audit IA échoué : dépendances manquantes → torch, faiss
+make: * [Makefile:53: validate-ai] Error 1
+`
+
+---
+
+🎯 Objectifs institutionnels / Institutional objectives
+- Robustesse / Robustness : CI/CD échoue immédiatement si une librairie IA est absente.  
+- Traçabilité / Traceability : messages explicites pour chaque dépendance manquante.  
 - Transmission / Knowledge transfer : onboarding facilité pour tout contributeur, quelle que soit sa langue.  
+  
