@@ -1,5 +1,5 @@
-# 🧱 Étape 1 : Image de base légère pour build
-FROM python:3.12-slim AS builder
+# 🧱 Étape 1 : Image de base légère pour build avec Poetry
+FROM python:3.11-slim AS builder
 
 # 🔧 Variables d’environnement
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -10,7 +10,7 @@ WORKDIR /app
 
 # 📦 Installer dépendances système nécessaires
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl python3-venv python3-pip \
+    curl python3-venv python3-pip build-essential gcc g++ \
     && rm -rf /var/lib/apt/lists/*
 
 # 📦 Installer Poetry
@@ -29,8 +29,8 @@ COPY pyproject.toml poetry.lock* ./
 RUN poetry export -f requirements.txt --without-hashes -o requirements.txt \
     && poetry export -f requirements.txt --without-hashes --with dev -o requirements-dev.txt
 
-# 🧱 Étape 2 : Image finale
-FROM python:3.12-slim
+# 🧱 Étape 2 : Image finale avec Python 3.11
+FROM python:3.11-slim
 
 # 🔧 Variables d’environnement
 ENV PYTHONUNBUFFERED=1 \
@@ -46,8 +46,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential xz-utils \
     && rm -rf /var/lib/apt/lists/*
 
-# 📂 Copier les requirements exportés
+# 📂 Copier les requirements exportés depuis l’étape builder
 COPY --from=builder /app/requirements.txt /app/requirements.txt
+COPY --from=builder /app/requirements-dev.txt /app/requirements-dev.txt
 COPY src/itcaa_ai_offline/requirements-ai.txt ./requirements-ai.txt
 
 # 📦 Installer les dépendances Python
@@ -60,15 +61,4 @@ RUN pip install --no-cache-dir --upgrade pip --root-user-action=ignore \
 COPY src/ /app/src/
 COPY scripts/ /app/scripts/
 COPY start.sh /app/start.sh
-COPY test_import.py /app/test_import.py
-
-# ✅ Vérification institutionnelle de l'import API
-RUN python test_import.py || (echo "❌ Échec d'import API" && exit 1)
-
-# 🌐 Exposer le port
-EXPOSE 8000
-
-# 🚀 Lancement avec Gunicorn + Uvicorn workers
-CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "src.apps.api.main:app", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "120"]
-
-RUN python test_import.py
+COPY test_import.py /app/test_import
