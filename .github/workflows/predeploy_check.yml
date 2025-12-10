@@ -1,64 +1,53 @@
-name: 🔍 Predeploy Import Check
+name: Predeploy Check
 
 on:
-  push:
+  pull_request:
     branches:
       - main
-  pull_request:
-  schedule:
-    - cron: "0 3 * * 1"   # Tous les lundis à 03h00 UTC
-  workflow_dispatch:       # possibilité de lancer manuellement
+      - develop
+  workflow_dispatch:
 
 jobs:
-  check-imports:
+  predeploy-check:
     runs-on: ubuntu-latest
+
     steps:
-      - name: 📥 Checkout repository
+      - name: 📥 Cloner le dépôt
         uses: actions/checkout@v4
 
-      - name: 🐍 Set up Python
+      - name: 🐍 Installer Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: 📂 Cache pip
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'requirements-dev.txt', 'src/itcaa_ai_offline/requirements-ai.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: 📦 Install dependencies
+      - name: 📦 Installer les dépendances (Dev)
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          pip install -r src/itcaa_ai_offline/requirements-ai.txt
 
-      - name: 🔍 Verify installation
-        run: pip list
-
-      - name: 🚨 Verify apps module import
+      - name: 🎯 Lint avec Black et Isort
         run: |
-          export PYTHONPATH=src
-          python - << 'EOF'
-          import importlib.util, sys
-          spec = importlib.util.find_spec("apps")
-          if spec is None:
-              print("❌ apps module missing")
-              sys.exit(1)
-          else:
-              print("✅ apps module found")
-          EOF
+          black --check src/ tests/ || (echo "❌ Black a trouvé des erreurs" && exit 1)
+          isort --check-only src/ tests/ || (echo "❌ Isort a trouvé des erreurs" && exit 1)
 
-      - name: 📁 Upload import check logs
-        uses: actions/upload-artifact@v3
-        with:
-          name: predeploy-import-check-logs-${{ github.run_number }}
-          path: ./*.log
-          if-no-files-found: ignore
-
-      - name: 🧹 Rotation des rapports (conserver 7 derniers)
+      - name: 🔎 Vérification stricte des types avec Mypy
         run: |
-          mkdir -p public/predeploy_reports
-          echo "Predeploy check run ${{ github.run_number }}" > public/predeploy_reports/predeploy_${{ github.run_number }}.log
-          ls -t public/predeploy_reports | tail -n +8 | xargs -I {} rm -f public/predeploy_reports/{}
+          mypy src tests || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
+
+      - name: 🧪 Lancer les tests unitaires
+        run: |
+          pytest tests/ --maxfail=1 --disable-warnings || (echo "⚠️ Tests échoués" && exit 1)
+
+      - name: ✅ Vérification import API
+        run: |
+          python test_import.py || (echo "❌ Import API échoué" && exit 1)
