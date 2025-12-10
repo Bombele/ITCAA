@@ -38,9 +38,10 @@ generate-scripts:
 
 ## 📦 Installation production
 install-prod:
-	@echo "📦 Installation des dépendances de production..."
-	python -m pip install --upgrade pip
-	pip install -r requirements.txt
+    @echo "📦 Installation des dépendances de production..."
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    pip install -r src/itcaa_ai_offline/requirements-ai.txt
 
 ## 📦 Installation développement
 install-dev:
