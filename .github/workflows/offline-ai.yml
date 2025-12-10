@@ -21,16 +21,16 @@ jobs:
       - name: 📥 Cloner le dépôt
         uses: actions/checkout@v4
 
-      - name: 🐍 Installer Python
+      - name: 🐍 Installer Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: '3.11'
 
       - name: 📂 Cache pip
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'src/itcaa_ai_offline/requirements-ai.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'src/itcaa_ai_offline/requirements-ai.txt', 'requirements-dev.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
@@ -39,7 +39,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r src/itcaa_ai_offline/requirements-ai.txt
-          pip install -r dev-requirements.txt || pip install pytest pytest-cov black isort mypy
+          pip install -r requirements-dev.txt || pip install pytest pytest-cov black isort mypy
 
       - name: 🔍 Vérification installation
         run: pip list
