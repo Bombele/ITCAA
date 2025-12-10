@@ -26,11 +26,12 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: 📦 Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt || true
+      - name: 📦 Install dependencies (Dev)
+  run: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    pip install -r requirements-dev.txt
+    pip install -r src/itcaa_ai_offline/requirements-ai.txt
 
       - name: 🧠 Set PYTHONPATH
         run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
