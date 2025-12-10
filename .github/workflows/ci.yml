@@ -37,7 +37,7 @@ jobs:
           rm -rf ${{ env.pythonLocation }}/lib/python3.12/site-packages/*
         shell: bash
 
-      # 📦 Installer les dépendances globales et IA
+      # 📦 Installer toutes les dépendances (prod + dev)
       - name: 📦 Installer les dépendances
         run: |
           pip install -r requirements.txt
