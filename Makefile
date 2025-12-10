@@ -166,9 +166,16 @@ check-import:
 	@echo "📥 Vérification de l'import apps.api.main..."
 	@python test_import.py || (echo "❌ Import API échoué" && exit 1)
 
+## 📦 Installation production
+install-prod:
+	@echo "📦 Installation des dépendances de production..."
+	python -m pip install --upgrade pip
+	pip install -r requirements.txt
+	pip install -r src/itcaa_ai_offline/requirements-ai.txt
+
 ## 🚀 Prépare l’environnement complet de production
-setup-prod: check-python-version generate-scripts verify-scripts install-prod validate-ai repair-index check-import
-	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, audit IA validé, import API validé et index réparé."
+setup-prod: check-python-version generate-scripts verify-scripts install-prod check-import validate-ai repair-index
+	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, import API validé, audit IA validé et index réparé."
 
 ## 🚀 Démarre l’API ITCAA
 start-api:
