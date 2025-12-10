@@ -190,5 +190,71 @@ make: * [Makefile:53: validate-ai] Error 1
 🎯 Objectifs institutionnels / Institutional objectives
 - Robustesse / Robustness : CI/CD échoue immédiatement si une librairie IA est absente.  
 - Traçabilité / Traceability : messages explicites pour chaque dépendance manquante.  
-- Transmission / Knowledge transfer : onboarding facilité pour tout contributeur, quelle que soit sa langue.  
-  
+- Transmission / Knowledge transfer : onboarding facilité pour tout contributeur, quelle que soit sa langue. 
+
+ 
+🧭 QUALITY_GUIDE – ITCAA AI
+
+🎯 Objectif
+Garantir la robustesse, la traçabilité et la reproductibilité des environnements Dev, Prod et CI/CD.  
+Chaque correction technique est documentée et alignée avec le Makefile et les workflows GitHub Actions.
+
+---
+
+⚙️ Séquences d’installation
+
+| Contexte | Dépendances installées | Commande Makefile | Workflow CI/CD |
+|----------|------------------------|-------------------|----------------|
+| Dev | requirements.txt + requirements-dev.txt + requirements-ai.txt | make setup-dev | ci.yml (jobs lint, tests, audit) |
+| Prod | requirements.txt + requirements-ai.txt | make setup-prod | deploy.yml, offline-ai.yml, deploy_render.yml |
+| CI/CD | Reflète exactement Dev ou Prod selon le job | install.yml (paramètre environment) | Tous workflows appellent install.yml |
+
+👉 Commentaire modification 2025-12-10 : alignement complet Dev/Prod/CI-CD, suppression duplication install-prod, correction chemin requirements-ai.txt.
+
+---
+
+🔍 Vérifications qualité
+
+1. Linting  
+   - Outils : black, isort  
+   - Commande : make lint  
+   - CI/CD : étape obligatoire dans ci.yml et predeploy_check.yml.
+
+2. Typecheck  
+   - Outil : mypy  
+   - Commande : make typecheck  
+   - CI/CD : étape obligatoire dans ci.yml.
+
+3. Tests unitaires et intégration  
+   - Outil : pytest  
+   - Commande : make test  
+   - CI/CD : étape obligatoire dans ci.yml, offline-ai.yml.
+
+4. Audit IA  
+   - Script : validate-ai  
+   - Commande : make validate-ai  
+   - CI/CD : étape obligatoire dans ci.yml, offline-ai.yml.
+
+5. Index FAISS  
+   - Commandes : make repair-index, make index-builder  
+   - CI/CD : exécuté dans jobs IA (offline-ai).
+
+---
+
+📜 Traçabilité (Bitácora)
+
+- 2025-12-10  
+  - Suppression duplication install-prod  
+  - Correction chemin requirements-ai.txt  
+  - Révision séquence setup-prod (ordre corrigé)  
+  - Alignement Dev/Prod/CI-CD  
+  - Factorisation workflows via _install.yml
+
+---
+
+🎯 Résultat attendu
+- Dev → environnement complet pour développement et audit.  
+- Prod → environnement minimal mais robuste pour déploiement.  
+- CI/CD → reflète exactement ces séquences, sans divergence.  
+- Documentation → chaque correction est tracée dans README, QUALITY_GUIDE, Bitácora, CI guide, Deploy guide, Dev guide, Readme AI.  
+
