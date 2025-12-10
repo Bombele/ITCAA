@@ -11,6 +11,7 @@ on:
 jobs:
   install-deps:
     runs-on: ubuntu-latest
+
     steps:
       - name: 📥 Cloner le dépôt
         uses: actions/checkout@v4
@@ -24,7 +25,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'requirements-dev.txt', 'src/itcaa_ai_offline/requirements-ai.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'requirements-dev.txt', 'src/itcaaaioffline/requirements-ai.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
@@ -35,4 +36,7 @@ jobs:
           if [ "${{ inputs.environment }}" = "dev" ]; then
             pip install -r requirements-dev.txt
           fi
-          pip install -r src/itcaa_ai_offline/requirements-ai.txt
+          pip install -r src/itcaaaioffline/requirements-ai.txt
+
+      - name: 🔍 Vérification installation
+        run: pip list
