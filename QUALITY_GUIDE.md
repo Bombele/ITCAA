@@ -89,3 +89,55 @@ flowchart TD
     F --> G[🧪 Tests & Coverage]
     G --> H[⚙️ Setup-dev]
     G --> I[🚀 Setup-prod]
+
+📑 Section requirements.txt – Version bilingue
+
+`markdown
+
+📦 Fichier requirements.txt / Requirements file
+
+Ce fichier centralise toutes les dépendances nécessaires au projet ITCAA :
+- Dépendances applicatives (API, base de données, serveur web, etc.)
+- Dépendances IA critiques (machine learning, NLP, indexation FAISS)
+
+This file centralizes all dependencies required for the ITCAA project:
+- Application dependencies (API, database, web server, etc.)
+- Critical AI dependencies (machine learning, NLP, FAISS indexing)
+
+---
+
+✅ Contenu fusionné / Merged content
+
+`
+fastapi==0.115.14
+uvicorn==0.32.1
+gunicorn==23.0.0
+sqlalchemy==2.0.45
+psycopg2-binary==2.9.11
+pydantic==2.12.5
+pydantic-core==2.41.5
+starlette==0.46.2
+click==8.3.1
+anyio==4.12.0
+h11==0.16.0
+idna==3.11
+packaging==25.0
+pyyaml==6.0.3
+shapely==2.1.2
+typing-extensions==4.15.0
+typing-inspection==0.4.2
+greenlet==3.3.0
+torch>=2.2,<3.0
+transformers>=4.40,<5.0
+sentence-transformers>=2.2,<3.0
+scikit-learn>=1.3,<2.0
+faiss-cpu>=1.8,<1.14
+`
+
+---
+
+🎯 Objectifs institutionnels / Institutional objectives
+- Robustesse / Robustness : toutes les dépendances sont installées en une seule commande.  
+- Traçabilité / Traceability : CI/CD échoue immédiatement si une librairie IA est absente.  
+- Transmission / Knowledge transfer : onboarding facilité pour tout contributeur, quelle que soit sa langue.  
+`
