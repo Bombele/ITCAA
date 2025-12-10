@@ -1,7 +1,7 @@
 PYTHONPATH=src
 TEST_DIR=tests
 SCRIPT_DIR=scripts
-INDEX_REPORT=$(PYTHONPATH)/itcaa_ai_offline/data/index/index_report.md
+INDEX_REPORT=$(PYTHONPATH)/itcaaaioffline/data/index/indexreport.md
 DOCKER_IMAGE=itcaa-ai-api
 DOCKER_CONTAINER=itcaa-ai-api
 LOG_DIR=logs
@@ -11,7 +11,7 @@ LOG_DIR=logs
 ## 🔍 Vérifie la présence des scripts critiques
 verify-scripts:
 	@echo "🔍 Vérification des scripts critiques..."
-	@for script in $(SCRIPT_DIR)/repair_index.py $(SCRIPT_DIR)/check_structure.py $(SCRIPT_DIR)/validate_dependencies.py $(SCRIPT_DIR)/validate_render_config.py; do \
+	@for script in $(SCRIPT_DIR)/repairindex.py $(SCRIPT_DIR)/checkstructure.py $(SCRIPT_DIR)/validatedependencies.py $(SCRIPT_DIR)/validaterender_config.py; do \
 		if [ ! -f "$$script" ]; then \
 			echo "❌ Script manquant : $$script"; \
 			echo "📌 Conseil : régénérez les scripts manquants via make generate-scripts"; \
@@ -26,7 +26,7 @@ verify-scripts:
 generate-scripts:
 	@echo "🛠 Génération des scripts critiques manquants..."
 	@mkdir -p $(SCRIPT_DIR)
-	@for script in repair_index.py check_structure.py validate_dependencies.py validate_render_config.py; do \
+	@for script in repairindex.py checkstructure.py validatedependencies.py validaterender_config.py; do \
 		if [ ! -f "$(SCRIPT_DIR)/$$script" ]; then \
 			echo "📌 Création de $(SCRIPT_DIR)/$$script"; \
 			echo "#!/usr/bin/env python3\n\"\"\"$$script (squelette minimal, à compléter)\"\"\"\n\nif __name__ == \"__main__\":\n    print(\"✅ Script $$script généré (contenu minimal)\")" > $(SCRIPT_DIR)/$$script; \
@@ -41,7 +41,7 @@ install-prod:
 	@echo "📦 Installation des dépendances de production..."
 	python -m pip install --upgrade pip
 	pip install -r requirements.txt
-	pip install -r src/itcaa_ai_offline/requirements-ai.txt
+	pip install -r src/itcaaaioffline/requirements-ai.txt
 
 ## 📦 Installation développement
 install-dev:
@@ -49,7 +49,7 @@ install-dev:
 	python -m pip install --upgrade pip
 	pip install -r requirements.txt
 	pip install -r requirements-dev.txt || true
-	pip install -r src/itcaa_ai_offline/requirements-ai.txt
+	pip install -r src/itcaaaioffline/requirements-ai.txt
 
 ## 🔒 Vérification version Python
 check-python-version:
@@ -63,12 +63,12 @@ check-python-version:
 
 ## 🔍 Vérification des dépendances IA
 validate-ai:
-	python $(SCRIPT_DIR)/validate_ai_dependencies.py
+	python $(SCRIPT_DIR)/validateai_dependencies.py
 
 ## 🧠 Vérifie la structure du projet IA
 check:
 	@echo "🔍 Vérification structure IA ITCAA…"
-	PYTHONPATH=$(PYTHONPATH) python $(SCRIPT_DIR)/check_structure.py || exit 1
+	PYTHONPATH=$(PYTHONPATH) python $(SCRIPT_DIR)/checkstructure.py || exit 1
 
 ## 🧪 Lance tous les tests avec pytest
 test:
@@ -78,13 +78,13 @@ test:
 ## 🧬 Génération de l’index FAISS (protégé par audit IA)
 index-builder: validate-ai install-prod
 	@echo "🧬 Reconstruction de l’index FAISS…"
-	PYTHONPATH=$(PYTHONPATH) python $(PYTHONPATH)/itcaa_ai_offline/data/corpus/index_builder.py --incremental || \
+	PYTHONPATH=$(PYTHONPATH) python $(PYTHONPATH)/itcaaaioffline/data/corpus/index_builder.py --incremental || \
 	(echo '❌ Échec génération index FAISS' && exit 1)
 
 ## 📊 Génère le rapport d'audit
 audit: validate-ai
 	@echo "📊 Génération du rapport d'audit…"
-	PYTHONPATH=$(PYTHONPATH) python $(PYTHONPATH)/itcaa_ai_offline/generate_index_report.py || exit 1
+	PYTHONPATH=$(PYTHONPATH) python $(PYTHONPATH)/itcaaaioffline/generateindexreport.py || exit 1
 	@echo "✅ Rapport disponible : $(INDEX_REPORT)"
 
 ## 🎯 Vérifie le linting
@@ -160,20 +160,13 @@ requirements:
 ## 🛠 Vérifie et répare l’index FAISS (protégé par audit IA)
 repair-index: validate-ai install-prod
 	@echo "🛠 Vérification et réparation de l’index FAISS…"
-	PYTHONPATH=$(PYTHONPATH) python $(SCRIPT_DIR)/repair_index.py || \
+	PYTHONPATH=$(PYTHONPATH) python $(SCRIPT_DIR)/repairindex.py || \
 	(echo '❌ Échec réparation index FAISS' && exit 1)
 
 ## 📥 Vérifie l'import de l'API ITCAA
 check-import:
 	@echo "📥 Vérification de l'import apps.api.main..."
 	@python test_import.py || (echo "❌ Import API échoué" && exit 1)
-
-## 📦 Installation production
-install-prod:
-	@echo "📦 Installation des dépendances de production..."
-	python -m pip install --upgrade pip
-	pip install -r requirements.txt
-	pip install -r src/itcaa_ai_offline/requirements-ai.txt
 
 ## ⚙️ Prépare l’environnement complet de développement
 setup-dev: check-python-version generate-scripts verify-scripts install-dev validate-ai repair-index check-import audit
