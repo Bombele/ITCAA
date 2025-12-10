@@ -299,3 +299,58 @@ Prod jobs (build, déploiement, offline AI, render)
 - Plus de divergence entre pipeline et Makefile.  
 - Documentation mise à jour dans README, QUALITY_GUIDE, CI Guide, Bitácora.  
 
+📜 Bitácora – ITCAA AI
+
+🎯 Objectif
+Tracer toutes les corrections techniques et documentaires appliquées au projet, avec justification et commit court associé.
+
+---
+
+🔄 Journal des modifications
+
+2025-12-10
+- Makefile
+  - Suppression duplication install-prod  
+  - Correction chemin src/itcaaaioffline/requirements-ai.txt  
+  - Révision séquence setup-prod (ordre corrigé)  
+  👉 Commit : fix(makefile): remove duplicate install-prod and correct ai path
+
+- README
+  - Ajout section Installation (Dev vs Prod vs CI/CD)  
+  - Alignement séquences avec Makefile  
+  👉 Commit : docs(readme): update installation section with dev/prod alignment
+
+- QUALITY_GUIDE
+  - Ajout tableau comparatif Dev vs Prod vs CI/CD  
+  - Documentation des vérifications qualité (lint, typecheck, tests, audit IA)  
+  👉 Commit : docs(quality-guide): add dev/prod/ci comparison and quality checks
+
+- CI Guide
+  - Documentation séquences Dev et Prod en YAML  
+  - Ajout des étapes qualité (lint, typecheck, tests, audit IA)  
+  👉 Commit : docs(ci-guide): align ci jobs with makefile and add quality checks
+
+- Deploy Guide
+  - Documentation séquence Prod corrigée (setup-prod, docker, health check, cycle API)  
+  👉 Commit : docs(deploy-guide): update prod deployment sequence
+
+- Dev Guide
+  - Documentation séquence Dev corrigée (setup-dev, tests, lint, typecheck, audit IA)  
+  👉 Commit : docs(dev-guide): update dev setup and quality steps
+
+- Readme AI
+  - Documentation des dépendances IA critiques (torch, transformers, faiss, sklearn)  
+  - Alignement Dev/Prod  
+  👉 Commit : docs(readme-ai): document ai dependencies and align dev/prod
+
+- Bitácora
+  - Ajout de ce journal des modifications avec commits courts  
+  👉 Commit : chore(bitacora): add log of corrections with commits
+
+---
+
+🎯 Résultat attendu
+- Chaque correction technique est immédiatement reflétée dans la documentation.  
+- Les commits courts assurent la traçabilité et facilitent l’audit.  
+- L’ensemble des guides (README, QUALITY_GUIDE, CI Guide, Deploy Guide, Dev Guide, Readme AI, Bitácora) est aligné et cohérent.  
+
