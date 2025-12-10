@@ -1,0 +1,36 @@
+{
+  // 📌 Interpréteur Python par défaut
+  "python.defaultInterpreterPath": "/usr/local/bin/python3.11",
+
+  // 📦 Activer linting et qualité
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "python.linting.flake8Enabled": true,
+
+  // 🧪 Tests avec pytest
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestArgs": [
+    "tests"
+  ],
+
+  // 🎯 Formatage automatique
+  "editor.formatOnSave": true,
+  "python.formatting.provider": "black",
+
+  // 🔎 Isort pour organiser les imports
+  "isort.args": [
+    "--profile",
+    "black"
+  ],
+
+  // 🛠 Mypy pour vérification stricte des types
+  "python.linting.mypyEnabled": true,
+  "python.linting.mypyArgs": [
+    "--strict",
+    "--ignore-missing-imports"
+  ],
+
+  // 🌐 Terminal intégré par défaut
+  "terminal.integrated.defaultProfile.linux": "bash"
+}
