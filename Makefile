@@ -6,7 +6,7 @@ DOCKER_IMAGE=itcaa-ai-api
 DOCKER_CONTAINER=itcaa-ai-api
 LOG_DIR=logs
 
-.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-import validate-ai validate-render quality-check pre-commit docker-build-local poetry-setup verify-scripts generate-scripts install-faiss index-builder
+.PHONY: check test index audit clean lint typecheck docker-build docker-up docker-down docker-logs docker-test docker-health requirements repair-index dev-install prod-install setup-dev setup-prod start-api restart-api stop-api cycle-api check-import validate-ai validate-render quality-check pre-commit docker-build-local poetry-setup verify-scripts generate-scripts index-builder
 
 ## 🔍 Vérifie la présence des scripts critiques
 verify-scripts:
