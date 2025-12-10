@@ -106,3 +106,12 @@ jobs:
 - name: 🔍 Verify scripts with Makefile
         run: make verify-scripts
         shell: bash
+
+# CI/CD Checklist – ITCAA
+
+## 1. 🧹 Purge environnement
+- Purger le cache pip :
+  ```bash
+  pip cache purge
+  rm -rf ~/.cache/pip
+  rm -rf ${{ env.pythonLocation }}/lib/python3.12/site-packages/*
