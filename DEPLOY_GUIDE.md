@@ -122,3 +122,73 @@ Décrire la procédure de déploiement en environnement Prod, alignée avec le M
   - Alignement Dev/Prod/CI-CD
   - Factorisation workflows via _install.yml
 
+🛠️ Dev Guide – ITCAA AI
+
+🎯 Objectif
+Décrire la procédure de préparation et de validation de l’environnement Dev, alignée avec le Makefile et les workflows CI/CD.
+
+---
+
+⚙️ Séquence de développement
+
+Étapes principales
+1. Préparer l’environnement Dev
+   `bash
+   make setup-dev
+   `
+   - Vérifie la version Python (3.11 obligatoire)
+   - Génère et vérifie les scripts critiques
+   - Installe les dépendances Dev :
+     - requirements.txt
+     - requirements-dev.txt
+     - requirements-ai.txt
+   - Valide les dépendances IA
+   - Répare l’index FAISS
+   - Vérifie l’import API
+   - Génère le rapport d’audit
+
+👉 Commit : fix(dev-guide): align setup-dev with Makefile corrections (requirements.txt + dev + ai)
+
+---
+
+2. Tests unitaires et intégration
+   `bash
+   make test
+   `
+   - Exécute pytest avec couverture
+   - Arrête à la première erreur (--maxfail=1)
+
+👉 Commit : docs(dev-guide): add pytest sequence for dev
+
+---
+
+3. Qualité du code
+   `bash
+   make lint
+   make typecheck
+   `
+   - black et isort pour linting
+   - mypy pour vérification stricte des types
+
+👉 Commit : docs(dev-guide): add lint and typecheck steps
+
+---
+
+4. Audit IA
+   `bash
+   make validate-ai
+   `
+   - Vérifie la présence et la cohérence des dépendances IA
+   - Protège la génération et la réparation de l’index FAISS
+
+👉 Commit : docs(dev-guide): add validate-ai step for dev
+
+---
+
+📜 Traçabilité (Bitácora)
+
+- 2025-12-10
+  - Alignement Dev avec Prod et CI/CD
+  - Ajout explicite de requirements-ai.txt dans la séquence Dev
+  - Documentation mise à jour dans README, QUALITY_GUIDE, CI Guide, Deploy Guide, Dev Guide, Readme AI
+
