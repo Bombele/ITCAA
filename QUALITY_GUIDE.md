@@ -76,3 +76,16 @@ Le déploiement vers Render est institutionnalisé dans le workflow `deploy.yml`
 make quality-check
 make validate-render
 # Push vers main ou feature/ai-offline-module déclenche automatiquement le déploiement
+
+# 🔄 Flux CI/CD – ITCAA
+
+```mermaid
+flowchart TD
+    A[🧹 Purge environnement] --> B[📦 Installer requirements.txt + requirements-dev.txt]
+    B --> C[🔍 Audit IA - make validate-ai]
+    C --> D[🛠 Repair-index]
+    D --> E[🧬 Index-builder]
+    E --> F[📊 Audit report]
+    F --> G[🧪 Tests & Coverage]
+    G --> H[⚙️ Setup-dev]
+    G --> I[🚀 Setup-prod]
