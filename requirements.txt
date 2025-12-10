@@ -1,35 +1,23 @@
-########################################
-# 📦 Dépendances principales (production)
-########################################
-fastapi>=0.115,<0.116
-uvicorn>=0.32,<0.33
-sqlalchemy>=2.0,<2.1
-psycopg2-binary>=2.9,<3.0
-shapely>=2.0,<2.1
-pyyaml>=6.0,<7.0
-pydantic>=2.9,<2.10
-python-dotenv>=1.0,<2.0
-
-########################################
-# 🔤 NLP (Spacy et dépendances)
-########################################
-spacy>=3.7,<3.8
-
-########################################
-# 🤖 IA / Deep Learning
-########################################
-# ⚠️ Torch 2.1.0 n’existe plus sur PyPI → correction vers versions disponibles
+fastapi==0.115.14
+uvicorn==0.32.1
+gunicorn==23.0.0
+sqlalchemy==2.0.45
+psycopg2-binary==2.9.11
+pydantic==2.12.5
+pydantic-core==2.41.5
+starlette==0.46.2
+click==8.3.1
+anyio==4.12.0
+h11==0.16.0
+idna==3.11
+packaging==25.0
+pyyaml==6.0.3
+shapely==2.1.2
+typing-extensions==4.15.0
+typing-inspection==0.4.2
+greenlet==3.3.0
 torch>=2.2,<3.0
 transformers>=4.40,<5.0
 sentence-transformers>=2.2,<3.0
-
-########################################
-# 🔍 Similarité / Vectorisation (FAISS)
-########################################
-# Utiliser faiss-cpu pour compatibilité CI/CD (GPU non disponible sur runners GitHub)
-faiss-cpu>=1.8,<1.14
-
-########################################
-# 📊 Machine Learning / Scoring
-########################################
 scikit-learn>=1.3,<2.0
+faiss-cpu>=1.8,<1.14
