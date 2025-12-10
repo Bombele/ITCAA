@@ -28,18 +28,20 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: 📂 Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'requirements-ai.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+      # 🧹 Purge complète du cache pip et environnement
+      - name: 🧹 Purge pip cache et environnement
+        run: |
+          echo "🧹 Purge complète du cache pip et des paquets installés..."
+          pip cache purge
+          rm -rf ~/.cache/pip
+          rm -rf ${{ env.pythonLocation }}/lib/python3.12/site-packages/*
+        shell: bash
 
-      - name: 📦 Installer les dépendances IA + globales
+      # 📦 Installer les dépendances globales et IA
+      - name: 📦 Installer les dépendances
         run: |
           pip install -r requirements.txt
-          pip install -r requirements-ai.txt
+          pip install -r requirements-dev.txt || true
         shell: bash
 
       - name: 🔍 Vérification installation
@@ -52,33 +54,30 @@ jobs:
 
       # 🔍 Vérification des scripts critiques
       - name: 🔍 Verify scripts presence
-        run: |
-          for script in scripts/repair_index.py scripts/check_structure.py scripts/validate_dependencies.py; do
-            if [ ! -f "$script" ]; then
-              echo "❌ Script manquant : $script"
-              exit 1
-            else
-              echo "✅ Script présent : $script"
-            fi
-          done
+        run: make verify-scripts
         shell: bash
 
-      - name: 🔍 Vérification structure IA
-        run: python scripts/check_structure.py
+      # 🔍 Audit IA obligatoire
+      - name: 🔍 Validate AI dependencies
+        run: make validate-ai
         shell: bash
 
-      - name: 🧩 Validate dependencies
-        run: python validate_dependencies.py
+      # 🛠 Réparer l’index FAISS
+      - name: 🛠 Repair FAISS index
+        run: make repair-index
         shell: bash
 
-      - name: 🛠️ Repair FAISS index
-        run: PYTHONPATH=src python scripts/repair_index.py
+      # 🧬 Reconstruire l’index FAISS
+      - name: 🧬 Rebuild FAISS index
+        run: make index-builder
         shell: bash
 
-      - name: 🧬 Rebuild FAISS index (incremental)
-        run: PYTHONPATH=src python src/itcaa_ai_offline/data/corpus/index_builder.py --incremental
+      # 📊 Générer rapport d’audit
+      - name: 📊 Generate audit report
+        run: make audit
         shell: bash
 
+      # 🧪 Tests avec couverture
       - name: 🧪 Run tests with coverage
         run: pytest -v --cov=src/itcaa_ai_offline --cov-report=xml --cov-report=term-missing tests/
         shell: bash
@@ -103,15 +102,11 @@ jobs:
           name: index-report
           path: src/itcaa_ai_offline/data/index/index_report.md
 
-- name: 🔍 Verify scripts with Makefile
-        run: make verify-scripts
+      # 🚀 Setup complet dev et prod
+      - name: ⚙️ Setup Dev environment
+        run: make setup-dev
         shell: bash
 
-# CI/CD Checklist – ITCAA
-
-## 1. 🧹 Purge environnement
-- Purger le cache pip :
-  ```bash
-  pip cache purge
-  rm -rf ~/.cache/pip
-  rm -rf ${{ env.pythonLocation }}/lib/python3.12/site-packages/*
+      - name: 🚀 Setup Prod environment
+        run: make setup-prod
+        shell: bash
