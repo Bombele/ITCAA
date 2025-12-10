@@ -232,3 +232,70 @@
 - 🧠 Vérification locale avec Uvicorn
 - 🚀 Déploiement Render validé
 - 🪶 Acte de mémoire technique et diplomatique
+
+📘 CI Guide – ITCAA AI
+
+🎯 Objectif
+Décrire la configuration CI/CD pour garantir la robustesse et la reproductibilité des environnements Dev et Prod.
+
+---
+
+⚙️ Séquences d’installation
+
+Dev jobs (lint, tests, audit)
+`yaml
+- name: 📦 Installer les dépendances (Dev)
+  run: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    pip install -r requirements-dev.txt
+    pip install -r src/itcaaaioffline/requirements-ai.txt
+`
+
+👉 Commit : fix(ci): align dev jobs with Makefile (requirements.txt + dev + ai)
+
+---
+
+Prod jobs (build, déploiement, offline AI, render)
+`yaml
+- name: 📦 Installer les dépendances (Prod)
+  run: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    pip install -r src/itcaaaioffline/requirements-ai.txt
+`
+
+👉 Commit : fix(ci): align prod jobs with Makefile (requirements.txt + ai only)
+
+---
+
+🔍 Vérifications qualité en CI
+
+- Lint : black, isort  
+- Typecheck : mypy  
+- Tests : pytest  
+- Audit IA : validate-ai  
+- Index FAISS : repair-index et index-builder  
+
+👉 Commit : docs(ci-guide): document quality checks (lint, typecheck, tests, audit IA)
+
+---
+
+📜 Traçabilité (Bitácora)
+
+- 2025-12-10  
+  - Suppression duplication install-prod  
+  - Correction chemin requirements-ai.txt  
+  - Révision séquence setup-prod (ordre corrigé)  
+  - Alignement Dev/Prod/CI-CD  
+  - Factorisation workflows via _install.yml
+
+👉 Commit : chore(bitacora): log Makefile and CI/CD corrections
+
+---
+
+🎯 Résultat attendu
+- CI jobs Dev et Prod reflètent exactement les séquences Makefile.  
+- Plus de divergence entre pipeline et Makefile.  
+- Documentation mise à jour dans README, QUALITY_GUIDE, CI Guide, Bitácora.  
+
