@@ -10,7 +10,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
+python = "3.11.*"
 fastapi = "^0.115.0"
 uvicorn = "^0.32.0"
 gunicorn = "^23.0.0"
@@ -38,13 +38,13 @@ addopts = "-v --disable-warnings --cov=src --cov-report=xml --cov-report=term-mi
 
 [tool.black]
 line-length = 88
-target-version = ['py310', 'py311', 'py312']
+target-version = ['py311']
 
 [tool.isort]
 profile = "black"
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.11"
 strict = true
 files = ["src", "tests"]
 
