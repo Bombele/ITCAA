@@ -168,6 +168,21 @@ check-import:
 	@echo "📥 Vérification de l'import apps.api.main..."
 	@python test_import.py || (echo "❌ Import API échoué" && exit 1)
 
+## 📦 Installation production
+install-prod:
+	@echo "📦 Installation des dépendances de production..."
+	python -m pip install --upgrade pip
+	pip install -r requirements.txt
+	pip install -r src/itcaaaioffline/requirements-ai.txt
+
+## 📦 Installation développement
+install-dev:
+	@echo "📦 Installation des dépendances de développement..."
+	python -m pip install --upgrade pip
+	pip install -r requirements.txt
+	pip install -r requirements-dev.txt || true
+	pip install -r src/itcaaaioffline/requirements-ai.txt
+
 ## ⚙️ Prépare l’environnement complet de développement
 setup-dev: check-python-version generate-scripts verify-scripts install-dev validate-ai repair-index check-import audit
 	@echo "✅ Environnement de développement prêt : dépendances installées (app, dev, IA), scripts vérifiés, audit IA validé, import API validé, index réparé et audit effectué."
