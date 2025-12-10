@@ -1,18 +1,19 @@
 {
   "name": "ITCAA Dev",
-  "image": "mcr.microsoft.com/devcontainers/python:3.12",
-  "postCreateCommand": "bash -c 'export PATH=$HOME/.local/bin:$PATH && bash setup_poetry.sh'",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    }
+  },
+  "postCreateCommand": "pip install -r requirements.txt",
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "ms-python.black-formatter",
-        "ms-python.isort"
+        "ms-toolsai.jupyter"
       ]
     }
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   }
 }
