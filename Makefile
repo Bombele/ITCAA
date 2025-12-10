@@ -38,16 +38,18 @@ generate-scripts:
 
 ## 📦 Installation production
 install-prod:
-    @echo "📦 Installation des dépendances de production..."
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-    pip install -r src/itcaa_ai_offline/requirements-ai.txt
+	@echo "📦 Installation des dépendances de production..."
+	python -m pip install --upgrade pip
+	pip install -r requirements.txt
+	pip install -r src/itcaa_ai_offline/requirements-ai.txt
 
 ## 📦 Installation développement
 install-dev:
 	@echo "📦 Installation des dépendances de développement..."
 	python -m pip install --upgrade pip
+	pip install -r requirements.txt
 	pip install -r requirements-dev.txt || true
+	pip install -r src/itcaa_ai_offline/requirements-ai.txt
 
 ## 🔒 Vérification version Python
 check-python-version:
@@ -173,9 +175,13 @@ install-prod:
 	pip install -r requirements.txt
 	pip install -r src/itcaa_ai_offline/requirements-ai.txt
 
+## ⚙️ Prépare l’environnement complet de développement
+setup-dev: check-python-version generate-scripts verify-scripts install-dev validate-ai repair-index check-import audit
+	@echo "✅ Environnement de développement prêt : dépendances installées (app, dev, IA), scripts vérifiés, audit IA validé, import API validé, index réparé et audit effectué."
+
 ## 🚀 Prépare l’environnement complet de production
 setup-prod: check-python-version generate-scripts verify-scripts install-prod check-import validate-ai repair-index
-	@echo "✅ Environnement de production prêt : dépendances installées, scripts vérifiés, import API validé, audit IA validé et index réparé."
+	@echo "✅ Environnement de production prêt : dépendances installées (app, IA), scripts vérifiés, import API validé, audit IA validé et index réparé."
 
 ## 🚀 Démarre l’API ITCAA
 start-api:
