@@ -100,4 +100,62 @@ Ce document décrit les cibles du Makefile ITCAA et leur usage dans le cycle de 
 - Toujours lancer make lint et make typecheck avant un commit.  
 - Utiliser make test pour valider la stabilité.  
 - Nettoyer régulièrement avec make clean.  
-- Vérifier la santé du conteneur avec make docker-health après make docker-up.  
+- Vérifier la santé du conteneur avec make docker-health après make docker-up. 
+
+🛠️ Dev Guide – ITCAA AI (corrigé)
+
+🎯 Objectif
+Garantir que l’environnement de développement utilise des dépendances figées via poetry.lock, pour assurer stabilité et reproductibilité.
+
+---
+
+⚙️ Vérifications qualité avec requirements figés
+
+- Installation Dev  
+  - Les dépendances sont exportées depuis poetry.lock :  
+    - requirements.txt  
+    - requirements-dev.txt  
+    - requirements-ai.txt  
+  - Commande :  
+    `bash
+    make install-dev
+    `
+
+- Tests unitaires et intégration  
+  - Outil : pytest  
+  - Dépendances figées dans requirements-dev.txt  
+  - Commande :  
+    `bash
+    make test
+    `
+
+- Linting et typecheck  
+  - Outils : black, isort, mypy  
+  - Dépendances figées dans requirements-dev.txt  
+  - Commandes :  
+    `bash
+    make lint
+    make typecheck
+    `
+
+- Audit IA  
+  - Outils : validate-ai, repair-index, index-builder  
+  - Dépendances figées dans requirements-ai.txt  
+  - Commande :  
+    `bash
+    make validate-ai
+    `
+
+---
+
+📜 Traçabilité (Bitácora)
+- 2025-12-10  
+  - Ajout règle : toutes les vérifications Dev doivent utiliser les requirements figés (requirements-dev.txt, requirements-ai.txt).  
+  - Commit : docs(dev-guide): enforce locked requirements for dev checks
+
+---
+
+🎯 Résultat attendu
+- Les institutions disposent d’une traçabilité complète pour l’environnement Dev.  
+- Les programmeurs exécutent lint, typecheck, tests et audit IA avec des dépendances figées → stabilité et cohérence assurées.  
+
