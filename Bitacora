@@ -388,3 +388,17 @@ Tracer toutes les corrections techniques et documentaires appliquées au projet,
 - Les programmeurs bénéficient d’un environnement stable et reproductible grâce au lock file.  
 - CI/CD et Dev utilisent les mêmes versions → robustesse garantie.  
 
+📜 Traçabilité (Bitácora)
+- 2025-12-10  
+  - Correction du chemin IA (src/itcaaaioffline → src/itcaaaioffline).  
+  - Ajout lock file (poetry.lock) → export des requirements figés.  
+  - Ajout Torch CPU-only pour CI/CD.  
+  - Commit : fix(ci-install): correct ai path and use locked requirements
+
+---
+
+🎯 Résultat attendu
+- CI/CD installe uniquement des versions figées → reproductibilité garantie.  
+- Plus de risque lié aux versions instables (fsspec, regex, certifi).  
+- Pipeline CI/CD plus léger grâce à Torch CPU-only.  
+- Dev et Prod parfaitement alignés avec _install.yml.
