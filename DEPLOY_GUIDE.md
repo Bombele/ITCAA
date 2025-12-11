@@ -192,3 +192,76 @@ Décrire la procédure de préparation et de validation de l’environnement Dev
   - Ajout explicite de requirements-ai.txt dans la séquence Dev
   - Documentation mise à jour dans README, QUALITY_GUIDE, CI Guide, Deploy Guide, Dev Guide, Readme AI
 
+🚀 Deploy Guide – ITCAA AI (corrigé)
+
+🎯 Objectif
+Garantir que le déploiement en production utilise les dépendances figées via poetry.lock, afin d’éviter les versions instables ou trop récentes.
+
+---
+
+⚙️ Séquence de déploiement corrigée
+
+1. Vérification de la version Python
+`bash
+make check-python-version
+`
+
+2. Génération des scripts critiques
+`bash
+make generate-scripts
+make verify-scripts
+`
+
+3. Installation des dépendances figées (Prod)
+`bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+pip install -r src/itcaaaioffline/requirements-ai.txt
+`
+
+👉 Ces fichiers sont générés depuis poetry.lock pour garantir la stabilité.
+
+---
+
+🔍 Vérifications qualité
+- Import API : make check-import  
+- Audit IA : make validate-ai  
+- Réparation index FAISS : make repair-index
+
+---
+
+🐳 Déploiement Docker
+`bash
+make docker-build
+make docker-up
+make docker-health
+`
+
+- docker-build : construit l’image avec les dépendances figées.  
+- docker-up : lance le conteneur.  
+- docker-health : vérifie l’endpoint /health.  
+
+---
+
+🔁 Cycle API
+`bash
+make cycle-api
+`
+Arrête puis redémarre l’API pour valider la stabilité du déploiement.
+
+---
+
+📜 Traçabilité (Bitácora)
+- 2025-12-10  
+  - Correction chemin IA (src/itcaaaioffline → src/itcaaaioffline)  
+  - Ajout lock file (poetry.lock) pour figer les versions instables  
+  - Mise à jour Deploy Guide pour refléter l’utilisation des requirements figés  
+  - Commit : docs(deploy-guide): use locked requirements for prod deployment
+
+---
+
+🎯 Résultat attendu
+- Déploiement Prod utilise uniquement des versions figées → reproductibilité garantie.  
+- Risque lié aux versions instables (fsspec, regex, certifi) éliminé.  
+- CI/CD et Prod parfaitement alignés.  
+
