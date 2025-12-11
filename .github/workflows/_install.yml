@@ -1,39 +1,41 @@
-name: Install Dependencies
+name: _install
 
 on:
   workflow_call:
     inputs:
-      environment:
-        description: "Type d'environnement (dev ou prod)"
+      env:
+        description: "Environnement cible (dev ou prod)"
         required: true
         type: string
 
 jobs:
-  install-deps:
+  install:
     runs-on: ubuntu-latest
-
     steps:
-      - name: 📥 Cloner le dépôt
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🐍 Installer Python 3.11
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
-      - name: 📂 Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'requirements-dev.txt', 'src/itcaaaioffline/requirements-ai.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+      - name: 📦 Upgrade pip
+        run: python -m pip install --upgrade pip
 
-      - name: 📦 Installer dépendances (Prod)
-  run: |
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-    pip install -r src/itcaaaioffline/requirements-ai.txt
+      - name: 📦 Install dependencies (Dev)
+        if: ${{ inputs.env == 'dev' }}
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          pip install -r src/itcaaaioffline/requirements-ai.txt
+          # Torch CPU-only pour CI/CD
+          pip install torch==2.9.1+cpu --index-url https://download.pytorch.org/whl/cpu
 
-      - name: 🔍 Vérification installation
-        run: pip list
+      - name: 📦 Install dependencies (Prod)
+        if: ${{ inputs.env == 'prod' }}
+        run: |
+          pip install -r requirements.txt
+          pip install -r src/itcaaaioffline/requirements-ai.txt
+          # Torch CPU-only pour CI/CD
+          pip install torch==2.9.1+cpu --index-url https://download.pytorch.org/whl/cpu
