@@ -402,3 +402,17 @@ Tracer toutes les corrections techniques et documentaires appliquées au projet,
 - Plus de risque lié aux versions instables (fsspec, regex, certifi).  
 - Pipeline CI/CD plus léger grâce à Torch CPU-only.  
 - Dev et Prod parfaitement alignés avec _install.yml.
+
+
+📜 Traçabilité (Bitácora)
+- 2025-12-10  
+  - Mise à jour ci.yml pour appeler _install.yml avec env: dev et env: prod.  
+  - Alignement Dev/Prod avec requirements figés et chemin IA corrigé.  
+  - Commit : fix(ci): call _install.yml with env dev/prod
+
+---
+
+🎯 Résultat attendu
+- CI/CD utilise _install.yml pour installer les dépendances figées → reproductibilité garantie.  
+- Dev jobs (lint, typecheck, tests, audit IA) et Prod jobs (build, deploy) sont alignés.  
+- Chemin IA corrigé et Torch CPU-only appliqué en CI/CD.  
