@@ -65,3 +65,48 @@ Liste principale
   - Correction chemin requirements-ai.txt  
   - Alignement Dev/Prod/CI-CD  
   - Documentation mise à jour dans README, QUALITY_GUIDE, CI Guide, Deploy Guide, Dev Guide, Readme AI  
+
+🤖 Readme AI – ITCAA (corrigé)
+
+🎯 Objectif
+Garantir que les dépendances IA critiques sont figées via poetry.lock pour assurer stabilité et reproductibilité en Dev et Prod.
+
+---
+
+⚙️ Dépendances IA figées
+- torch  
+- transformers  
+- sentence-transformers  
+- faiss-cpu  
+- scikit-learn
+
+👉 Ces dépendances sont exportées depuis poetry.lock vers :  
+- requirements.txt  
+- requirements-dev.txt  
+- requirements-ai.txt
+
+---
+
+🔄 Alignement Dev / Prod avec lock file
+
+| Contexte | Fichiers utilisés | Commande Makefile |
+|----------|------------------|-------------------|
+| Dev | requirements.txt, requirements-dev.txt, requirements-ai.txt | make install-dev |
+| Prod | requirements.txt, requirements-ai.txt | make install-prod |
+
+👉 Les fichiers sont générés automatiquement depuis poetry.lock → reproductibilité garantie.
+
+---
+
+📜 Traçabilité (Bitácora)
+- 2025-12-10  
+  - Ajout règle : dépendances IA figées via poetry.lock.  
+  - Mise à jour Readme AI pour refléter l’utilisation des requirements figés.  
+  - Commit : docs(readme-ai): enforce locked requirements for ai dependencies
+
+---
+
+🎯 Résultat attendu
+- Les institutions disposent d’une documentation claire sur la gestion des dépendances IA figées.  
+- Les programmeurs utilisent toujours les mêmes versions en Dev et Prod → stabilité et cohérence assurées.  
+
