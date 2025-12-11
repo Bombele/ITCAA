@@ -151,11 +151,12 @@ docker-health:
 	docker logs $(DOCKER_CONTAINER); \
 	exit 1
 
-## 📦 Export des requirements depuis pyproject.toml
+## 📦 Export des requirements figés depuis poetry.lock
 requirements:
-	@echo "📦 Export des requirements depuis pyproject.toml…"
+	@echo "📦 Export des requirements figés depuis poetry.lock…"
 	poetry export -f requirements.txt --without-hashes -o requirements.txt
 	poetry export -f requirements.txt --without-hashes --with dev -o requirements-dev.txt
+	poetry export -f requirements.txt --without-hashes --with ai -o src/itcaaaioffline/requirements-ai.txt
 
 ## 🛠 Vérifie et répare l’index FAISS (protégé par audit IA)
 repair-index: validate-ai install-prod
