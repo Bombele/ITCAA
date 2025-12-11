@@ -2,74 +2,69 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: [ "main" ]
   pull_request:
-    branches:
-      - main
-      - develop
-  workflow_dispatch:
+    branches: [ "main" ]
 
 jobs:
-  ci-checks:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: 📥 Cloner le dépôt
-        uses: actions/checkout@v4
-
-      - name: 🐍 Installer Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: 📂 Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'requirements-dev.txt', 'src/itcaa_ai_offline/requirements-ai.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: 📦 Installer les dépendances (Dev)
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
-          pip install -r src/itcaa_ai_offline/requirements-ai.txt
-
-      - name: 🎯 Lint avec Black et Isort
-        run: |
-          black --check src/ tests/ || (echo "❌ Black a trouvé des erreurs" && exit 1)
-          isort --check-only src/ tests/ || (echo "❌ Isort a trouvé des erreurs" && exit 1)
-
-      - name: 🔎 Vérification stricte des types avec Mypy
-        run: |
-          mypy src tests || (echo "❌ Mypy a trouvé des erreurs" && exit 1)
-
-      - name: 🧪 Lancer les tests avec couverture
-        run: |
-          pytest tests/ --cov=src --cov-report=xml --cov-report=term-missing || (echo "⚠️ Tests échoués" && exit 1)
-
-      - name: 📊 Vérifier le rapport de couverture
-        run: |
-          if [ ! -f coverage.xml ]; then
-            echo "❌ Rapport de couverture introuvable"
-            exit 1
-          else
-            echo "✅ Rapport de couverture généré"
-          fi
-
-      - name: 🗂️ Archiver le rapport de couverture
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report-${{ github.run_number }}
-          path: coverage.xml
-          if-no-files-found: ignore
-
-jobs:
-  setup:
+  ## 🔍 Vérifications Dev (lint, typecheck, tests, audit IA)
+  dev-checks:
     uses: ./.github/workflows/_install.yml
     with:
-      environment: "dev"
+      env: dev
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: dev-checks
+    steps:
+      - uses: actions/checkout@v4
+      - name: 🎯 Lint
+        run: make lint
+
+  typecheck:
+    runs-on: ubuntu-latest
+    needs: dev-checks
+    steps:
+      - uses: actions/checkout@v4
+      - name: 🔎 Typecheck
+        run: make typecheck
+
+  test:
+    runs-on: ubuntu-latest
+    needs: dev-checks
+    steps:
+      - uses: actions/checkout@v4
+      - name: 🧪 Tests
+        run: make test
+
+  audit:
+    runs-on: ubuntu-latest
+    needs: dev-checks
+    steps:
+      - uses: actions/checkout@v4
+      - name: 📊 Audit IA
+        run: make audit
+
+  ## 🚀 Vérifications Prod (build, déploiement, API)
+  prod-deploy:
+    uses: ./.github/workflows/_install.yml
+    with:
+      env: prod
+
+  build:
+    runs-on: ubuntu-latest
+    needs: prod-deploy
+    steps:
+      - uses: actions/checkout@v4
+      - name: 🐳 Build Docker
+        run: make docker-build
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - name: 🚀 Deploy API
+        run: |
+          make docker-up
+          make docker-health
