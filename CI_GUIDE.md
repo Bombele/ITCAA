@@ -64,3 +64,66 @@ Le pipeline CI/CD se lance automatiquement dans les cas suivants :
 - Conserver les artefacts comme preuve d’audit et traçabilité.
 
 ---
+
+📘 CI Guide – ITCAA AI (corrigé)
+
+🎯 Objectif
+Assurer que les jobs CI/CD utilisent des dépendances figées via poetry.lock, afin d’éviter les versions instables ou trop récentes.
+
+---
+
+⚙️ Séquences d’installation corrigées
+
+Dev jobs (lint, tests, audit)
+`yaml
+- name: 📦 Installer les dépendances (Dev)
+  run: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    pip install -r requirements-dev.txt
+    pip install -r src/itcaaaioffline/requirements-ai.txt
+`
+
+👉 Commit : fix(ci): use locked requirements for dev jobs
+
+---
+
+Prod jobs (build, déploiement, offline AI, render)
+`yaml
+- name: 📦 Installer les dépendances (Prod)
+  run: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    pip install -r src/itcaaaioffline/requirements-ai.txt
+`
+
+👉 Commit : fix(ci): use locked requirements for prod jobs
+
+---
+
+🔍 Vérifications qualité en CI
+- Lint : black, isort  
+- Typecheck : mypy  
+- Tests : pytest  
+- Audit IA : validate-ai  
+- Index FAISS : repair-index, index-builder
+
+👉 Commit : docs(ci-guide): document quality checks with locked deps
+
+---
+
+📜 Traçabilité (Bitácora)
+- 2025-12-10  
+  - Correction chemin IA (src/itcaaaioffline → src/itcaaaioffline)  
+  - Alignement Dev/Prod/CI-CD  
+  - Ajout lock file (poetry.lock) pour figer les versions instables  
+  - Mise à jour CI Guide pour refléter l’utilisation des requirements figés  
+  - Commit : chore(bitacora): log ci guide corrections with lock file
+
+---
+
+🎯 Résultat attendu
+- CI/CD utilise toujours les versions figées → reproductibilité garantie.  
+- Plus de risque lié aux versions instables (fsspec, regex, certifi).  
+- Dev et Prod alignés avec le même lock file.  
+
