@@ -258,3 +258,62 @@ Chaque correction technique est documentée et alignée avec le Makefile et les 
 - CI/CD → reflète exactement ces séquences, sans divergence.  
 - Documentation → chaque correction est tracée dans README, QUALITY_GUIDE, Bitácora, CI guide, Deploy guide, Dev guide, Readme AI.  
 
+Mise à jour QUALITY_GUIDE – ITCAA AI
+
+🔍 Objectif
+Garantir que toutes les vérifications qualité utilisent des dépendances figées via poetry.lock, pour éviter les divergences et instabilités.
+
+---
+
+⚙️ Vérifications qualité avec requirements figés
+
+- Linting  
+  - Outils : black, isort  
+  - Dépendances figées dans requirements-dev.txt  
+  - Commande CI/CD :  
+    `bash
+    pip install -r requirements-dev.txt
+    make lint
+    `
+
+- Typecheck  
+  - Outil : mypy  
+  - Dépendances figées dans requirements-dev.txt  
+  - Commande CI/CD :  
+    `bash
+    pip install -r requirements-dev.txt
+    make typecheck
+    `
+
+- Tests unitaires et intégration  
+  - Outil : pytest  
+  - Dépendances figées dans requirements-dev.txt  
+  - Commande CI/CD :  
+    `bash
+    pip install -r requirements-dev.txt
+    make test
+    `
+
+- Audit IA  
+  - Outils : validate-ai, repair-index, index-builder  
+  - Dépendances figées dans requirements-ai.txt (généré depuis poetry.lock)  
+  - Commande CI/CD :  
+    `bash
+    pip install -r src/itcaaaioffline/requirements-ai.txt
+    make validate-ai
+    `
+
+---
+
+📜 Traçabilité (Bitácora)
+- 2025-12-10  
+  - Ajout de la règle : toutes les vérifications qualité doivent utiliser les requirements figés (requirements-dev.txt, requirements-ai.txt).  
+  - Commit : docs(quality-guide): enforce locked requirements for quality checks
+
+---
+
+🎯 Résultat attendu
+- Les institutions disposent d’une garantie de reproductibilité pour les audits qualité.  
+- Les programmeurs exécutent lint, typecheck, tests et audit IA avec des dépendances figées → stabilité et cohérence assurées.  
+
+
