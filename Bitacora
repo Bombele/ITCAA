@@ -354,3 +354,37 @@ Tracer toutes les corrections techniques et documentaires appliquées au projet,
 - Les commits courts assurent la traçabilité et facilitent l’audit.  
 - L’ensemble des guides (README, QUALITY_GUIDE, CI Guide, Deploy Guide, Dev Guide, Readme AI, Bitácora) est aligné et cohérent.  
 
+📜 Bitácora – ITCAA AI
+
+🔄 Journal des modifications
+
+2025-12-10
+- Correction chemin IA  
+  - src/itcaaaioffline → src/itcaaaioffline  
+  - Commit : fix(makefile): correct path to requirements-ai.txt (triple a, no underscore)
+
+- README / QUALITY_GUIDE / CI Guide / Deploy Guide / Dev Guide / Readme AI  
+  - Alignement Dev/Prod/CI-CD  
+  - Documentation mise à jour avec séquences corrigées  
+  - Commit : docs(guides): align dev/prod/ci sequences and update docs
+
+- Bitácora  
+  - Ajout journal des corrections avec commits courts  
+  - Commit : chore(bitacora): add log of corrections with commits
+
+- Verrouillage des versions instables  
+  - Versions instables identifiées :  
+    - fsspec-2025.12.0  
+    - regex-2025.11.3  
+    - certifi-2025.11.12  
+  - Correction : génération et utilisation de poetry.lock pour figer les versions.  
+  - Export des requirements figés (requirements.txt, requirements-dev.txt, requirements-ai.txt) depuis le lock file.  
+  - Commit : fix(deps): lock unstable versions via poetry.lock
+
+---
+
+🎯 Résultat attendu
+- Les institutions disposent d’une traçabilité complète : chaque correction est documentée et justifiée.  
+- Les programmeurs bénéficient d’un environnement stable et reproductible grâce au lock file.  
+- CI/CD et Dev utilisent les mêmes versions → robustesse garantie.  
+
