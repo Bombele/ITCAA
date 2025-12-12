@@ -220,3 +220,35 @@ Avant toute installation, il faut régénérer les fichiers `requirements.txt`, 
 ### 1. Export des requirements figés
 ```bash
 make export-reqs
+
+# ITCAA – AI Offline Module
+
+## 📜 Bitácora (Traçabilité institutionnelle)
+
+Chaque correction technique ou organisationnelle est documentée ici pour assurer la transparence et l’onboarding international.
+
+### 2025-12-12
+- **fix(path):** mise à jour du chemin IA → `models/requirements-ai.txt` (anciennement `src/itcaaaioffline/requirements-ai.txt`).
+- **fix(requirements):** suppression de Torch GPU des `requirements.txt` et `requirements-dev.txt`. Torch CPU-only installé séparément via Makefile et `_install.yml`.
+- **feat(makefile):** ajout de la cible `export-reqs` pour régénérer automatiquement les requirements figés depuis `poetry.lock`.
+- **refactor(workflow):** `_install.yml` appelle désormais les cibles du Makefile (`export-reqs`, `install-dev`, `install-prod`, `install-ci`).
+- **refactor(ci):** `ci.yml` utilise `_install.yml` corrigé avec `env: ci` et `env: prod`.
+- **doc(readme):** mise à jour du README pour documenter les nouvelles cibles Makefile et workflows CI/CD.
+
+---
+
+## 🚀 Installation & CI/CD
+
+*(section déjà corrigée, voir plus haut)*
+
+---
+
+## 🧪 Qualité & Tests
+
+*(section déjà corrigée, voir plus haut)*
+
+---
+
+## 🐳 Docker
+
+*(section déjà corrigée, voir plus haut)*
