@@ -43,26 +43,22 @@ export-reqs:
 	poetry export -f requirements.txt --without-hashes --dev > requirements-dev.txt
 	poetry export -f requirements.txt --without-hashes -E ai > models/requirements-ai.txt
 
-## 📦 Installation Dev
 install-dev:
 	@echo "📦 Installing dependencies for Dev…"
 	pip install -r requirements.txt
 	pip install -r requirements-dev.txt
 	pip install -r models/requirements-ai.txt
 
-## 📦 Installation Prod
 install-prod:
 	@echo "📦 Installing dependencies for Prod…"
 	pip install -r requirements.txt
 	pip install -r models/requirements-ai.txt
 
-## 📦 Installation CI/CD (Torch CPU-only)
 install-ci:
 	@echo "📦 Installing dependencies for CI/CD (CPU-only)…"
 	pip install -r requirements.txt
 	pip install -r requirements-dev.txt
 	pip install -r models/requirements-ai.txt
-	# Torch CPU-only uniquement
 	pip install torch==2.9.1+cpu --index-url https://download.pytorch.org/whl/cpu
 
 ## 🔍 Qualité
