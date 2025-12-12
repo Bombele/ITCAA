@@ -1,35 +1,46 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from db import models, schemas, session
+from fastapi import APIRouter, HTTPException
+from typing import List
+from src.itcaa_ai_offline.models import Capsule, CapsuleCreate
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/capsules",
+    tags=["capsules"],
+)
 
-# Dependencia para obtener la sesión DB
-def get_db():
-    db = session.SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
-# Crear una cápsula asociada a un actor
-@router.post("/", response_model=schemas.CapsuleBase)
-def create_capsule(actor_id: int, capsule: schemas.CapsuleBase, db: Session = Depends(get_db)):
-    # Verificar que el actor existe
-    actor = db.query(models.Actor).filter(models.Actor.id == actor_id).first()
-    if not actor:
-        raise HTTPException(status_code=404, detail="Actor no encontrado")
+@router.get("/", response_model=List[Capsule])
+def list_capsules() -> List[Capsule]:
+    """
+    Retourne la liste des capsules disponibles.
+    """
+    return Capsule.get_all()
 
-    db_capsule = models.Capsule(actor_id=actor_id, **capsule.dict())
-    db.add(db_capsule)
-    db.commit()
-    db.refresh(db_capsule)
-    return db_capsule
 
-# Listar todas las cápsulas
-@router.get("/", response_model=list[schemas.CapsuleBase])
-def list_capsules(db: Session = Depends(get_db)):
-    return db.query(models.Capsule).all()
+@router.get("/{capsule_id}", response_model=Capsule)
+def get_capsule(capsule_id: int) -> Capsule:
+    """
+    Retourne une capsule par son identifiant.
+    """
+    capsule = Capsule.get_by_id(capsule_id)
+    if capsule is None:
+        raise HTTPException(status_code=404, detail="Capsule not found")
+    return capsule
 
-# Obtener cápsula por ID
-@router.get
+
+@router.post("/", response_model=Capsule)
+def create_capsule(capsule: CapsuleCreate) -> Capsule:
+    """
+    Crée une nouvelle capsule.
+    """
+    return Capsule.create(capsule)
+
+
+@router.delete("/{capsule_id}", response_model=dict)
+def delete_capsule(capsule_id: int) -> dict:
+    """
+    Supprime une capsule par son identifiant.
+    """
+    success = Capsule.delete(capsule_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Capsule not found")
+    return {"status": "deleted"}
