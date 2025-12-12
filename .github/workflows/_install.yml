@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       env:
-        description: "Environnement cible (dev ou prod)"
+        description: "Environnement cible (dev, prod ou ci)"
         required: true
         type: string
 
@@ -25,19 +25,12 @@ jobs:
 
       - name: 📦 Install dependencies (Dev)
         if: ${{ inputs.env == 'dev' }}
-        run: |
-          echo "📦 Installing Dev dependencies (locked via poetry.lock)…"
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
-          pip install -r src/itcaaaioffline/requirements-ai.txt
-          # Torch CPU-only pour CI/CD
-          pip install torch==2.9.1+cpu --index-url https://download.pytorch.org/whl/cpu
+        run: make install-dev
 
       - name: 📦 Install dependencies (Prod)
         if: ${{ inputs.env == 'prod' }}
-        run: |
-          echo "📦 Installing Prod dependencies (locked via poetry.lock)…"
-          pip install -r requirements.txt
-          pip install -r src/itcaaaioffline/requirements-ai.txt
-          # Torch CPU-only pour CI/CD
-          pip install torch==2.9.1+cpu --index-url https://download.pytorch.org/whl/cpu
+        run: make install-prod
+
+      - name: 📦 Install dependencies (CI/CD)
+        if: ${{ inputs.env == 'ci' }}
+        run: make install-ci
