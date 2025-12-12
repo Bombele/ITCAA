@@ -2,69 +2,42 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+      - feature/ai-offline-module
   pull_request:
-    branches: [ "main" ]
 
 jobs:
-  ## 🔍 Vérifications CI/CD (Dev checks avec Torch CPU-only)
   ci-install:
     uses: ./.github/workflows/_install.yml
     with:
       env: ci
 
-  lint:
+  ci-test:
     runs-on: ubuntu-latest
     needs: ci-install
     steps:
-      - uses: actions/checkout@v4
-      - name: 🎯 Lint
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 🧪 Run tests
+        run: make test
+
+      - name: 🔍 Lint
         run: make lint
 
-  typecheck:
-    runs-on: ubuntu-latest
-    needs: ci-install
-    steps:
-      - uses: actions/checkout@v4
       - name: 🔎 Typecheck
         run: make typecheck
 
-  test:
-    runs-on: ubuntu-latest
-    needs: ci-install
-    steps:
-      - uses: actions/checkout@v4
-      - name: 🧪 Tests
-        run: make test
-
-  audit:
-    runs-on: ubuntu-latest
-    needs: ci-install
-    steps:
-      - uses: actions/checkout@v4
-      - name: 📊 Audit IA
+      - name: 📊 Audit dependencies
         run: make audit
 
-  ## 🚀 Déploiement Prod
-  prod-install:
+  ci-prod-install:
     uses: ./.github/workflows/_install.yml
     with:
       env: prod
-
-  build:
-    runs-on: ubuntu-latest
-    needs: prod-install
-    steps:
-      - uses: actions/checkout@v4
-      - name: 🐳 Build Docker
-        run: make docker-build
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v4
-      - name: 🚀 Deploy API
-        run: |
-          make docker-up
-          make docker-health
