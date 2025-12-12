@@ -1,29 +1,22 @@
 # src/itcaa_ai_offline/schemas.py
-from pydantic import BaseModel, Field
-from typing import List, Union, Optional, Any
+from __future__ import annotations
 
-class PredictionInput(BaseModel):
-    features: List[Union[float, str]] = Field(
-        ...,
-        description="Caractéristiques d’entrée : valeurs numériques (mode classifier) ou texte (mode semantic)."
-    )
+# Ignorer les erreurs MyPy sur pydantic si les stubs ne sont pas disponibles
+from pydantic import BaseModel  # type: ignore
+from typing import List
 
-class PredictionOutput(BaseModel):
-    label: Union[int, str] = Field(
-        ...,
-        description="Classe prédite (int, mode classifier) ou réponse textuelle (str, mode semantic)."
-    )
-    confidence: float = Field(
-        ...,
-        ge=0.0,
-        le=1.0,
-        description="Score de confiance associé à la prédiction."
-    )
-    metadata: Optional[Any] = Field(
-        None,
-        description="Informations supplémentaires (ex: passages FAISS, logs, device utilisé)."
-    )
-    error: Optional[str] = Field(
-        None,
-        description="Message d’erreur si la prédiction échoue."
-    )
+
+class Capsule(BaseModel):  # type: ignore
+    """
+    Représente une capsule avec un identifiant, un texte et un embedding.
+    """
+    id: str
+    text: str
+    embedding: List[float]
+
+
+class CapsuleBatch(BaseModel):  # type: ignore
+    """
+    Représente un lot de capsules.
+    """
+    capsules: List[Capsule]
