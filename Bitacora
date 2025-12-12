@@ -416,3 +416,18 @@ Tracer toutes les corrections techniques et documentaires appliquées au projet,
 - CI/CD utilise _install.yml pour installer les dépendances figées → reproductibilité garantie.  
 - Dev jobs (lint, typecheck, tests, audit IA) et Prod jobs (build, deploy) sont alignés.  
 - Chemin IA corrigé et Torch CPU-only appliqué en CI/CD.  
+
+📜 Traçabilité (Bitácora)
+- 2025-12-11  
+  - Correction du chemin IA (src/itcaaaioffline → src/itcaaaioffline).  
+  - Ajout lock file (poetry.lock) → export des requirements figés.  
+  - Ajout Torch CPU-only pour CI/CD.  
+  - Commit : fix(ci-install): correct ai path and use locked requirements (cpu-only torch)
+
+---
+
+🎯 Résultat attendu
+- CI/CD installe uniquement des versions figées → reproductibilité garantie.  
+- Plus de risque lié aux versions instables (fsspec, regex, certifi).  
+- Pipeline CI/CD plus léger grâce à Torch CPU-only.  
+- Dev et Prod parfaitement alignés avec _install.yml.  
