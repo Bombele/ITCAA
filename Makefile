@@ -43,17 +43,20 @@ export-reqs:
 	poetry export -f requirements.txt --without-hashes --dev > requirements-dev.txt
 	poetry export -f requirements.txt --without-hashes -E ai > models/requirements-ai.txt
 
+## 📦 Installation Dev
 install-dev:
 	@echo "📦 Installing dependencies for Dev…"
 	pip install -r requirements.txt
 	pip install -r requirements-dev.txt
 	pip install -r models/requirements-ai.txt
 
+## 📦 Installation Prod
 install-prod:
 	@echo "📦 Installing dependencies for Prod…"
 	pip install -r requirements.txt
 	pip install -r models/requirements-ai.txt
 
+## 📦 Installation CI/CD (Torch CPU-only)
 install-ci:
 	@echo "📦 Installing dependencies for CI/CD (CPU-only)…"
 	pip install -r requirements.txt
@@ -63,32 +66,25 @@ install-ci:
 
 ## 🔍 Qualité
 lint:
-	@echo "🔍 Linting code…"
 	flake8 src tests
 
 typecheck:
-	@echo "🔎 Type checking…"
 	mypy src
 
 test:
-	@echo "🧪 Running tests…"
 	pytest --maxfail=1 --disable-warnings -q
 
 audit:
-	@echo "📊 Auditing dependencies…"
 	pip-audit -r requirements.txt -r requirements-dev.txt -r models/requirements-ai.txt
 
 ## 🐳 Docker
 docker-build:
-	@echo "🐳 Building Docker image…"
 	docker build -t itcaa:latest .
 
 docker-up:
-	@echo "🚀 Starting Docker container…"
 	docker compose up -d
 
 docker-health:
-	@echo "❤️ Checking Docker health…"
 	docker ps
 
 ## 🔒 Vérification version Python
