@@ -41,3 +41,18 @@ jobs:
       - name: 🔎 Verify Torch version (CI only)
         if: ${{ inputs.env == 'ci' }}
         run: pip freeze | grep torch || true
+
+- name: 🚫 Block GPU Torch
+        if: ${{ inputs.env == 'ci' }}
+        run: |
+          TORCH_VERSION=$(pip freeze | grep torch)
+          echo "Torch installed: $TORCH_VERSION"
+          if echo "$TORCH_VERSION" | grep -q "+cu"; then
+            echo "❌ GPU Torch detected (CUDA build). CI enforces CPU-only."
+            exit 1
+          fi
+          if ! echo "$TORCH_VERSION" | grep -q "+cpu"; then
+            echo "❌ Torch CPU-only not detected. CI requires torch==2.9.1+cpu."
+            exit 1
+          fi
+          echo "✅ Torch CPU-only confirmed."
