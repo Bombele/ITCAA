@@ -13,7 +13,7 @@ jobs:
     with:
       env: ci
 
-  ci-test:
+  ci-quality:
     runs-on: ubuntu-latest
     needs: ci-install
     steps:
@@ -25,19 +25,20 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: 🧪 Run tests
-        run: make test
-
       - name: 🔍 Lint
         run: make lint
 
       - name: 🔎 Typecheck
         run: make typecheck
 
-      - name: 📊 Audit dependencies
+      - name: 🧪 Tests
+        run: make test
+
+      - name: 📊 Audit
         run: make audit
 
-  ci-prod-install:
+  prod-install:
     uses: ./.github/workflows/_install.yml
+    needs: ci-quality
     with:
       env: prod
