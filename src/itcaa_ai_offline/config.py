@@ -28,3 +28,16 @@ EMBEDDING_MODEL = os.getenv(
 )
 
 TOP_K = int(os.getenv("ITCAA_TOP_K", "3"))
+
+# src/itcaa_ai_offline/config.py
+from __future__ import annotations
+from pathlib import Path
+from typing import Any, Dict
+
+# Paramètres globaux
+SETTINGS: Dict[str, Any] = {
+    "corpus_path": Path("data/corpus"),
+    "index_path": Path("build/index.faiss"),
+    "model_path": Path("models/offline_model"),
+    "log_level": "INFO",
+}
