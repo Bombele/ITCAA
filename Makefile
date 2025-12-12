@@ -1,5 +1,5 @@
 # ============================================================
-# ITCAA Makefile – version corrigée et consolidée
+# ITCAA Makefile – version corrigé et consolidé
 # ============================================================
 # Objectif : factoriser toutes les cibles, supprimer les doublons,
 # garantir Torch CPU-only, et centraliser Dev/Prod/CI/CD.
@@ -69,6 +69,10 @@ audit:
 
 coverage:
 	pytest --cov=src --cov-report=term-missing
+
+## 🌐 Tests API (FastAPI)
+api-test:
+	pytest tests/test_capsules_api.py --maxfail=1 --disable-warnings -q
 
 # -----------------------------
 # 📚 Documentation
