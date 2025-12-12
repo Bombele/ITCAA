@@ -7,15 +7,15 @@ on:
     branches: [ "main" ]
 
 jobs:
-  ## 🔍 Vérifications Dev (lint, typecheck, tests, audit IA)
-  dev-checks:
+  ## 🔍 Vérifications CI/CD (Dev checks avec Torch CPU-only)
+  ci-install:
     uses: ./.github/workflows/_install.yml
     with:
-      env: dev
+      env: ci
 
   lint:
     runs-on: ubuntu-latest
-    needs: dev-checks
+    needs: ci-install
     steps:
       - uses: actions/checkout@v4
       - name: 🎯 Lint
@@ -23,7 +23,7 @@ jobs:
 
   typecheck:
     runs-on: ubuntu-latest
-    needs: dev-checks
+    needs: ci-install
     steps:
       - uses: actions/checkout@v4
       - name: 🔎 Typecheck
@@ -31,7 +31,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs: dev-checks
+    needs: ci-install
     steps:
       - uses: actions/checkout@v4
       - name: 🧪 Tests
@@ -39,21 +39,21 @@ jobs:
 
   audit:
     runs-on: ubuntu-latest
-    needs: dev-checks
+    needs: ci-install
     steps:
       - uses: actions/checkout@v4
       - name: 📊 Audit IA
         run: make audit
 
-  ## 🚀 Vérifications Prod (build, déploiement, API)
-  prod-deploy:
+  ## 🚀 Déploiement Prod
+  prod-install:
     uses: ./.github/workflows/_install.yml
     with:
       env: prod
 
   build:
     runs-on: ubuntu-latest
-    needs: prod-deploy
+    needs: prod-install
     steps:
       - uses: actions/checkout@v4
       - name: 🐳 Build Docker
