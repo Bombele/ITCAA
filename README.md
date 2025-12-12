@@ -1,4 +1,4 @@
-# ITCAA – Institut Transnational de Certification des Acteurs Armés
+# ITCAA – Institut de Traçabilité et Certification des Acteurs Africains
 
 ![Structure Check](https://github.com/Bombele/ITCAA/actions/workflows/structure-check.yml/badge.svg?branch=main)
 ![Predeploy Check](https://github.com/Bombele/ITCAA/actions/workflows/structure-check.yml/badge.svg?branch=main&event=push)
