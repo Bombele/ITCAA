@@ -1,8 +1,8 @@
-# 🔒 Dépendances IA figées (exportées via poetry.lock)
+# 🔒 Dépendances IA figées
 transformers==4.46.2
 sentence-transformers==3.3.1
 faiss-cpu==1.13.1
 scikit-learn==1.5.2
 
-# ⚠️ Torch retiré de ce fichier pour éviter l’installation GPU par défaut.
-# Torch CPU-only est installé séparément dans CI/CD via Makefile (install-ci).
+# ⚠️ Torch retiré pour éviter GPU
+# Torch CPU-only est installé séparément via Makefile et _install.yml
