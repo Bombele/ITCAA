@@ -230,3 +230,18 @@ stop-api:
 ## 🔁 Cycle complet (stop + start)
 cycle-api: stop-api start-api
 	@echo "🔁 Cycle complet effectué : API arrêtée puis redémarrée."
+
+## 🔎 Vérification Torch (local)
+check-torch:
+	@echo "🔎 Vérification de la version Torch installée…"
+	@TORCH_VERSION=$$(pip freeze | grep torch); \
+	echo "Torch détecté: $$TORCH_VERSION"; \
+	if echo "$$TORCH_VERSION" | grep -q "+cu"; then \
+		echo "❌ Torch GPU détecté (CUDA build). Seule la version CPU est autorisée."; \
+		exit 1; \
+	fi; \
+	if ! echo "$$TORCH_VERSION" | grep -q "+cpu"; then \
+		echo "❌ Torch CPU-only non détecté. Installez torch==2.9.1+cpu."; \
+		exit 1; \
+	fi; \
+	echo "✅ Torch CPU-only confirmé."
