@@ -158,3 +158,13 @@ onboarding:
 # 🔓 Ajouts progressifs
 # -----------------------------
 # Tu peux ajouter ici d'autres cibles institutionnelles, modules AI, branches secondaires, etc.
+
+## 🧠 Build Index (FAISS)
+build-index:
+	@echo "🧠 Building FAISS index from corpus…"
+	python src/itcaa_ai_offline/index_builder.py --corpus data/corpus --output build/index.faiss
+
+## 🤖 Train AI Offline
+train-ai-offline:
+	@echo "🤖 Training offline AI model…"
+	python src/itcaa_ai_offline/predictor.py --train data/corpus --model-path models/offline_model
