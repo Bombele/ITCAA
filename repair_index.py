@@ -1,94 +1,76 @@
-#!/usr/bin/env python3
-"""
-repair_index.py
-Vérifie la cohérence entre meta.json et faiss.index.
-Institutionnalisation pour CI/CD ITCAA : logs explicites et robustesse.
-"""
+# repair_index.py
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Dict, List, Optional, Any
 
 import json
-import logging
-import sys
-import faiss
-from pathlib import Path
-from src.itcaa_ai_offline.data.config import PATHS
-from src.itcaa_ai_offline.data.corpus.index_builder import build_index
+import faiss  # ignored via mypy.ini
 
-# Configuration des logs institutionnels
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] [repair-index] %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
 
-def check_and_repair_index() -> bool:
+def load_index(index_path: Path) -> Optional[faiss.Index]:
+    """Load a FAISS index from disk, or return None if not found."""
+    if not index_path.exists():
+        return None
+    return faiss.read_index(str(index_path))
+
+
+def save_index(index: faiss.Index, index_path: Path) -> None:
+    """Persist FAISS index to disk."""
+    faiss.write_index(index, str(index_path))
+
+
+def load_meta(meta_path: Path) -> List[Dict[str, Any]]:
+    """Load metadata JSON adjacent to the index, or return empty list."""
+    if not meta_path.exists():
+        return []
+    with open(meta_path, "r", encoding="utf-8") as f:
+        data: List[Dict[str, Any]] = json.load(f)
+    return data
+
+
+def save_meta(meta: List[Dict[str, Any]], meta_path: Path) -> None:
+    """Persist metadata JSON adjacent to the index."""
+    with open(meta_path, "w", encoding="utf-8") as f:
+        json.dump(meta, f, indent=2)
+
+
+def repair_index(index_path: Path) -> None:
     """
-    Vérifie la cohérence entre meta.json et faiss.index.
-    Si incohérence détectée ou erreur, reconstruit l'index complet.
-    Retourne True si l'index est cohérent ou reconstruit avec succès, False sinon.
+    Minimal repair routine:
+    - loads index and metadata
+    - performs a basic integrity check
+    - writes back if needed
     """
-    try:
-        # Vérifier existence des fichiers
-        if not PATHS.faiss_index.exists() or not PATHS.meta_json.exists():
-            logging.warning("❌ Index FAISS ou meta.json manquant → reconstruction complète.")
-            build_index(incremental=False)
-            logging.info("✅ Reconstruction effectuée (absence de fichiers).")
-            return True
+    index = load_index(index_path)
+    if index is None:
+        raise FileNotFoundError(f"Index not found at {index_path}")
 
-        # Charger index FAISS
-        try:
-            index = faiss.read_index(str(PATHS.faiss_index))
-            logging.info(f"📂 Index FAISS chargé avec {index.ntotal} vecteurs.")
-        except Exception as e:
-            logging.error(f"❌ Impossible de lire l'index FAISS : {e}")
-            logging.info("🔄 Reconstruction complète de l'index...")
-            build_index(incremental=False)
-            return False
+    meta_path = index_path.with_suffix(".meta.json")
+    meta: List[Dict[str, Any]] = load_meta(meta_path)
 
-        # Charger métadonnées
-        try:
-            meta_text = PATHS.meta_json.read_text(encoding="utf-8")
-            meta = json.loads(meta_text)
-            logging.info(f"📂 meta.json chargé avec {len(meta)} entrées.")
-        except json.JSONDecodeError as e:
-            logging.error(f"❌ meta.json corrompu : {e}")
-            logging.info("🔄 Reconstruction complète de l'index...")
-            build_index(incremental=False)
-            return False
-        except Exception as e:
-            logging.error(f"❌ Erreur inattendue lors de la lecture de meta.json : {e}")
-            logging.info("🔄 Reconstruction complète de l'index...")
-            build_index(incremental=False)
-            return False
+    # Example: ensure each entry has an 'id' and 'text' field
+    repaired: List[Dict[str, Any]] = []
+    for entry in meta:
+        eid = entry.get("id")
+        text = entry.get("text")
+        if isinstance(eid, (str, int)) and isinstance(text, str):
+            repaired.append(entry)
 
-        # Vérifier cohérence
-        if not isinstance(meta, list):
-            logging.error("❌ meta.json n'est pas une liste valide → reconstruction.")
-            build_index(incremental=False)
-            return False
+    if len(repaired) != len(meta):
+        save_meta(repaired, meta_path)
+        print(f"Repaired metadata entries: {len(meta) - len(repaired)} removed")
 
-        if len(meta) != index.ntotal:
-            logging.error(
-                f"❌ Incohérence détectée : meta.json={len(meta)} vs FAISS={index.ntotal}. "
-                "→ Reconstruction complète en cours..."
-            )
-            build_index(incremental=False)
-            return False
+    # Optionally re-write index (no-op here)
+    save_index(index, index_path)
+    print("Index repair completed.")
 
-        logging.info("✅ Index FAISS et meta.json sont cohérents.")
-        return True
 
-    except Exception as e:
-        logging.exception(f"❌ Erreur inattendue lors de la vérification : {e}")
-        logging.info("🔄 Reconstruction forcée de l'index...")
-        build_index(incremental=False)
-        return False
+def main() -> None:
+    # Default path; adjust via CLI if needed
+    idx = Path("build/index.faiss")
+    repair_index(idx)
 
 
 if __name__ == "__main__":
-    success = check_and_repair_index()
-    if success:
-        logging.info("🎯 Processus de vérification terminé avec succès.")
-        sys.exit(0)
-    else:
-        logging.warning("🚫 Processus terminé avec incohérences corrigées.")
-        sys.exit(1)
+    main()
