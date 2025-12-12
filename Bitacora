@@ -431,3 +431,18 @@ Tracer toutes les corrections techniques et documentaires appliquées au projet,
 - Plus de risque lié aux versions instables (fsspec, regex, certifi).  
 - Pipeline CI/CD plus léger grâce à Torch CPU-only.  
 - Dev et Prod parfaitement alignés avec _install.yml.  
+
+📜 Traçabilité (Bitácora)
+- 2025-12-11  
+  - Mise à jour ci.yml pour appeler _install.yml avec env: ci (Torch CPU-only).  
+  - Dev checks (lint, typecheck, tests, audit IA) passent par install-ci.  
+  - Prod jobs (build, deploy) passent par install-prod.  
+  - Commit : fix(ci): add ci env for cpu-only torch
+
+---
+
+🎯 Résultat attendu
+- CI/CD utilise install-ci → pipeline léger et reproductible.  
+- Dev checks alignés avec Torch CPU-only.  
+- Prod jobs restent stables avec requirements figés.  
+- Toute la logique d’installation est centralisée dans le Makefile.
