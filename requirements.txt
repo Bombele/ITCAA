@@ -1,28 +1,23 @@
-# Projet ITCAA – Python 3.11 obligatoire
+# 🔒 Dépendances principales figées (exportées via poetry.lock)
 
-# --- Dépendances applicatives ---
-fastapi==0.115.14
-uvicorn==0.32.1
-gunicorn==23.0.0
-sqlalchemy==2.0.45
-psycopg2-binary==2.9.11
-pydantic==2.12.5
-pydantic-core==2.41.5
-starlette==0.46.2
-click==8.3.1
-anyio==4.12.0
-h11==0.16.0
-idna==3.11
-packaging==25.0
-pyyaml==6.0.3
-shapely==2.1.2
-typing-extensions==4.15.0
-typing-inspection==0.4.2
-greenlet==3.3.0
+# Core
+numpy==2.1.3
+pandas==2.2.3
+scikit-learn==1.5.2
 
-# --- Dépendances IA critiques ---
-torch>=2.2,<3.0
-transformers>=4.40,<5.0
-sentence-transformers>=2.2,<3.0
-scikit-learn>=1.3,<2.0
-faiss-cpu>=1.8,<1.14
+# Utilitaires
+requests==2.32.3
+tqdm==4.67.1
+
+# IA (sans Torch, géré séparément en CPU-only)
+transformers==4.46.2
+sentence-transformers==3.3.1
+faiss-cpu==1.13.1
+
+# Sécurité / compatibilité
+certifi==2025.11.12
+regex==2025.11.3
+fsspec==2025.12.0
+
+# ⚠️ Torch retiré pour éviter GPU
+# Torch CPU-only est installé séparément via Makefile et _install.yml
