@@ -1,15 +1,12 @@
-# 🔒 Dépendances principales figées (exportées via poetry.lock)
+# 🔒 Dépendances principales figées
 
-# Core
 numpy==2.1.3
 pandas==2.2.3
 scikit-learn==1.5.2
-
-# Utilitaires
 requests==2.32.3
 tqdm==4.67.1
 
-# IA (sans Torch, géré séparément en CPU-only)
+# IA offline (sans Torch)
 transformers==4.46.2
 sentence-transformers==3.3.1
 faiss-cpu==1.13.1
