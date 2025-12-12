@@ -1,25 +1,28 @@
-"""
-ITCAA Offline Package
-Ce module regroupe les utilitaires principaux :
-- config : chemins et paramètres
-- index_builder : construction et mise à jour de l'index FAISS
-- predictor : prédiction (si disponible)
-"""
+# src/itcaa_ai_offline/__init__.py
+from __future__ import annotations
 
-from . import config
-from .data.corpus.index_builder import build_index
-from repair_index import check_and_repair_index
+from pathlib import Path
+from typing import Optional
 
-# Vérifie que predictor existe avant de l'importer
+# Import interne corrigé : utiliser le chemin relatif
+# Si "corpus/index.py" existe, on importe directement la fonction
 try:
-    from . import predictor
+    from .data.corpus.index_builder import build_index, load_index
 except ImportError:
-    predictor = None
+    # Fallback si le module n'est pas disponible
+    build_index = None  # type: ignore
+    load_index = None  # type: ignore
 
-# API publique
-__all__ = [
-    "config",
-    "build_index",
-    "check_and_repair_index",
-    "predictor",
-]
+
+# Exemple de variable qui peut être None → annotée en Optional[str]
+INDEX_PATH: Optional[str] = None
+
+
+def get_index_path() -> Path:
+    """
+    Retourne le chemin de l'index FAISS.
+    Si INDEX_PATH est None, retourne un chemin par défaut.
+    """
+    if INDEX_PATH is None:
+        return Path("build/index.faiss")
+    return Path(INDEX_PATH)
