@@ -43,6 +43,14 @@ install-prod:
 	pip install -r requirements.txt
 	pip install -r src/itcaaaioffline/requirements-ai.txt
 
+## 📦 Installation CI/CD (Torch CPU-only)
+install-ci:
+	@echo "📦 Installing dependencies for CI/CD (CPU-only)…"
+	pip install -r requirements.txt
+	pip install -r requirements-dev.txt
+	pip install -r src/itcaaaioffline/requirements-ai.txt
+	pip install torch==2.9.1+cpu --index-url https://download.pytorch.org/whl/cpu
+
 ## 📦 Installation développement
 install-dev:
 	@echo "📦 Installation des dépendances de développement..."
