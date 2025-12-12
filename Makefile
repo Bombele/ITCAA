@@ -36,6 +36,13 @@ generate-scripts:
 	done
 	@echo "✅ Scripts critiques régénérés ou confirmés."
 
+## 📦 Export des requirements figés depuis poetry.lock
+export-reqs:
+	@echo "🔒 Exporting locked requirements from poetry.lock…"
+	poetry export -f requirements.txt --without-hashes > requirements.txt
+	poetry export -f requirements.txt --without-hashes --dev > requirements-dev.txt
+	poetry export -f requirements.txt --without-hashes -E ai > models/requirements-ai.txt
+
 ## 📦 Installation Dev
 install-dev:
 	@echo "📦 Installing dependencies for Dev…"
@@ -73,7 +80,7 @@ test:
 
 audit:
 	@echo "📊 Auditing dependencies…"
-	pip-audit
+	pip-audit -r requirements.txt -r requirements-dev.txt -r models/requirements-ai.txt
 
 ## 🐳 Docker
 docker-build:
