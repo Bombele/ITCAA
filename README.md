@@ -209,3 +209,14 @@ Les workflows GitHub Actions reflètent exactement ces séquences :
 - Dev, Prod et CI/CD parfaitement alignés.  
 - Audit IA passe ✅ partout.  
 - Documentation et traçabilité mises à jour dans README, QUALITY_GUIDE, Bitácora, CI guide, Deploy guide, Dev guide, Readme AI.  
+
+# ITCAA – AI Offline Module
+
+## 🚀 Installation
+
+Toutes les dépendances sont centralisées dans le **Makefile**.  
+Avant toute installation, il faut régénérer les fichiers `requirements.txt`, `requirements-dev.txt` et `models/requirements-ai.txt` depuis `poetry.lock`.
+
+### 1. Export des requirements figés
+```bash
+make export-reqs
