@@ -3,18 +3,18 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 from fastapi import APIRouter
-from pydantic import BaseModel
+from pydantic import BaseModel  # type: ignore
 
 router = APIRouter()
 
 
-# Exemple de modèle Pydantic pour les requêtes
-class Payload(BaseModel):
+# Modèle Pydantic pour la requête
+class Payload(BaseModel):  # type: ignore
     text: str
 
 
-# Exemple de modèle Pydantic pour les réponses
-class Prediction(BaseModel):
+# Modèle Pydantic pour la réponse
+class Prediction(BaseModel):  # type: ignore
     label: str
     score: float
 
