@@ -1,30 +1,48 @@
 # src/itcaa_ai_offline/routers.py
-from fastapi import APIRouter, HTTPException, Query
-from .schemas import PredictionInput, PredictionOutput
-from .predictor import OfflinePredictor
+from __future__ import annotations
+
+from typing import Any, Dict, List
+from fastapi import APIRouter
+from pydantic import BaseModel
 
 router = APIRouter()
 
-# Initialisation par défaut en mode classifier
-predictor_classifier = OfflinePredictor(mode="classifier")
-predictor_semantic = OfflinePredictor(mode="semantic")
 
-@router.post("/predict", response_model=PredictionOutput)
-def get_prediction(
-    input_data: PredictionInput,
-    mode: str = Query("classifier", enum=["classifier", "semantic"])
-):
+# Exemple de modèle Pydantic pour les requêtes
+class Payload(BaseModel):
+    text: str
+
+
+# Exemple de modèle Pydantic pour les réponses
+class Prediction(BaseModel):
+    label: str
+    score: float
+
+
+@router.post("/predict", response_model=Prediction)
+def predict(payload: Payload) -> Prediction:
     """
-    Endpoint REST pour obtenir une prédiction IA hors ligne.
-    - mode="classifier" → classification supervisée Torch
-    - mode="semantic" → recherche sémantique FAISS
+    Endpoint de prédiction.
     """
-    try:
-        if mode == "classifier":
-            return predictor_classifier.predict(input_data)
-        elif mode == "semantic":
-            # On renvoie une réponse textuelle basée sur FAISS
-            answer = predictor_semantic.answer(" ".join(map(str, input_data.features)))
-            return PredictionOutput(label=answer, confidence=1.0)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur prédiction: {e}")
+    # Exemple de logique : retourne une prédiction factice
+    return Prediction(label="example", score=0.99)
+
+
+@router.get("/health", response_model=Dict[str, str])
+def health_check() -> Dict[str, str]:
+    """
+    Endpoint de vérification de santé.
+    """
+    return {"status": "ok"}
+
+
+@router.get("/items", response_model=List[Dict[str, Any]])
+def list_items() -> List[Dict[str, Any]]:
+    """
+    Endpoint qui retourne une liste d'items.
+    """
+    items: List[Dict[str, Any]] = [
+        {"id": 1, "name": "item1"},
+        {"id": 2, "name": "item2"},
+    ]
+    return items
