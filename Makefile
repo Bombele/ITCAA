@@ -36,12 +36,18 @@ generate-scripts:
 	done
 	@echo "✅ Scripts critiques régénérés ou confirmés."
 
-## 📦 Installation production
-install-prod:
-	@echo "📦 Installation des dépendances de production..."
-	python -m pip install --upgrade pip
+## 📦 Installation Dev
+install-dev:
+	@echo "📦 Installing dependencies for Dev…"
 	pip install -r requirements.txt
-	pip install -r src/itcaaaioffline/requirements-ai.txt
+	pip install -r requirements-dev.txt
+	pip install -r models/requirements-ai.txt
+
+## 📦 Installation Prod
+install-prod:
+	@echo "📦 Installing dependencies for Prod…"
+	pip install -r requirements.txt
+	pip install -r models/requirements-ai.txt
 
 ## 📦 Installation CI/CD (Torch CPU-only)
 install-ci:
@@ -49,15 +55,38 @@ install-ci:
 	pip install -r requirements.txt
 	pip install -r requirements-dev.txt
 	pip install -r models/requirements-ai.txt
+	# Torch CPU-only uniquement
 	pip install torch==2.9.1+cpu --index-url https://download.pytorch.org/whl/cpu
 
-## 📦 Installation développement
-install-dev:
-	@echo "📦 Installation des dépendances de développement..."
-	python -m pip install --upgrade pip
-	pip install -r requirements.txt
-	pip install -r requirements-dev.txt || true
-	pip install -r src/itcaaaioffline/requirements-ai.txt
+## 🔍 Qualité
+lint:
+	@echo "🔍 Linting code…"
+	flake8 src tests
+
+typecheck:
+	@echo "🔎 Type checking…"
+	mypy src
+
+test:
+	@echo "🧪 Running tests…"
+	pytest --maxfail=1 --disable-warnings -q
+
+audit:
+	@echo "📊 Auditing dependencies…"
+	pip-audit
+
+## 🐳 Docker
+docker-build:
+	@echo "🐳 Building Docker image…"
+	docker build -t itcaa:latest .
+
+docker-up:
+	@echo "🚀 Starting Docker container…"
+	docker compose up -d
+
+docker-health:
+	@echo "❤️ Checking Docker health…"
+	docker ps
 
 ## 🔒 Vérification version Python
 check-python-version:
