@@ -25,12 +25,26 @@ jobs:
 
       - name: 📦 Install dependencies (Dev)
         if: ${{ inputs.env == 'dev' }}
-        run: make install-dev
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          pip install -r models/requirements-ai.txt
+          # Torch CPU-only pour CI/CD
+          pip install torch==2.9.1+cpu --index-url https://download.pytorch.org/whl/cpu
 
       - name: 📦 Install dependencies (Prod)
         if: ${{ inputs.env == 'prod' }}
-        run: make install-prod
+        run: |
+          pip install -r requirements.txt
+          pip install -r models/requirements-ai.txt
+          # Torch CPU-only pour CI/CD
+          pip install torch==2.9.1+cpu --index-url https://download.pytorch.org/whl/cpu
 
       - name: 📦 Install dependencies (CI/CD)
         if: ${{ inputs.env == 'ci' }}
-        run: make install-ci
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          pip install -r models/requirements-ai.txt
+          # Torch CPU-only pour CI/CD
+          pip install torch==2.9.1+cpu --index-url https://download.pytorch.org/whl/cpu
