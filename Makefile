@@ -1,8 +1,5 @@
 # ============================================================
-# ITCAA Makefile – version corrigé et consolidé
-# ============================================================
-# Objectif : factoriser toutes les cibles, supprimer les doublons,
-# garantir Torch CPU-only, et centraliser Dev/Prod/CI/CD.
+# ITCAA Makefile – version corrigée et extensible
 # ============================================================
 
 # -----------------------------
@@ -24,12 +21,12 @@ install-dev:
 	pip install -r models/requirements-ai.txt
 
 install-prod:
-	@echo "📦 Installing dependencies for Prod…"
+	@echo "📦 Installing dependencies pour Prod…"
 	pip install -r requirements.txt
 	pip install -r models/requirements-ai.txt
 
 install-ci:
-	@echo "📦 Installing dependencies for CI/CD (CPU-only)…"
+	@echo "📦 Installing dependencies pour CI/CD (CPU-only)…"
 	pip install -r requirements.txt
 	pip install -r requirements-dev.txt
 	pip install -r models/requirements-ai.txt
@@ -70,9 +67,22 @@ audit:
 coverage:
 	pytest --cov=src --cov-report=term-missing
 
-## 🌐 Tests API (FastAPI)
+# -----------------------------
+# 🌐 Tests API (FastAPI)
+# -----------------------------
 api-test:
 	pytest tests/test_capsules_api.py --maxfail=1 --disable-warnings -q
+
+# -----------------------------
+# 🔧 CI/CD Helpers
+# -----------------------------
+ci-install: install-ci
+ci-test: test
+ci-lint: lint
+ci-typecheck: typecheck
+ci-audit: audit
+
+ci-all: ci-install ci-lint ci-typecheck ci-test ci-audit api-test
 
 # -----------------------------
 # 📚 Documentation
@@ -103,17 +113,6 @@ docker-health:
 
 docker-logs:
 	docker compose logs -f
-
-# -----------------------------
-# 🔧 CI/CD Helpers
-# -----------------------------
-ci-install: install-ci
-ci-test: test
-ci-lint: lint
-ci-typecheck: typecheck
-ci-audit: audit
-
-ci-all: ci-install ci-lint ci-typecheck ci-test ci-audit
 
 # -----------------------------
 # 🛠️ DevOps / Maintenance
@@ -155,6 +154,7 @@ onboarding:
 	@echo "5. make lint && make typecheck"
 	@echo "6. make docs-build"
 
-# ============================================================
-# Fin du Makefile
-# ============================================================
+# -----------------------------
+# 🔓 Ajouts progressifs
+# -----------------------------
+# Tu peux ajouter ici d'autres cibles institutionnelles, modules AI, branches secondaires, etc.
