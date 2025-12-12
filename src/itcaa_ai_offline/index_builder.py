@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 import numpy as np
 from numpy.typing import NDArray
 import faiss
@@ -20,7 +20,7 @@ def build_embeddings(texts: List[str]) -> NDArray[np.float32]:
 
 def save_full_index(
     index: faiss.Index,
-    meta: List[Dict[str, Any]],
+    meta: List[Dict[str, str]],
     index_path: Path
 ) -> None:
     """
