@@ -23,12 +23,13 @@ Elle permet de tester, valider et améliorer les systèmes de journaux inviolabl
   - `bulletin_fr.md` → version française.  
   - `bulletin_en.md` → version anglaise.  
   - `bulletin_ar.md` → version arabe.  
-  - `bulletin_sw.md` → version swahili.
+  - `bulletin_sw.md` → version swahili.  
+  - `bulletin_ln.md` → version lingala.
 
 - **tests/**  
   - `test_audit.py` → Vérifie la robustesse du module d’audit.  
   - `test_logs.py` → Vérifie l’intégrité et la non‑altération des journaux.  
-  - `test_bulletins.py` → Vérifie la cohérence et la traduction des bulletins.
+  - `test_bulletins.py` → Vérifie la cohérence et la traduction des bulletins (FR/EN/AR/SW/LN).
 
 ---
 
@@ -49,4 +50,4 @@ Elle permet de tester, valider et améliorer les systèmes de journaux inviolabl
 
 ## ✅ Conclusion
 La branche `feature/audit` est le **laboratoire technique d’ITCAA pour la traçabilité et l’audit**.  
-Elle permet de tester et durcir les journaux inviolables et les bulletins multilingues avant leur intégration institutionnelle dans la branche principale `itcaa/`.
+Elle permet de tester et durcir les journaux inviolables et les bulletins multilingues (FR/EN/AR/SW/LN) avant leur intégration institutionnelle dans la branche principale `itcaa/`.
