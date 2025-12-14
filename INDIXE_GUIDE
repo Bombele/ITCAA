@@ -1,0 +1,66 @@
+# INDEX_GUIDE – ITCAA
+
+🎯 Objectif  
+Ce document centralise les **MODULE_GUIDE.md** de toutes les branches d’ITCAA/FINSIG.  
+Il sert de point d’entrée pour l’onboarding international, la traçabilité et la gouvernance institutionnelle.  
+Chaque branche est un laboratoire technique dédié à un domaine spécifique, avec documentation multilingue (FR/EN/AR/SW/LN).
+
+📁 Référentiel des branches et modules  
+
+• `feature/interop/`  
+  → Module Interop – Guide : interopérabilité et intégration des systèmes  
+
+• `feature/audit/`  
+  → Module Audit – Guide : traçabilité, contrôle et vérification institutionnelle  
+
+• `feature/certification/`  
+  → Module Certification – Guide : normes, validation et certification DIH  
+
+• `feature/institution/`  
+  → Module Institution – Guide : gouvernance institutionnelle et consolidation des cadres  
+
+• `feature/confidentiality/`  
+  → Module Confidentiality – Guide : confidentialité, souveraineté et protection des données  
+
+• `feature/governance/`  
+  → Module Governance – Guide : sécurité, intégrité et supervision multilingue  
+
+• `feature/innovation/`  
+  → Module Innovation – Guide : IA, robustesse quantique et prédiction humanitaire  
+
+• `feature/legal/`  
+  → Module Legal – Guide : conformité juridique, droit numérique et DIH  
+
+• `feature/finance/`  
+  → Module Finance – Guide : scoring bancaire, flux financiers et conformité  
+
+• `feature/humanitarian/`  
+  → Module Humanitarian – Guide : protocoles ONG, prédiction et coordination  
+
+• `feature/education/`  
+  → Module Education – Guide : transmission pédagogique et onboarding multilingue  
+
+• `feature/data_science/`  
+  → Module Data Science – Guide : analytique et visualisation des données  
+
+• `feature/security_ops/`  
+  → Module Security Ops – Guide : cybersécurité opérationnelle et gestion des incidents  
+
+• `feature/ai-offline-module/`  
+  → Module AI Offline – Guide : intelligence artificielle hors‑ligne, robustesse et auditabilité  
+
+• `feature/armed_actors/`  
+  → Module Armed Actors – Guide : certification progressive des forces armées, audit militaire et protocoles opérationnels  
+
+• `feature/institutions/`  
+  → Module Institutions – Guide : certification progressive des institutions civiles, financières et humanitaires  
+
+🧭 Gouvernance et impact institutionnel  
+• Chaque branche est un laboratoire technique dédié à un domaine stratégique  
+• Les modifications sont documentées dans la Bitácora pour assurer la traçabilité  
+• Les modules validés sont fusionnés dans la branche principale `itcaa/`  
+• Impact : adoption continentale et internationale grâce à une documentation homogène et multilingue  
+
+✅ Conclusion  
+L’INDEX_GUIDE est la **porte d’entrée institutionnelle d’ITCAA/FINSIG**.  
+Il garantit la cohérence, la traçabilité et l’onboarding international en reliant toutes les branches et leurs guides.
