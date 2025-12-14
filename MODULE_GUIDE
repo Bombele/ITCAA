@@ -38,7 +38,7 @@ Elle permet de tester, valider et améliorer les protocoles ONG, les modules de 
 - **tests/**  
   - `test_protocols.py` → Vérifie la robustesse des protocoles multilingues (FR/EN/AR/SW/LN).  
   - `test_prediction.py` → Vérifie la validité des modèles de prédiction humanitaire.  
-  - `test_coordination.py` → Vérifie la cohérence des mécanismes de coordination inter‑ONG.  
+  - `test_coordination.py` → Vérifie la cohérence des mécanismes de coordination inter‑ONG.
 
 ---
 
