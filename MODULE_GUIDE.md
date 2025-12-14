@@ -80,3 +80,6 @@ Elle permet de tester et durcir les modules de scoring, de conformité et de ges
 
 # 🔗 Continuité ITCAA  
 Ce module s’inscrit dans la continuité du Standard Régional ITCAA et prépare son adoption progressive.
+
+⚖️ Synthèse  
+La branche `feature/finance` est le **pilier financier** d’ITCAA. Elle relie les systèmes militaires et institutionnels aux standards bancaires via FINSIG, assurant conformité et interopérabilité continentale.
