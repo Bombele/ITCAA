@@ -44,3 +44,20 @@ Elle permet de tester, valider et améliorer les protocoles ONG, les modules de 
 ✅ Conclusion  
 La branche `feature/humanitarian` est le **laboratoire technique d’ITCAA pour les mécanismes humanitaires**.  
 Elle permet de tester et durcir les protocoles ONG
+
+# Module Humanitarian – Guide
+
+📁 Structure des fichiers  
+• `external_audit.py` → audit externe par ONG et institutions régionales  
+• `humanitarian_fr.md`, `humanitarian_en.md`, `humanitarian_ar.md`, `humanitarian_sw.md`, `humanitarian_ln.md` → documentation multilingue  
+• `TRANSPARENCY_PROTOCOL.md` → protocoles de transparence humanitaire  
+
+🧪 Tests  
+• `test_audit.py` → robustesse des audits externes  
+• `test_protocols.py` → conformité des protocoles  
+
+🧭 Gouvernance  
+• Impact : transparence et légitimité humanitaire  
+
+# 🔗 Continuité ITCAA  
+Ce module s’inscrit dans la continuité du Standard Régional ITCAA et prépare son adoption progressive.
