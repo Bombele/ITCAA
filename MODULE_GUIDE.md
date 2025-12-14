@@ -74,3 +74,6 @@ Elle permet de tester et durcir les guides qualité multilingues (FR/EN/AR/SW/LN
 
 # 🔗 Continuité ITCAA  
 Ce module s’inscrit dans la continuité du Standard Régional ITCAA et prépare son adoption progressive.
+
+⚖️ Synthèse  
+La branche `feature/certification` est le **pilier normatif** d’ITCAA. Elle définit les niveaux de conformité et attribue le label officiel ITCAA, garantissant transparence et légitimité institutionnelle.
