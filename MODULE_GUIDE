@@ -39,7 +39,7 @@ Elle permet de tester, valider et améliorer les protocoles ONG, les modules de 
 • Expérimentation contrôlée dans la branche `feature/humanitarian`  
 • Traçabilité assurée via la Bitácora  
 • Fusion dans `itcaa/` après validation  
-• Impact : robustesse et légitimité humanitaire pour adoption continentale
+• Impact : robustesse, transparence et légitimité humanitaire pour adoption continentale
 
 ✅ Conclusion  
 La branche `feature/humanitarian` est le **laboratoire technique d’ITCAA pour les mécanismes humanitaires**.  
