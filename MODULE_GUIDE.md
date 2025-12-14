@@ -52,10 +52,6 @@ Elle permet de tester et durcir les API et modules de compatibilité avant leur 
 
 # Module Interop – Guide
 
-🎯 Objectif  
-La branche `feature/interop` est dédiée à l’**interopérabilité technique** entre ITCAA, les systèmes militaires, financiers et humanitaires.  
-Elle garantit la compatibilité des formats, la sécurité des API et la robustesse des pipelines CI/CD.
-
 📁 Structure des fichiers  
 • `interop_api.py` → API sécurisées pour connecter ITCAA aux systèmes externes  
 • `sigint_adapter.py` → compatibilité avec formats militaires (SIGINT, logistique, commandement)  
@@ -70,4 +66,7 @@ Elle garantit la compatibilité des formats, la sécurité des API et la robuste
 🧭 Gouvernance  
 • Traçabilité via Bitácora  
 • Fusion dans `itcaa/` après validation  
-• Impact : adoption régionale grâce à l’interopérabilité sécurisée
+• Impact : adoption régionale grâce à l’interopérabilité sécurisée  
+
+# 🔗 Continuité ITCAA  
+Ce module s’inscrit dans la continuité du Standard Régional ITCAA et prépare son adoption progressive.
