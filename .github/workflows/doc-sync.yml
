@@ -1,0 +1,41 @@
+name: Sync Documentation Guides
+
+on:
+  push:
+    branches:
+      - '**'   # toutes les branches sont concernées
+  pull_request:
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Récupérer le code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0   # nécessaire pour accéder à toutes les branches
+
+      # 2. Installer Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # 3. Exécuter le script de génération
+      - name: Generate INDEX_GUIDE.md and MODULE_GUIDE.md
+        run: |
+          python scripts/generate_docs.py
+
+      # 4. Vérifier si des changements ont été faits
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "itcaa-doc-bot"
+          git config --global user.email "bot@itcaa.org"
+          git add INDEX_GUIDE.md MODULE_GUIDE.md
+          if ! git diff --cached --quiet; then
+            git commit -m "docs: auto-update INDEX_GUIDE.md and MODULE_GUIDE.md"
+            git push
+          else
+            echo "No documentation changes detected."
