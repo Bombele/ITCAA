@@ -1,0 +1,62 @@
+# Module Humanitarian – Guide
+
+## 🎯 Objectif
+La branche `feature/humanitarian` est dédiée au **développement, expérimentation et durcissement des mécanismes humanitaires**.  
+Elle permet de tester, valider et améliorer les protocoles ONG, les modules de prédiction et les systèmes de coordination avant leur intégration officielle dans la branche principale `itcaa/`.
+
+---
+
+## 📂 Structure des fichiers
+
+- **protocols/**  
+  Protocoles humanitaires multilingues.  
+  - `protocols_fr.md` → version française.  
+  - `protocols_en.md` → version anglaise.  
+  - `protocols_ar.md` → version arabe.  
+  - `protocols_sw.md` → version swahili.  
+  - `protocols_ln.md` → version lingala.  
+  - `protocols_manager.py` → moteur de gestion des protocoles ONG.
+
+- **aid_prediction/**  
+  Modules de prédiction humanitaire.  
+  - `aid_prediction.py` → moteur de prédiction des besoins humanitaires.  
+  - `prediction_fr.md` → version française.  
+  - `prediction_en.md` → version anglaise.  
+  - `prediction_ar.md` → version arabe.  
+  - `prediction_sw.md` → version swahili.  
+  - `prediction_ln.md` → version lingala.
+
+- **coordination/**  
+  Modules de coordination inter‑ONG et institutions.  
+  - `coordination_engine.py` → moteur de coordination.  
+  - `coordination_fr.md` → version française.  
+  - `coordination_en.md` → version anglaise.  
+  - `coordination_ar.md` → version arabe.  
+  - `coordination_sw.md` → version swahili.  
+  - `coordination_ln.md` → version lingala.
+
+- **tests/**  
+  - `test_protocols.py` → Vérifie la robustesse des protocoles multilingues (FR/EN/AR/SW/LN).  
+  - `test_prediction.py` → Vérifie la validité des modèles de prédiction humanitaire.  
+  - `test_coordination.py` → Vérifie la cohérence des mécanismes de coordination inter‑ONG.  
+
+---
+
+## 🧪 Tests
+- **Unitaires** : validation des fonctions de protocoles, prédiction et coordination.  
+- **Intégration** : cohérence entre protocoles ONG, prédiction humanitaire et coordination.  
+- **Multilingue** : vérification des traductions et cohérence des documents (FR/EN/AR/SW/LN).  
+
+---
+
+## 🧭 Gouvernance et impact institutionnel
+- **Expérimentation contrôlée** : la branche `feature/humanitarian` sert de laboratoire pour tester les mécanismes humanitaires.  
+- **Traçabilité** : chaque modification est documentée dans la Bitácora.  
+- **Institutionnalisation** : une fois validés, les modules sont fusionnés dans `itcaa/`.  
+- **Impact** : garantit la robustesse, la transparence et la légitimité humanitaire avant adoption officielle par les ONG et institutions africaines.  
+
+---
+
+## ✅ Conclusion
+La branche `feature/humanitarian` est le **laboratoire technique d’ITCAA pour les mécanismes humanitaires**.  
+Elle permet de tester et durcir les protocoles ONG, les modules de prédiction et de coordination multilingues (FR/EN/AR/SW/LN) avant leur intégration institutionnelle dans la branche principale `itcaa/`.
