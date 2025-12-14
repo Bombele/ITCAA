@@ -67,3 +67,20 @@ Elle permet de tester, valider et améliorer les systèmes d’IA, de robustesse
 ## ✅ Conclusion
 La branche `feature/innovation` est le **laboratoire technique d’ITCAA pour l’innovation**.  
 Elle permet de tester et durcir les modules IA, quantiques et prédictifs multilingues (FR/EN/AR/SW/LN) avant leur intégration institutionnelle dans la branche principale `itcaa/`.
+
+# Module Innovation – Guide
+
+📁 Structure des fichiers  
+• `ethical_ai.py` → détection de manipulation et biais  
+• `quantum_engine.py` → robustesse et prédiction humanitaire inspirée du quantique  
+• `innovation_fr.md`, `innovation_en.md`, `innovation_ar.md`, `innovation_sw.md`, `innovation_ln.md` → documentation multilingue  
+
+🧪 Tests  
+• `test_ethics.py` → robustesse du moteur IA éthique  
+• `test_quantum.py` → validité des modules quantum-inspired  
+
+🧭 Gouvernance  
+• Impact : différenciation et adoption continentale  
+
+# 🔗 Continuité ITCAA  
+Ce module s’inscrit dans la continuité du Standard Régional ITCAA et prépare son adoption progressive.
