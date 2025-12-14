@@ -70,3 +70,6 @@ Elle permet de tester et durcir les API et modules de compatibilité avant leur 
 
 # 🔗 Continuité ITCAA  
 Ce module s’inscrit dans la continuité du Standard Régional ITCAA et prépare son adoption progressive.
+
+⚖️ Synthèse  
+La branche `feature/interop` est le **pilier technique** d’ITCAA. Elle assure la connexion sécurisée entre systèmes militaires, financiers et humanitaires, garantissant robustesse et adoption régionale.
