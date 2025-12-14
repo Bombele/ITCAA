@@ -24,3 +24,20 @@ L’ITCAA – Institut de Traçabilité et Certification des Acteurs Africains �
 1. Cloner le repo :  
    ```bash
    git clone https://github.com/Bombele/ITCAA.git
+
+ITCAA – Institut de Traçabilité et Certification des Acteurs Africains
+│
+├── Backend (FastAPI)
+│   └── API institutionnelle et technique
+│
+├── Base de données (SQLAlchemy)
+│   └── Traçabilité et gestion des données
+│
+├── IA hors ligne (FAISS + PyTorch)
+│   └── Indexation et certification supervisée
+│
+├── Protocols
+│   └── Règles DIH, normes internes, légitimité institutionnelle
+│
+└── Bitácora
+    └── Journal institutionnel des corrections et validations
