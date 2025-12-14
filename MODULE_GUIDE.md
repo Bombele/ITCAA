@@ -62,3 +62,21 @@ Elle permet de tester, valider et améliorer les systèmes de scoring financier,
 ## ✅ Conclusion
 La branche `feature/finance` est le **laboratoire technique d’ITCAA pour la finance et la conformité bancaire**.  
 Elle permet de tester et durcir les modules de scoring, de conformité et de gestion des flux multilingues (FR/EN/AR/SW/LN) avant leur intégration institutionnelle dans la branche principale `itcaa/`.
+
+# Module Finance – Guide
+
+📁 Structure des fichiers  
+• `finsig_bridge.py` → interconnexion finance/défense  
+• `compliance_checker.py` → conformité bancaire et institutionnelle  
+• `finance_fr.md`, `finance_en.md`, `finance_ar.md`, `finance_sw.md`, `finance_ln.md` → documentation multilingue  
+
+🧪 Tests  
+• `test_finsig.py` → robustesse de l’interopérabilité financière  
+• `test_compliance.py` → conformité aux standards bancaires  
+
+🧭 Gouvernance  
+• Traçabilité via Bitácora  
+• Impact : harmonisation militaire et financière  
+
+# 🔗 Continuité ITCAA  
+Ce module s’inscrit dans la continuité du Standard Régional ITCAA et prépare son adoption progressive.
