@@ -61,3 +61,6 @@ Elle permet de tester et durcir les supports de formation, les plateformes inter
 
 # 🔗 Continuité ITCAA  
 Ce module s’inscrit dans la continuité du Standard Régional ITCAA et prépare son adoption progressive.
+
+⚖️ Synthèse  
+La branche `feature/education` est le **pilier pédagogique** d’ITCAA. Elle assure l’onboarding collectif, la formation en sécurité et la transmission intergénérationnelle des valeurs d’éthique et de justice.
