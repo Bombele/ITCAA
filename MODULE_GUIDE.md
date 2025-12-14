@@ -52,3 +52,25 @@ Elle permet de tester, valider et améliorer les systèmes de scoring, de label 
 ## ✅ Conclusion
 La branche `feature/certification` est le **laboratoire technique d’ITCAA pour la certification et la normalisation**.  
 Elle permet de tester et durcir les guides qualité multilingues (FR/EN/AR/SW/LN), le scoring institutionnel et le label ITCAA avant leur intégration institutionnelle dans la branche principale `itcaa/`.
+
+# Module Certification – Guide
+
+📁 Structure des fichiers  
+• `certification_checker.py` → moteur de vérification qualité  
+• `certification_levels.json` → définition des critères par niveau  
+• `audit_protocols.py` → protocoles d’audit technique et institutionnel  
+• `QUALITY_GUIDE.md` → guide qualité et certification  
+• Documentation multilingue : `certification_fr.md`, `certification_en.md`, `certification_ar.md`, `certification_sw.md`, `certification_ln.md`  
+
+🧪 Tests  
+• `test_quality.py` → robustesse du moteur qualité  
+• `test_certification.py` → cohérence des niveaux de certification  
+• `test_audit_protocols.py` → conformité des protocoles  
+
+🧭 Gouvernance  
+• Certification progressive assurée par ITCAA  
+• Adoption régionale via l’Observatoire ITCAA  
+• Impact : légitimité politique et technique  
+
+# 🔗 Continuité ITCAA  
+Ce module s’inscrit dans la continuité du Standard Régional ITCAA et prépare son adoption progressive.
