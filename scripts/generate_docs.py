@@ -14,17 +14,21 @@ def generate_module_guide():
     lines = ["# MODULE_GUIDE.md\n"]
     lines.append(f"_Dernière génération : {datetime.now().isoformat()}_\n\n")
     lines.append("## Branche : main\n")
+
+    # Lister les dossiers
     for folder in os.listdir():
         if os.path.isdir(folder) and folder not in [".git", ".github", "scripts"]:
             lines.append(f"- `{folder}/` → module détecté dans `main`")
             md_files = list_files_in_folder(folder)
             for md in md_files:
                 lines.append(f"  - `{md}`")
-    # Ajouter aussi les fichiers à la racine
+
+    # Lister les fichiers à la racine
     lines.append("\n### Fichiers à la racine\n")
     for file in os.listdir():
         if os.path.isfile(file) and (file.endswith(".md") or file.endswith(".py")):
             lines.append(f"- `{file}`")
+
     return "\n".join(lines)
 
 if __name__ == "__main__":
