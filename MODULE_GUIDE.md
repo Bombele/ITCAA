@@ -44,3 +44,20 @@ Elle permet de tester, valider et améliorer les supports de formation, les modu
 ✅ Conclusion  
 La branche `feature/education` est le **laboratoire technique d’ITCAA pour la transmission pédagogique et l’onboarding multilingue**.  
 Elle permet de tester et durcir les supports de formation, les plateformes interactives et les modules disciplinaires avant leur intégration institutionnelle dans la branche principale `itcaa/`.
+
+# Module Education – Guide
+
+📁 Structure des fichiers  
+• `training_security.md` → formation aux protocoles de sécurité et certification  
+• `education_fr.md`, `education_en.md`, `education_ar.md`, `education_sw.md`, `education_ln.md` → documentation multilingue  
+• `ONBOARDING_GUIDE.md` → guide rapide pour nouveaux contributeurs  
+
+🧪 Tests  
+• `test_docs.py` → cohérence multilingue des guides  
+• `test_training.py` → validation des modules de formation  
+
+🧭 Gouvernance  
+• Impact : onboarding collectif et transmission intergénérationnelle  
+
+# 🔗 Continuité ITCAA  
+Ce module s’inscrit dans la continuité du Standard Régional ITCAA et prépare son adoption progressive.
