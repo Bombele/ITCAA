@@ -61,3 +61,6 @@ Elle permet de tester et durcir les protocoles ONG
 
 # 🔗 Continuité ITCAA  
 Ce module s’inscrit dans la continuité du Standard Régional ITCAA et prépare son adoption progressive.
+
+⚖️ Synthèse  
+La branche `feature/humanitarian` est le **pilier humanitaire** d’ITCAA. Elle garantit transparence, audits externes et légitimité des actions humanitaires dans le cadre institutionnel régional.
