@@ -41,3 +41,21 @@ ITCAA – Institut de Traçabilité et Certification des Acteurs Africains
 │
 └── Bitácora
     └── Journal institutionnel des corrections et validations
+
+[Acteur] 
+   │ soumet données
+   ▼
+[Backend FastAPI] 
+   │ enregistre via SQLAlchemy
+   ▼
+[Protocoles DIH & Normes] 
+   │ vérification conformité
+   ▼
+[IA hors ligne FAISS+PyTorch] 
+   │ indexation + scoring
+   ▼
+[Bitácora] 
+   │ traçabilité + audit
+   ▼
+[Institution] 
+   │ délivre certification
